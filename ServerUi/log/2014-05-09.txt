@@ -1,0 +1,80 @@
+09:51:15 start......
+09:51:15 thread run start thread=3076574064
+09:54:01 start......
+09:54:01 thread run start thread=3075718000
+09:54:18 select success m_callbackFdVec[i].fd=23
+09:54:18 start......
+09:54:21 select success m_callbackFdVec[i].fd=26
+09:54:21 removeFd fd=26
+09:54:22 select success m_callbackFdVec[i].fd=23
+09:54:22 start......
+09:54:23 select success m_callbackFdVec[i].fd=26
+09:54:23 removeFd fd=26
+09:54:23 select success m_callbackFdVec[i].fd=23
+09:54:23 start......
+09:54:24 select success m_callbackFdVec[i].fd=26
+09:54:24 removeFd fd=26
+09:54:24 select success m_callbackFdVec[i].fd=23
+09:54:24 start......
+09:54:25 select success m_callbackFdVec[i].fd=26
+09:54:25 removeFd fd=26
+09:54:26 select success m_callbackFdVec[i].fd=23
+09:54:26 start......
+09:54:27 select success m_callbackFdVec[i].fd=26
+09:54:27 removeFd fd=26
+10:10:19 select success m_callbackFdVec[i].fd=23
+10:10:19 start......
+10:10:20 select success m_callbackFdVec[i].fd=26
+10:10:20 removeFd fd=26
+10:10:21 select success m_callbackFdVec[i].fd=23
+10:10:21 start......
+10:10:23 select success m_callbackFdVec[i].fd=26
+10:10:23 removeFd fd=26
+10:10:23 select success m_callbackFdVec[i].fd=23
+10:10:23 start......
+10:10:28 select success m_callbackFdVec[i].fd=26
+10:10:28 removeFd fd=26
+10:13:29 select success m_callbackFdVec[i].fd=23
+10:13:29 start......
+10:13:34 select success m_callbackFdVec[i].fd=26
+10:13:34 removeFd fd=26
+10:13:44 select success m_callbackFdVec[i].fd=23
+10:13:44 start......
+10:13:48 select success m_callbackFdVec[i].fd=26
+10:13:48 removeFd fd=26
+10:14:03 select success m_callbackFdVec[i].fd=23
+10:14:03 start......
+10:14:05 select success m_callbackFdVec[i].fd=26
+10:14:05 removeFd fd=26
+10:14:06 select success m_callbackFdVec[i].fd=23
+10:14:06 start......
+10:14:07 select success m_callbackFdVec[i].fd=26
+10:14:07 removeFd fd=26
+10:14:08 select success m_callbackFdVec[i].fd=23
+10:14:08 start......
+10:14:10 select success m_callbackFdVec[i].fd=26
+10:14:10 removeFd fd=26
+11:41:25 start......
+11:41:25 thread run start thread=3076520816
+11:41:37 select success m_callbackFdVec[i].fd=23
+11:41:37 start......
+11:41:37 select success m_callbackFdVec[i].fd=27
+11:41:41 isValidatefd listen success and close fd=27
+11:41:41 select success m_callbackFdVec[i].fd=27
+11:41:41 removeFd fd=27
+11:43:53 select success m_callbackFdVec[i].fd=23
+11:43:53 start......
+11:43:53 select success m_callbackFdVec[i].fd=27
+11:44:04 isValidatefd listen success and close fd=27
+11:44:04 select success m_callbackFdVec[i].fd=27
+11:44:04 removeFd fd=27
+11:44:51 start......
+11:44:51 thread run start thread=3083963248
+11:45:06 select success m_callbackFdVec[i].fd=23
+11:45:06 start......
+11:45:06 select success m_callbackFdVec[i].fd=27
+11:48:30 start......
+11:48:30 thread run start thread=3083963248
+11:49:11 select success m_callbackFdVec[i].fd=23
+11:49:11 start......
+11:49:11 select success m_callbackFdVec[i].fd=27

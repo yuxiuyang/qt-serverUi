@@ -32,7 +32,7 @@ DataMgr::~DataMgr()
     m_pNibpMgr = NULL;
 }
 
-void DataMgr::handle(const BYTE* buf,int len){
+void DataMgr::handle(ClientType_ id,const BYTE* buf,int len){
     addBuf(buf,len);
     open_block();
 }

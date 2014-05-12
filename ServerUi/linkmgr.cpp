@@ -75,6 +75,15 @@ LinkSocketId* LinkMgr::findClient(int clientSocket){
 
     return NULL;
 }
+int LinkMgr::findIdbysocket(int socket){
+    std::vector <LinkSocketId*>::iterator iter;
+    for(iter=m_clientConnectMsgVec.begin();iter!=m_clientConnectMsgVec.end();iter++){
+        if(clientSocket == (*iter)->fd)
+            return (*iter)->id;
+    }
+    return -1;
+}
+
 int LinkMgr::findClientSocket(ClientType_ type){
     std::vector <LinkSocketId*>::iterator iter;
     for(iter=m_clientConnectMsgVec.begin();iter!=m_clientConnectMsgVec.end();iter++){
@@ -161,23 +170,11 @@ void LinkMgr::getClientSocketFd(vector<int>* vec){
     }
 }
 
-bool LinkMgr::analLinkPag(const BYTE* buf,int len){
+int LinkMgr::analLinkData(const BYTE* buf,int len){//return fd
     ClientType_ clientId = (ClientType_)buf[3];
     assert(clientId>0);
 
-
-    LinkSocketId* socketId = findClientMsgbyId(clientId);
-    if(socketId == NULL){
-        cout<<"this socket has not connect ,please check the connetion"<<endl;
-        return false;
-    }
-    socketId->clientId = clientId;
-
-    char msgBuf[100]={0};
-    sprintf(msgBuf,"comfirm client id =%d success",clientId);
-    ((MainWindow*)m_window)->appendMsg(msgBuf);
-
-    return true;
+    return clientId;
 }
 void LinkMgr::requestLinkMsg(){
     std::vector<LinkSocketId*>::iterator iter;
@@ -209,8 +206,20 @@ int LinkMgr::data_Arrived(int Fd){
           return -1;
      } else {        // receive data
            //cout<<"server   success rec data from client     fd="<<socket<<endl;
-           if(m_pDataMgr)
-                ((DataMgr*)m_pDataMgr)->handle(tmpbuf,len);
+
+            LinkSocketId* sockId = findClient(fd);
+            asset(sockId);
+            if(sockId->clientId>0){
+                if(m_pDataMgr)
+                     ((DataMgr*)m_pDataMgr)->handle(clientId,tmpbuf,len);
+            }else{//has not register
+                sockId->clientId = analLinkData(tmpbuf,len);
+
+                char msgBuf[100]={0};
+                sprintf(msgBuf,"comfirm client id =%d success",sockId->clientId);
+                ((MainWindow*)m_window)->appendMsg(msgBuf);
+            }
+
     }
      return 0;
 

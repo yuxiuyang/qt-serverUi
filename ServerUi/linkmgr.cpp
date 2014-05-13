@@ -119,6 +119,10 @@ bool LinkMgr::removeLinkMsg(ClientType_ id){
     int fd = findClientSocket(id);
     return removeClientSocket(fd);
 }
+void LinkMgr::disconnectLinkMsg(int fd){
+    LinkSocketId* socketId = findClient(fd);
+    socketId->clientId = NONE_CLIENT;
+}
 
 bool LinkMgr::addClientSocketFd(int clientFd){
     assert(clientFd>0);

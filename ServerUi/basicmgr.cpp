@@ -3,7 +3,7 @@
 #include <iostream>
 #include "../common/datadev.h"
 using namespace std;
-BasicMgr::BasicMgr(LinkMgr* pLinkMgr):m_dataQueue(MAX_BUF)
+BasicMgr::BasicMgr(LinkMgr* pLinkMgr,ClientType_ clientId):m_dataQueue(MAX_BUF)
 {
     m_iFrequency = 1;
     m_iTimeout = 1000;
@@ -14,6 +14,7 @@ BasicMgr::BasicMgr(LinkMgr* pLinkMgr):m_dataQueue(MAX_BUF)
     DataDev::getInstance()->start();
     m_pLinkMgr = pLinkMgr;
 
+    m_clientId = clientId;
     m_ui = NULL;
 }
 
@@ -31,30 +32,28 @@ void BasicMgr::setReadNum(int num){
     m_file->reset();
     clearTestData();
 }
-void BasicMgr::sendData(MsgType_ msgType,ClientType_ clientType,DataSource_ dataSource,const BYTE* buf,const int len){
-    int sock = m_pLinkMgr->findClientSocket(clientType);
-    if(sock==-1) return;
-
-    assert(len+7<=100);
+void BasicMgr::sendData(MsgType_ msgType,const BYTE* buf,const int len){
+    int sock = m_pLinkMgr->findClientSocket(getCurClientId());
+    assert(sock);
+    assert(len+5<=100);
 
     BYTE tmpBuf[100];
     tmpBuf[0] = 0x99;//start
-    tmpBuf[1] = len+7;//
+    tmpBuf[1] = len+5;//
     tmpBuf[2] = msgType;
-    tmpBuf[3] = clientType;
-    tmpBuf[4] = dataSource;
+
 
     BYTE calSum = 0x00;
     for(int i=0;i<len;i++){
-        tmpBuf[5+i] = buf[i];
+        tmpBuf[3+i] = buf[i];
         calSum += buf[i];
     }
-    tmpBuf[5+len] = tmpBuf[1] + tmpBuf[2] + tmpBuf[3] +tmpBuf[4] + calSum;
+    tmpBuf[3+len] = tmpBuf[1] + tmpBuf[2] + calSum;
 
-    tmpBuf[5+len+1] = 0xdd;//end
+    tmpBuf[3+len+1] = 0xdd;//end
 
 
-     DataDev::getInstance()->sendData(sock,tmpBuf,7+len);
+     DataDev::getInstance()->sendData(sock,tmpBuf,5+len);
 }
 void BasicMgr::sendRequestIdData(){
     m_pLinkMgr->requestLinkMsg();//send request id msg
@@ -189,10 +188,6 @@ void BasicMgr::resolveProtocol(const char* buf,int size,BYTE* recieveBuf,int& re
         }
 }
 
-void BasicMgr::analyseCmd(int cmd,void* wparam,void* lparam){
-
-}
-
 void BasicMgr::clearTestData(){
     m_testMsg.usedtimeSum = 0;
     m_testMsg.readSum = 0;
@@ -259,6 +254,9 @@ bool BasicMgr::anal_pag(const BYTE* buf,const int len){
     case Link_Msg:
         anal_ConnectPag(buf,len);
         break;
+    case Cmd_Msg:
+        analyseCmd(buf[3],buf[4]);
+        break;
     default:
         break;
     }
@@ -289,6 +287,12 @@ bool BasicMgr::anal_DataPag(const BYTE* buf,const int len){
 //        ((MainWindow*)m_pWindow)->appendData(buf+5,len-7);
 //    }
     return true;
+}
+void BasicMgr::analyseCmd(BYTE clientId,BYTE cmd){
+    char buf[100]={0};
+    sprintf(buf,"clientid=%02x  cmd=%d",clientId,cmd);
+    cout<<"buf="<<buf<<endl;
+    //((MainWindow*)m_pWindow)->appendData(buf);
 }
 
 bool BasicMgr::anal_ConnectPag(const BYTE* buf,const int len){

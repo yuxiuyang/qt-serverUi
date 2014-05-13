@@ -3,7 +3,7 @@
 #include "../common/datadev.h"
 #include "../include/define.h"
 #define REFRESH_TIME 30*1000 //ms
-NibpMgr::NibpMgr(LinkMgr* pLinkMgr):BasicMgr(pLinkMgr)
+NibpMgr::NibpMgr(LinkMgr* pLinkMgr):BasicMgr(pLinkMgr,NIBP_CLIENT)
 {
     memset(&m_tStartTimer,0,sizeof(m_tStartTimer));
 
@@ -18,7 +18,7 @@ NibpMgr::~NibpMgr()
 }
 void NibpMgr::sendData(const BYTE* buf,int len){
     //cout<<"nibpmgr  senddata"<<endl;
-    BasicMgr::sendData(Data_Msg,NIBP_CLIENT,PC_Simulator_Link,buf,len);
+    BasicMgr::sendData(Data_Msg,buf,len);
 }
 
 void NibpMgr::onTimer(){

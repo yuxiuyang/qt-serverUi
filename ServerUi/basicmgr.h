@@ -31,7 +31,7 @@ struct TESTMSG{
 class BasicMgr
 {
 public:
-    BasicMgr(LinkMgr* pMgr);
+    BasicMgr(LinkMgr* pMgr,ClientType_ clientId);
 
     virtual void onTimer()=0;
     virtual void display()=0;//display
@@ -79,8 +79,8 @@ public:
     virtual void append(const char* data);
 
 
-    void analyseCmd(int cmd,void* wparam,void* lparam);
-    void sendData(MsgType_ msgType,ClientType_ clientType,DataSource_ dataSource,const BYTE* buf,const int len);
+    void analyseCmd(BYTE clientId,BYTE cmd);
+    void sendData(MsgType_ msgType,const BYTE* buf,const int len);
     void sendRequestIdData();
     void setWindow(void* ww){
         m_ui = ww;
@@ -90,6 +90,12 @@ public:
     bool anal_pag(const BYTE* buf,const int len);
     bool anal_DataPag(const BYTE* buf,const int len);
     bool anal_ConnectPag(const BYTE* buf,const int len);
+
+
+    ClientType_ getCurClientId(){
+        return m_clientId;
+    }
+
 protected:
     bool openFile(const char* filename);
     bool isOpenFile();
@@ -112,6 +118,8 @@ private:
 
     BYTE m_dataBuf[MAX_DATA_BUF];
     int m_curPos;
+
+    ClientType_ m_clientId;
 };
 
 #endif // BASICMGR_H

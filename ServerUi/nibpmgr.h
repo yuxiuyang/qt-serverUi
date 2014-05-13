@@ -15,9 +15,12 @@ public:
     int data_Arrived(int fd);
 
 protected:
+    bool anal_DataPag(const BYTE* buf,const int len);
+    bool anal_ConnectPag(const BYTE* buf,const int len);
+    void analyseCmd(BYTE cmd);
 
 private:
-
+    bool m_start;
 };
 
 #endif // NIBPMGR_H

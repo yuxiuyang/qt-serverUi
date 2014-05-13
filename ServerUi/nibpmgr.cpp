@@ -8,12 +8,13 @@ NibpMgr::NibpMgr(LinkMgr* pLinkMgr):BasicMgr(pLinkMgr,NIBP_CLIENT)
     memset(&m_tStartTimer,0,sizeof(m_tStartTimer));
 
     gettimeofday(&m_tStartTimer,NULL);
-
-    assert(openFile("datafile/nibpdata.txt"));
+    m_start = false;
+    //assert(openFile("datafile/nibpdata.txt"));
 }
 NibpMgr::~NibpMgr()
 {
-    assert(closeFile());
+    if(isOpenFile())
+        assert(closeFile());
 
 }
 void NibpMgr::sendData(const BYTE* buf,int len){
@@ -22,6 +23,7 @@ void NibpMgr::sendData(const BYTE* buf,int len){
 }
 
 void NibpMgr::onTimer(){
+    if(!m_start) return;
 
     int readnum = read();
 
@@ -41,4 +43,63 @@ void NibpMgr::display(){
     if(isShowData())
         ((MainWindow*)m_ui)->showData(m_readBuf);
 
+}
+bool NibpMgr::anal_DataPag(const BYTE* buf,const int len){
+    switch(buf[3]){
+    case ECG_CLIENT:
+        break;
+    case SPO2_CLIENT:
+        break;
+    case CO2_CLIENT:
+        break;
+    case NIBP_CLIENT:
+        break;
+    case IBPCO_CLIENT:
+        break;
+    case CMD_CLIENT:
+        break;
+    case DISPLAY_CLIENT:
+        break;
+    default:
+        break;
+    }
+
+//    if(buf[3] == ((MainWindow*)m_pWindow)->getClientType()){
+//        ((MainWindow*)m_pWindow)->appendData(buf+5,len-7);
+//    }
+    return true;
+}
+void NibpMgr::analyseCmd(BYTE cmd){
+    char buf[100]={0};
+    sprintf(buf,"cmd=%d",cmd);
+    cout<<"buf="<<buf<<endl;
+    //((MainWindow*)m_pWindow)->appendData(buf);
+    switch(cmd){
+    case NIBP_ADULT:
+        assert(closeFile());
+        assert(openFile("datafile/NIBP/nibp_adult.txt"));
+        break;
+    case NIBP_ENFANT:
+        assert(closeFile());
+        assert(openFile("datafile/NIBP/nibp_enfant.txt"));
+        break;
+    case NIBP_BABY:
+        assert(closeFile());
+        assert(openFile("datafile/NIBP/nibp_baby.txt"));
+        break;
+    case NIBP_START:
+        m_start = true;
+        printf("nibp_start......\n");
+        break;
+    case NIBP_STOP:
+        m_start = false;
+        printf("nibp_stop......\n");
+        break;
+    default:
+        break;
+    }
+}
+
+bool NibpMgr::anal_ConnectPag(const BYTE* buf,const int len){
+    //return m_pLinkMgr->analLinkPag(buf,len);
 }

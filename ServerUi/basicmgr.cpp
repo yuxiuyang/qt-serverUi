@@ -9,6 +9,7 @@ BasicMgr::BasicMgr(LinkMgr* pLinkMgr,ClientType_ clientId):m_dataQueue(MAX_BUF)
     m_iTimeout = 1000;
     m_iReadNum = 0;
     m_iCurTime = 0;
+    m_curPos = 0;
     m_file = NULL;
     memset(m_readBuf,0,sizeof(m_readBuf));
     DataDev::getInstance()->start();
@@ -28,9 +29,10 @@ void BasicMgr::setFrequency(int fre){
 }
 void BasicMgr::setReadNum(int num){
     m_iReadNum = num*3;
-    assert(m_file);
-    m_file->reset();
     clearTestData();
+
+    if(m_file)
+        m_file->reset();
 }
 void BasicMgr::sendData(MsgType_ msgType,const BYTE* buf,const int len){
     int sock = m_pLinkMgr->findClientSocket(getCurClientId());
@@ -136,6 +138,8 @@ bool BasicMgr::openFile(const char* filename){
     assert(m_file);
     m_file->setFileName(filename);
     m_file->setReadFileProperty(true);
+
+    printf("open file=%s success\n",filename);
     return m_file->open("a+");
 
 }
@@ -152,6 +156,7 @@ bool BasicMgr::closeFile(){
     assert(m_file->close());
     delete m_file;
     m_file = NULL;
+    printf("close file success\n");
     return true;
 }
 void BasicMgr::resolveProtocol(const char* buf,int size,BYTE* recieveBuf,int& recieveBuf_len){//
@@ -247,6 +252,11 @@ void BasicMgr::addBuf(const BYTE* buf,int len){
     }
 }
 bool BasicMgr::anal_pag(const BYTE* buf,const int len){
+    if(buf[3] != getCurClientId()){
+        //dis connect
+        m_pLinkMgr->disconnectLinkMsg((ClientType_)buf[3]);
+        return false;
+    }
     switch(buf[2]){
     case Data_Msg:
         anal_DataPag(buf,len);
@@ -255,46 +265,11 @@ bool BasicMgr::anal_pag(const BYTE* buf,const int len){
         anal_ConnectPag(buf,len);
         break;
     case Cmd_Msg:
-        analyseCmd(buf[3],buf[4]);
+        analyseCmd(buf[4]);
         break;
     default:
         break;
     }
 
     return true;
-}
-bool BasicMgr::anal_DataPag(const BYTE* buf,const int len){
-    switch(buf[3]){
-    case ECG_CLIENT:
-        break;
-    case SPO2_CLIENT:
-        break;
-    case CO2_CLIENT:
-        break;
-    case NIBP_CLIENT:
-        break;
-    case IBPCO_CLIENT:
-        break;
-    case CMD_CLIENT:
-        break;
-    case DISPLAY_CLIENT:
-        break;
-    default:
-        break;
-    }
-
-//    if(buf[3] == ((MainWindow*)m_pWindow)->getClientType()){
-//        ((MainWindow*)m_pWindow)->appendData(buf+5,len-7);
-//    }
-    return true;
-}
-void BasicMgr::analyseCmd(BYTE clientId,BYTE cmd){
-    char buf[100]={0};
-    sprintf(buf,"clientid=%02x  cmd=%d",clientId,cmd);
-    cout<<"buf="<<buf<<endl;
-    //((MainWindow*)m_pWindow)->appendData(buf);
-}
-
-bool BasicMgr::anal_ConnectPag(const BYTE* buf,const int len){
-    //return m_pLinkMgr->analLinkPag(buf,len);
 }

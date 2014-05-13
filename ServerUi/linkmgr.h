@@ -53,7 +53,7 @@ public:
 
     LinkState getLinkState(ClientType_ id);
     bool      removeLinkMsg(ClientType_ id);
-    void      disconnectLinkMsg(int fd);
+    void      disconnectLinkMsg(ClientType_ id);
 private:
     vector<LinkSocketId*> m_clientConnectMsgVec;
     vector<int> m_registerClientSocketFdVec;

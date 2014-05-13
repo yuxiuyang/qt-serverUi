@@ -78,8 +78,6 @@ public:
     virtual void generateTestFile();//
     virtual void append(const char* data);
 
-
-    void analyseCmd(BYTE clientId,BYTE cmd);
     void sendData(MsgType_ msgType,const BYTE* buf,const int len);
     void sendRequestIdData();
     void setWindow(void* ww){
@@ -88,8 +86,9 @@ public:
     void addBuf(const BYTE* buf,int len);
     int open_block();
     bool anal_pag(const BYTE* buf,const int len);
-    bool anal_DataPag(const BYTE* buf,const int len);
-    bool anal_ConnectPag(const BYTE* buf,const int len);
+    virtual bool anal_DataPag(const BYTE* buf,const int len)=0;
+    virtual bool anal_ConnectPag(const BYTE* buf,const int len)=0;
+    virtual void analyseCmd(BYTE cmd)=0;
 
 
     ClientType_ getCurClientId(){

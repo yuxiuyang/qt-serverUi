@@ -119,8 +119,8 @@ bool LinkMgr::removeLinkMsg(ClientType_ id){
     int fd = findClientSocket(id);
     return removeClientSocket(fd);
 }
-void LinkMgr::disconnectLinkMsg(int fd){
-    LinkSocketId* socketId = findClient(fd);
+void LinkMgr::disconnectLinkMsg(ClientType_ id){
+    LinkSocketId* socketId = findClientMsgbyId(id);
     socketId->clientId = NONE_CLIENT;
 }
 
@@ -221,8 +221,14 @@ int LinkMgr::data_Arrived(int Fd){
                  else ((MainWindow*)m_window)->appendMsg(tmp);
              }
          }else{
-             if(m_pDataMgr)
+             if(m_pDataMgr){
+                 printf("receive data len=%d\n",len);
+                 for(int i=0;i<len;i++){
+                     printf("%02x ",tmpbuf[i]);
+                 }
+                 printf("end .....\n");
                ((DataMgr*)m_pDataMgr)->handle(socketId->clientId,tmpbuf,len);
+             }
          }
 
     }

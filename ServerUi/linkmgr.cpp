@@ -75,15 +75,6 @@ LinkSocketId* LinkMgr::findClient(int clientSocket){
 
     return NULL;
 }
-int LinkMgr::findIdbysocket(int socket){
-    std::vector <LinkSocketId*>::iterator iter;
-    for(iter=m_clientConnectMsgVec.begin();iter!=m_clientConnectMsgVec.end();iter++){
-        if(clientSocket == (*iter)->fd)
-            return (*iter)->id;
-    }
-    return -1;
-}
-
 int LinkMgr::findClientSocket(ClientType_ type){
     std::vector <LinkSocketId*>::iterator iter;
     for(iter=m_clientConnectMsgVec.begin();iter!=m_clientConnectMsgVec.end();iter++){
@@ -131,7 +122,7 @@ bool LinkMgr::removeLinkMsg(ClientType_ id){
 
 bool LinkMgr::addClientSocketFd(int clientFd){
     assert(clientFd>0);
-    //char msgBuf[100]={0};
+    char msgBuf[100]={0};
     //manage client FD
     if(NULL == findClient(clientFd)){// not exsit
         LinkSocketId* socketId = new LinkSocketId;
@@ -170,21 +161,29 @@ void LinkMgr::getClientSocketFd(vector<int>* vec){
     }
 }
 
-int LinkMgr::analLinkData(const BYTE* buf,int len){//return fd
+ClientType_ LinkMgr::analLinkData(const BYTE* buf,int len){
+
+    printf("analLinkData len=%d\n",len);
+    for(int i=0;i<len;i++){
+        printf("%02x ",buf[i]);
+    }
+    printf("end .....\n");
+    if(buf[0]!=0x99 || buf[len-1]!=0xdd)return NONE_CLIENT;
+
     ClientType_ clientId = (ClientType_)buf[3];
     assert(clientId>0);
 
-    return clientId;
+   return clientId;
 }
 void LinkMgr::requestLinkMsg(){
     std::vector<LinkSocketId*>::iterator iter;
     for(iter=m_clientConnectMsgVec.begin();iter!=m_clientConnectMsgVec.end();iter++){
         if((*iter)->clientId==-1){
-            sendRequestLink((*iter)->fd);
+            sendRequestIdMsg((*iter)->fd);
         }
     }
 }
-void LinkMgr::sendRequestLink(int fd){
+void LinkMgr::sendRequestIdMsg(int fd){
     BYTE tmpBuf[5];
     tmpBuf[0] = 0x99;//start
     tmpBuf[1] = 0x05;//
@@ -206,19 +205,21 @@ int LinkMgr::data_Arrived(int Fd){
           return -1;
      } else {        // receive data
            //cout<<"server   success rec data from client     fd="<<socket<<endl;
+         LinkSocketId* socketId = findClient(Fd);
+         assert(socketId);
+         if(socketId->clientId == NONE_CLIENT){
+             socketId->clientId = analLinkData(tmpbuf,len);
 
-            LinkSocketId* sockId = findClient(fd);
-            asset(sockId);
-            if(sockId->clientId>0){
-                if(m_pDataMgr)
-                     ((DataMgr*)m_pDataMgr)->handle(clientId,tmpbuf,len);
-            }else{//has not register
-                sockId->clientId = analLinkData(tmpbuf,len);
-
-                char msgBuf[100]={0};
-                sprintf(msgBuf,"comfirm client id =%d success",sockId->clientId);
-                ((MainWindow*)m_window)->appendMsg(msgBuf);
-            }
+             {
+                 char tmp[100]={0};
+                 sprintf(tmp,"0x%02x comfire id",socketId->clientId);
+                 if(socketId->clientId<0) sendRequestIdMsg(Fd);//request id msg
+                 else ((MainWindow*)m_window)->appendMsg(tmp);
+             }
+         }else{
+             if(m_pDataMgr)
+               ((DataMgr*)m_pDataMgr)->handle(socketId->clientId,tmpbuf,len);
+         }
 
     }
      return 0;
@@ -231,10 +232,10 @@ void LinkMgr::recvLinkMsg(CONNECT_MSG_TYPE type,int clientFd,int error){
             assert(clientFd>0);
             removeClientSocket(clientFd);
             close(clientFd);
-            sprintf(msgBuf,"close,clientfd=%d",clientFd);
+            sprintf(msgBuf,"close clientfd=%d",clientFd);
             break;
         case Connect_Failure:
-            sprintf(msgBuf,"connect ,error=%d",error);
+            sprintf(msgBuf,"connect failure,error=%d",error);
             break;
         case Connect_Success:
             assert(clientFd>0);

@@ -28,7 +28,7 @@ struct TESTMSG{
     }
 };
 
-class BasicMgr:public RecvObject
+class BasicMgr
 {
 public:
     BasicMgr(LinkMgr* pMgr);
@@ -85,7 +85,11 @@ public:
     void setWindow(void* ww){
         m_ui = ww;
     }
-
+    void addBuf(const BYTE* buf,int len);
+    int open_block();
+    bool anal_pag(const BYTE* buf,const int len);
+    bool anal_DataPag(const BYTE* buf,const int len);
+    bool anal_ConnectPag(const BYTE* buf,const int len);
 protected:
     bool openFile(const char* filename);
     bool isOpenFile();
@@ -105,6 +109,9 @@ private:
     int m_iReadNum;//how many datas will read just onece calling fun-onTimer.
     int m_iTimeout;//ms  time out to call fun-onTimer.calculate it by m_iFrequency.
 
+
+    BYTE m_dataBuf[MAX_DATA_BUF];
+    int m_curPos;
 };
 
 #endif // BASICMGR_H

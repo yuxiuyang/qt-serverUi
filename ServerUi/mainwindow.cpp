@@ -31,9 +31,8 @@ MainWindow::MainWindow(QWidget *parent) :
     connect(ui->pRcCancel_btn, SIGNAL(clicked()), this, SLOT(rcCancel_click()));
 
 
-    ui->pStart_btn->setEnabled(false);
+    ui->pStart_btn->setEnabled(true);
     ui->pStop_btn->setEnabled(false);
-    ui->pStart_label->setText("server running");
 
 
     setWindowTitle("Server....");
@@ -52,7 +51,8 @@ MainWindow::MainWindow(QWidget *parent) :
     ui->pRcOk_btn->setEnabled(false);
     ui->pRc_edit->setEnabled(false);
     ui->pFre_edit->setEnabled(false);
-
+    ui->pStart_btn->setEnabled(false);
+    ui->pStop_btn->setEnabled(false);
 
     ui->pGloupBox->setTitle("NIBP Setup");
     ui->pBox_Label->setText("NIBP");
@@ -202,7 +202,10 @@ void MainWindow::rcCancel_click(){
 }
 
 void MainWindow::appendMsg(const char* msg){
+    //m_pMutex.lock();
     ui->pConnectMsg_txt->append(msg);
+    //m_queConnectMsgLine.push(msg);/
+    //m_pMutex.unlock();
 }
 void MainWindow::exit_click(){
     close();
@@ -255,7 +258,7 @@ void MainWindow::sendTimer(){
 //         m_pMutex.unlock();
 //    }
 
-        //checkLinkState();
+        checkLinkState();
 }
 void MainWindow::startTestCheckStateChanged(int state){
     if(ui->pST_check->isChecked()){

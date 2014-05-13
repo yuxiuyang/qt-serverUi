@@ -14,10 +14,6 @@ public:
 public Q_SLOTS:
     void _onWriteTimeout();
 public:
-    int open_block();
-    bool anal_pag(const BYTE* buf,const int len);
-    bool anal_DataPag(const BYTE* buf,const int len);
-    bool anal_ConnectPag(const BYTE* buf,const int len);
     void setWindow(void*);
     void handle(ClientType_ id,const BYTE* buf,int len);
     void generateTestFile(ClientType_ type);

@@ -1,7 +1,7 @@
 /********************************************************************************
 ** Form generated from reading UI file 'mainwindow.ui'
 **
-** Created: Fri May 9 09:51:14 2014
+** Created: Thu May 8 22:59:39 2014
 **      by: Qt User Interface Compiler version 4.6.2
 **
 ** WARNING! All changes made in this file will be lost when recompiling UI file!
@@ -75,7 +75,7 @@ public:
     {
         if (MainWindow->objectName().isEmpty())
             MainWindow->setObjectName(QString::fromUtf8("MainWindow"));
-        MainWindow->resize(931, 600);
+        MainWindow->resize(931, 625);
         centralWidget = new QWidget(MainWindow);
         centralWidget->setObjectName(QString::fromUtf8("centralWidget"));
         pExit_btn = new QPushButton(centralWidget);
@@ -206,7 +206,7 @@ public:
         MainWindow->setCentralWidget(centralWidget);
         menuBar = new QMenuBar(MainWindow);
         menuBar->setObjectName(QString::fromUtf8("menuBar"));
-        menuBar->setGeometry(QRect(0, 0, 931, 23));
+        menuBar->setGeometry(QRect(0, 0, 931, 32));
         MainWindow->setMenuBar(menuBar);
         mainToolBar = new QToolBar(MainWindow);
         mainToolBar->setObjectName(QString::fromUtf8("mainToolBar"));

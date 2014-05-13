@@ -31,7 +31,6 @@ public:
     bool sendToClient(int clientSocket);//send connect or disconnect to client
 
     LinkSocketId* findClient(int clientSocket);
-    int findIdbysocket(int socket);
     int findClientSocket(ClientType_ clientId);
     LinkSocketId* findClientMsgbyId(ClientType_ id);
     bool removeClientSocket(int clientSocket);
@@ -41,9 +40,9 @@ public:
     bool addClientSocketFd(int clientFd);
     void recvLinkMsg(CONNECT_MSG_TYPE type,int clientFd,int error=-1);
     void requestLinkMsg();
-    void sendRequestLink(int fd);
+    void sendRequestIdMsg(int fd);
 
-    int analLinkData(const BYTE* buf,int len);//return fd
+    ClientType_ analLinkData(const BYTE* buf,int len);
 
     //accept client connect
     int waitAcceptConnect();

@@ -55,7 +55,7 @@ void BasicMgr::sendData(MsgType_ msgType,const BYTE* buf,const int len){
     tmpBuf[3+len+1] = 0xdd;//end
 
 
-     DataDev::getInstance()->sendData(sock,tmpBuf,5+len);
+    DataDev::getInstance()->sendData(sock,tmpBuf,5+len);
 }
 void BasicMgr::sendRequestIdData(){
     m_pLinkMgr->requestLinkMsg();//send request id msg
@@ -105,15 +105,18 @@ void BasicMgr::append(const char* data){//
 }
 
 int BasicMgr::read(){
+    m_readWriteMutex.lock();
     if(!isOpenFile()){
-        cout<<"read failure  please call openFile to create a file"<<endl;
+        //cout<<"read failure  please call openFile to create a file"<<endl;
+        m_readWriteMutex.unlock();
         return 0;
     }
     memset(m_readBuf,0,sizeof(m_readBuf));
     assert(m_iReadNum<MAX_BUF);
     int len = m_file->read(m_readBuf,m_iReadNum);//read 3*300 datas per time.
     if(len<=0){
-        cout<<"len="<<len<<" read error"<<endl;
+        cout<<"yxy  len="<<len<<" read error"<<endl;
+        m_readWriteMutex.unlock();
         return 0;
     }
     int recieveBuf_len=0;
@@ -125,13 +128,15 @@ int BasicMgr::read(){
     }else{
         cout<<"resolveProtocol error happen"<<endl;
     }
-
+    m_readWriteMutex.unlock();
     return recieveBuf_len;
     //cout<<"read   m_readBuf="<<m_readBuf<<endl;
 }
 bool BasicMgr::openFile(const char* filename){
+    m_readWriteMutex.lock();
     if(isOpenFile()){
         cout<<"had create a file"<<endl;
+        m_readWriteMutex.unlock();
         return false;
     }
     m_file = new File();
@@ -140,7 +145,9 @@ bool BasicMgr::openFile(const char* filename){
     m_file->setReadFileProperty(true);
 
     printf("open file=%s success\n",filename);
-    return m_file->open("a+");
+    bool rel = m_file->open("a+");
+    m_readWriteMutex.unlock();
+    return rel;
 
 }
 
@@ -149,14 +156,17 @@ bool BasicMgr::isOpenFile(){
 }
 
 bool BasicMgr::closeFile(){
+    m_readWriteMutex.lock();
     if(!m_file){
         cout<<"closefile m_file=null may be not created"<<endl;
+        m_readWriteMutex.unlock();
         return false;
     }
     assert(m_file->close());
     delete m_file;
     m_file = NULL;
     printf("close file success\n");
+    m_readWriteMutex.unlock();
     return true;
 }
 void BasicMgr::resolveProtocol(const char* buf,int size,BYTE* recieveBuf,int& recieveBuf_len){//
@@ -200,43 +210,44 @@ void BasicMgr::clearTestData(){
 }
 
 int BasicMgr::open_block(){
-    int ix=0;
-    while(ix<m_curPos&&m_dataBuf[ix]!=0x99){//找到 99 开头的包。找不到，则丢掉之前数据
-        ix++;
+    while(m_curPos>0){
+        int ix=0;
+        while(ix<m_curPos&&m_dataBuf[ix]!=0x99){//找到 99 开头的包。找不到，则丢掉之前数据
+            ix++;
+        }
+        if(ix!=0){//丢掉之前数据
+            memmove(m_dataBuf,m_dataBuf+ix,m_curPos-ix);//这里需要用 m_curPos
+            m_curPos=m_curPos-ix;
+            //重新初始化
+            ix = 0;
+        }
+
+        //0x99后的 第二位  即数据包长度
+        if(m_curPos<2){
+            return 0;//数据长度不够，下次再来解析
+        }
+        int len = m_dataBuf[1];
+        if(m_curPos<len){//未达到完整包长度
+            return 0;//数据长度不够，下次再来解析
+        }
+        //printf("len=%02x-%d\n",len,len);
+        if(m_dataBuf[len-1]!=0xdd){//这个包有问题，应丢掉
+             // throw a pag
+             printf("miss a page\n");
+              memcpy(m_dataBuf,m_dataBuf+len,m_curPos-len);//这里需要用 m_curPos
+             m_curPos -= len;
+             return 0;
+        }
+
+        //收到了一个完整的包，校验
+        if(DataDev::getInstance()->checkData(m_dataBuf+1,len-3,m_dataBuf[len-2])){//check ok
+             anal_pag(m_dataBuf,len);
+        }
+
+        //analyse finished, delete this page
+         memcpy(m_dataBuf,m_dataBuf+len,m_curPos-len);
+        m_curPos=m_curPos-len;
     }
-    if(ix!=0){//丢掉之前数据
-        memmove(m_dataBuf,m_dataBuf+ix,m_curPos-ix);//这里需要用 m_curPos
-        m_curPos=m_curPos-ix;
-         //重新初始化
-        ix = 0;
-     }
-
-     //0x99后的 第二位  即数据包长度
-     if(m_curPos<2){
-         return 0;//数据长度不够，下次再来解析
-     }
-     int len = m_dataBuf[1];
-     if(m_curPos<len){//未达到完整包长度
-          return 0;//数据长度不够，下次再来解析
-     }
-     //printf("len=%02x-%d\n",len,len);
-     if(m_dataBuf[len-1]!=0xdd){//这个包有问题，应丢掉
-          // throw a pag
-          printf("miss a page\n");
-          memcpy(m_dataBuf,m_dataBuf+len,m_curPos-len);//这里需要用 m_curPos
-          m_curPos -= len;
-          return 0;
-      }
-
-      //收到了一个完整的包，校验
-     if(DataDev::getInstance()->checkData(m_dataBuf+1,len-3,m_dataBuf[len-2])){//check ok
-         anal_pag(m_dataBuf,len);
-     }
-
-     //analyse finished, delete this page
-     memcpy(m_dataBuf,m_dataBuf+len,m_curPos-len);
-     m_curPos=m_curPos-len;
-
 }
 
 void BasicMgr::addBuf(const BYTE* buf,int len){

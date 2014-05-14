@@ -11,7 +11,7 @@ MainWindow::MainWindow(QWidget *parent) :
     connect(ui->pStart_btn, SIGNAL(clicked()), this, SLOT(start_click()));
     connect(ui->pStop_btn, SIGNAL(clicked()), this, SLOT(stop_click()));
     connect(ui->pClearCon_btn, SIGNAL(clicked()), this, SLOT(clearConnectMsg_click()));
-    connect(ui->pClearDisplay_btn, SIGNAL(clicked()), this, SLOT(clearDisplayMsg_click()));
+    connect(ui->pClear_btn, SIGNAL(clicked()), this, SLOT(clearDisplayMsg_click()));
     connect(ui->pSendIdCommand,SIGNAL(clicked()), this, SLOT(sendRequestData_click()));
     connect(ui->pGenerateData_btn,SIGNAL(clicked()),this,SLOT(generateData_click()));
     connect(ui->pExit_btn,SIGNAL(clicked()),this,SLOT(exit_click()));
@@ -138,6 +138,7 @@ void MainWindow::clearConnectMsg_click(){
 
 void MainWindow::clearDisplayMsg_click(){
     //ui->pDisplay_txt->clear();
+    ui->pMsg_Txt->clear();
 }
 void MainWindow::generateData_click(){
     m_pDataMgr->generateTestFile(m_dataType);

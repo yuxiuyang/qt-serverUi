@@ -119,6 +119,8 @@ private:
     int m_curPos;
 
     ClientType_ m_clientId;
+
+    QMutex m_readWriteMutex;
 };
 
 #endif // BASICMGR_H

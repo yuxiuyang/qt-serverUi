@@ -22,13 +22,8 @@ public:
     LinkMgr* m_pLinkMgr;
 protected:
 
-    void addBuf(const BYTE* buf,int len);
-
 
 private:
-    BYTE m_dataBuf[MAX_DATA_BUF];
-    int m_curPos;
-
     QTimer* m_pTimer;
     void* m_pWindow;
 

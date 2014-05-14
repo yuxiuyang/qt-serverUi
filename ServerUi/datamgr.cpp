@@ -8,10 +8,6 @@ using namespace std;
 DataMgr::DataMgr()
 {
     //DataDev::getInstance()->setCallback(recvData);
-    memset(&m_dataBuf,0,sizeof(m_dataBuf));
-    m_curPos = 0;
-
-
     m_pTimer = new QTimer();
     connect( m_pTimer, SIGNAL(timeout()), this, SLOT(_onWriteTimeout()) );
     m_pTimer->start(2);//2mms

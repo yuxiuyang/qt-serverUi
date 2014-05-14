@@ -76,15 +76,15 @@ void NibpMgr::analyseCmd(BYTE cmd){
     //((MainWindow*)m_pWindow)->appendData(buf);
     switch(cmd){
     case NIBP_ADULT:
-        assert(closeFile());
+        closeFile();
         assert(openFile("datafile/NIBP/nibp_adult.txt"));
         break;
     case NIBP_ENFANT:
-        assert(closeFile());
+        closeFile();
         assert(openFile("datafile/NIBP/nibp_enfant.txt"));
         break;
     case NIBP_BABY:
-        assert(closeFile());
+        closeFile();
         assert(openFile("datafile/NIBP/nibp_baby.txt"));
         break;
     case NIBP_START:

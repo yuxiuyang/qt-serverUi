@@ -20,6 +20,7 @@ BasicMgr::BasicMgr(LinkMgr* pLinkMgr,ClientType_ clientId):m_dataQueue(MAX_BUF)
 }
 
 void BasicMgr::setFrequency(int fre){
+    assert(fre!=0);
     assert(fre<=500);//the basic timer'interval is 2mms. must not more then 500
     m_iFrequency = fre;
     //1s = 1000ms

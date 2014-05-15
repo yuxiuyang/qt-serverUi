@@ -70,7 +70,7 @@ void NibpMgr::analyseCmd(BYTE cmd){
     char buf[100]={0};
     sprintf(buf,"cmd=%d",cmd);
     cout<<"buf="<<buf<<endl;
-    ((MainWindow*)(m_pLinkMgr->m_window))->showData(buf);
+    //((MainWindow*)(m_pLinkMgr->m_window))->showData(buf);
     switch(cmd){
     case NIBP_ADULT:
         closeFile();

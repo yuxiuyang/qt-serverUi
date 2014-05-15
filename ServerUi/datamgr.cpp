@@ -5,8 +5,15 @@
 #include <string>
 using namespace std;
 
+#include "state.h"
+
 DataMgr::DataMgr()
 {
+    if(!State::getInstance()->isExistConf()){
+        State::getInstance()->setDef();
+    }else{
+        State::getInstance()->loadConf();
+    }
     //DataDev::getInstance()->setCallback(recvData);
     m_pTimer = new QTimer();
     connect( m_pTimer, SIGNAL(timeout()), this, SLOT(_onWriteTimeout()) );
@@ -15,8 +22,8 @@ DataMgr::DataMgr()
     m_pLinkMgr->m_pDataMgr = this;
     m_pNibpMgr = new NibpMgr(m_pLinkMgr);
     assert(m_pNibpMgr);
-    m_pNibpMgr->setFrequency(1);
-    m_pNibpMgr->setReadNum(4);
+    m_pNibpMgr->setFrequency(State::getInstance()->getStateData(NIBP_FRE));
+    m_pNibpMgr->setReadNum(State::getInstance()->getStateData(NIBP_READRUM));
 
     m_vecObject.push_back(m_pNibpMgr);
 }

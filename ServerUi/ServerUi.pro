@@ -14,7 +14,8 @@ SOURCES += main.cpp \
     ../common/queue.cpp \
     ../common/file.cpp \
     nibpmgr.cpp \
-    basicmgr.cpp
+    basicmgr.cpp \
+    ../common/state.cpp
 HEADERS += mainwindow.h \
     network_server.h \
     linkmgr.h \
@@ -26,7 +27,8 @@ HEADERS += mainwindow.h \
     ../common/queue.h \
     ../common/file.h \
     nibpmgr.h \
-    basicmgr.h
+    basicmgr.h \
+    ../common/state.h
 FORMS += mainwindow.ui
 INCLUDEPATH += $$quote(../thread_task)
 INCLUDEPATH += $$quote(../common)

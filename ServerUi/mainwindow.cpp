@@ -1,6 +1,7 @@
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
 #include <QTimer>
+#include "state.h"
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
     ui(new Ui::MainWindow)
@@ -162,6 +163,7 @@ void MainWindow::freOk_click(){
         return;
     }
     m_pDataMgr->m_pNibpMgr->setFrequency(val);
+    State::getInstance()->setStateData(NIBP_FRE,val);
 cout<<"freOk_click src="<<str.toStdString().c_str()<<"val="<<val<<endl;
     ui->pTm_edit->clear();
     ui->pTm_edit->insert(QString::number(m_pDataMgr->m_pNibpMgr->getTimeout()));
@@ -172,6 +174,7 @@ void MainWindow::freCancel_click(){
     ui->pFreCancel_btn->setEnabled(false);
     ui->pFre_edit->setEnabled(true);
     ui->pFreOk_btn->setFocus();
+
 }
 
 void MainWindow::rcOk_click(){
@@ -190,6 +193,7 @@ void MainWindow::rcOk_click(){
         return;
     }
     m_pDataMgr->m_pNibpMgr->setReadNum(val);
+    State::getInstance()->setStateData(NIBP_READRUM,val);
 cout<<"rcOk_click src="<<str.toStdString().c_str()<<"val="<<val<<endl;
     //ui->pMsg_Txt->clear();
     //ui->pStatistics_txt->clear();
@@ -203,10 +207,10 @@ void MainWindow::rcCancel_click(){
 }
 
 void MainWindow::appendMsg(const char* msg){
-    //m_pMutex.lock();
-    ui->pConnectMsg_txt->append(msg);
-    //m_queConnectMsgLine.push(msg);/
-    //m_pMutex.unlock();
+    m_pMutex.lock();
+    //ui->pConnectMsg_txt->append(msg);
+    m_queConnectMsgLine.push(msg);
+    m_pMutex.unlock();
 }
 void MainWindow::exit_click(){
     close();
@@ -240,15 +244,16 @@ void MainWindow::sendTimer(){
 //         m_pMutex.unlock();
 //    }
 
-//    while(!m_queConnectMsgLine.empty()){
+    while(!m_queConnectMsgLine.empty()){
 //         QTextCursor cursor =  ui->pConnectMsg_txt->textCursor();
 //         cursor.movePosition(QTextCursor::End);
 //         ui->pConnectMsg_txt->setTextCursor(cursor);
 //         ui->pConnectMsg_txt->insertPlainText(m_queConnectMsgLine.front().c_str());
-//         m_pMutex.lock();
-//         m_queConnectMsgLine.pop();
-//         m_pMutex.unlock();
-//    }
+         ui->pConnectMsg_txt->append(m_queConnectMsgLine.front().c_str());
+         m_pMutex.lock();
+         m_queConnectMsgLine.pop();
+         m_pMutex.unlock();
+    }
 //    while(!m_queStasticMsgLine.empty()){
 //         QTextCursor cursor =  ui->pStatistics_txt->textCursor();
 //         cursor.movePosition(QTextCursor::End);
@@ -281,7 +286,7 @@ void MainWindow::showData(const char* buf){
     cursor.movePosition(QTextCursor::End);
     ui->pMsg_Txt->setTextCursor(cursor);
     ui->pMsg_Txt->insertPlainText(buf);
-    //ui->pMsg_Txt->append(buf);
+    ui->pMsg_Txt->append(buf);
 }
 void MainWindow::appendStatisticsMsg(char* buf){
     QTextCursor cursor =  ui->pStatistics_txt->textCursor();

@@ -54,6 +54,10 @@ public:
         m_testMsg.isStart = true;
         m_testMsg.isFrist = true;
     }
+    bool isTestRunning(){
+        return m_testMsg.isStart;
+    }
+
     void clearTestData();
     void setShowDataSign(bool show){
         m_testMsg.isShowData = show;

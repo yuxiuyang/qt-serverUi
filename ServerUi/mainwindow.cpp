@@ -24,6 +24,9 @@ MainWindow::MainWindow(QWidget *parent) :
     connect(ui->pNibp_rb, SIGNAL(clicked(bool)), this, SLOT(radioChange()));
     connect(ui->pSpo2_rb, SIGNAL(clicked(bool)), this, SLOT(radioChange()));
     connect(ui->pEcg_rb, SIGNAL(clicked(bool)), this, SLOT(radioChange()));
+    connect(ui->pIbp_rb, SIGNAL(clicked(bool)), this, SLOT(radioChange()));
+    connect(ui->pCo2_rb, SIGNAL(clicked(bool)), this, SLOT(radioChange()));
+    connect(ui->pNarco_rb, SIGNAL(clicked(bool)), this, SLOT(radioChange()));
 
 
     connect(ui->pFreOk_btn, SIGNAL(clicked()), this, SLOT(freOk_click()));
@@ -92,10 +95,23 @@ void MainWindow::radioChange(){
         ui->pGloupBox->setTitle("ECG Setup");
         ui->pBox_Label->setText("ECG");
         m_dataType = ECG_CLIENT;
+    }else if(ui->pIbp_rb==sender()){
+        ui->pGloupBox->setTitle("IBP Setup");
+        ui->pBox_Label->setText("IBP");
+        m_dataType = IBP_CLIENT;
+    }else if(ui->pCo2_rb==sender()){
+        ui->pGloupBox->setTitle("CO2 Setup");
+        ui->pBox_Label->setText("CO2");
+        m_dataType = CO2_CLIENT;
+    }else if(ui->pNarco_rb==sender()){
+        ui->pGloupBox->setTitle("NARCO Setup");
+        ui->pBox_Label->setText("NARCO");
+        m_dataType = NARCO_CLIENT;
     }else{
-
+        m_dataType = NIBP_CLIENT;
     }
 
+    printf("radioChange  m_dataType=%d\n ",m_dataType);
     if(!m_pDataMgr->getMgrbyId(m_dataType)){
         cout<<"has not displayment"<<endl;
         return ;
@@ -113,6 +129,21 @@ void MainWindow::radioChange(){
     ui->pFreCancel_btn->setEnabled(true);
     ui->pRcCancel_btn->setEnabled(true);
 
+    if(m_pDataMgr->getMgrbyId(m_dataType)->isTestRunning()){
+        ui->pST_check->setChecked(true);
+    }else{
+        ui->pST_check->setChecked(false);
+    }
+    if(m_pDataMgr->getMgrbyId(m_dataType)->isShowData()){
+        ui->pShowReadData_check->setChecked(true);
+    }else{
+        ui->pShowReadData_check->setChecked(false);
+    }
+    if(m_pDataMgr->getMgrbyId(m_dataType)->getSendDataState()){
+        ui->pSendData_check->setChecked(true);
+    }else{
+        ui->pSendData_check->setChecked(false);
+    }
 
     ui->pMsg_Txt->clear();
 }
@@ -164,11 +195,13 @@ void MainWindow::freOk_click(){
         ui->pFre_edit->insert("error");
         return;
     }
-    m_pDataMgr->m_pNibpMgr->setFrequency(val);
-    State::getInstance()->setStateData(NIBP_FRE,val);
-cout<<"freOk_click src="<<str.toStdString().c_str()<<"val="<<val<<endl;
+    m_pDataMgr->getMgrbyId(m_dataType)->setFrequency(val);
+
+    cout<<"freOk_click src="<<str.toStdString().c_str()<<"val="<<val<<endl;
     ui->pTm_edit->clear();
-    ui->pTm_edit->insert(QString::number(m_pDataMgr->m_pNibpMgr->getTimeout()));
+    ui->pTm_edit->insert(QString::number(m_pDataMgr->getMgrbyId(m_dataType)->getTimeout()));
+
+    setSave(m_dataType,SAVE_FRE,val);
 }
 
 void MainWindow::freCancel_click(){
@@ -194,11 +227,9 @@ void MainWindow::rcOk_click(){
         ui->pFre_edit->insert("error");
         return;
     }
-    m_pDataMgr->m_pNibpMgr->setReadNum(val);
-    State::getInstance()->setStateData(NIBP_READRUM,val);
-cout<<"rcOk_click src="<<str.toStdString().c_str()<<"val="<<val<<endl;
-    //ui->pMsg_Txt->clear();
-    //ui->pStatistics_txt->clear();
+    m_pDataMgr->getMgrbyId(m_dataType)->setReadNum(val);
+    cout<<"rcOk_click src="<<str.toStdString().c_str()<<"val="<<val<<endl;
+    setSave(m_dataType,SAVE_READNUM,val);
 }
 
 void MainWindow::rcCancel_click(){
@@ -247,10 +278,6 @@ void MainWindow::sendTimer(){
 //    }
 
     while(!m_queConnectMsgLine.empty()){
-//         QTextCursor cursor =  ui->pConnectMsg_txt->textCursor();
-//         cursor.movePosition(QTextCursor::End);
-//         ui->pConnectMsg_txt->setTextCursor(cursor);
-//         ui->pConnectMsg_txt->insertPlainText(m_queConnectMsgLine.front().c_str());
          ui->pConnectMsg_txt->append(m_queConnectMsgLine.front().c_str());
          m_pMutex.lock();
          m_queConnectMsgLine.pop();
@@ -270,14 +297,14 @@ void MainWindow::sendTimer(){
 }
 void MainWindow::startTestCheckStateChanged(int state){
     if(ui->pST_check->isChecked()){
-        m_pDataMgr->m_pNibpMgr->startTest();
+        m_pDataMgr->getMgrbyId(m_dataType)->startTest();
         showData("");
     }else{
-        m_pDataMgr->m_pNibpMgr->stopTest();
+        m_pDataMgr->getMgrbyId(m_dataType)->stopTest();
     }
 }
 void MainWindow::showReadDataCheckStateChanged(int state){
-        m_pDataMgr->m_pNibpMgr->setShowDataSign(ui->pShowReadData_check->isChecked());
+        m_pDataMgr->getMgrbyId(m_dataType)->setShowDataSign(ui->pShowReadData_check->isChecked());
 }
 void MainWindow::sendDataCheckStateChanged(int state){
     m_pDataMgr->getMgrbyId(m_dataType)->startSendData(ui->pSendData_check->isChecked());
@@ -345,3 +372,51 @@ void MainWindow::checkLinkState(){
     }
 
 }
+void MainWindow::setSave(ClientType_ id, SAVE_TYPE saveType,int val) {
+        switch (id) {
+        case ECG_CLIENT:
+                if (saveType == SAVE_FRE)
+                        State::getInstance()->setStateData(ECG_FRE, val);
+                else if (saveType == SAVE_READNUM)
+                        State::getInstance()->setStateData(ECG_READRUM, val);
+                break;
+        case SPO2_CLIENT:
+                if (saveType == SAVE_FRE)
+                        State::getInstance()->setStateData(SPO2_FRE, val);
+                else if (saveType == SAVE_READNUM)
+                        State::getInstance()->setStateData(SPO2_READRUM, val);
+
+                break;
+        case CO2_CLIENT:
+                if (saveType == SAVE_FRE)
+                        State::getInstance()->setStateData(CO2_FRE, val);
+                else if (saveType == SAVE_READNUM)
+                        State::getInstance()->setStateData(CO2_READRUM, val);
+                break;
+        case NARCO_CLIENT:
+                if (saveType == SAVE_FRE)
+                        State::getInstance()->setStateData(NARCO_FRE, val);
+                else if (saveType == SAVE_READNUM)
+                        State::getInstance()->setStateData(NARCO_READRUM, val);
+                break;
+        case NIBP_CLIENT:
+                if (saveType == SAVE_FRE)
+                        State::getInstance()->setStateData(NIBP_FRE, val);
+                else if (saveType == SAVE_READNUM)
+                        State::getInstance()->setStateData(NIBP_READRUM, val);
+                break;
+        case IBP_CLIENT:
+                if (saveType == SAVE_FRE)
+                        State::getInstance()->setStateData(IBP_FRE, val);
+                else if (saveType == SAVE_READNUM)
+                        State::getInstance()->setStateData(IBP_READRUM, val);
+                break;
+        default:
+                break;
+        }
+}
+
+
+
+
+

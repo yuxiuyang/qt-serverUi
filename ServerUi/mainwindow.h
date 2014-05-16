@@ -11,7 +11,10 @@ using namespace std;
 namespace Ui {
     class MainWindow;
 }
-
+enum SAVE_TYPE{
+        SAVE_FRE,
+        SAVE_READNUM,
+};
 class MainWindow : public QMainWindow {
     Q_OBJECT
 public:
@@ -51,6 +54,8 @@ public:
         return m_dataType;
     }
     void checkLinkState();
+
+    void setSave(ClientType_ id, SAVE_TYPE saveType,int val);
 protected:
     void changeEvent(QEvent *e);
 

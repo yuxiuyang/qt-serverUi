@@ -1,41 +1,39 @@
-#include "nibpmgr.h"
+#include "spo2mgr.h"
 #include "mainwindow.h"
 #include "../common/datadev.h"
 #include "../include/define.h"
 #define REFRESH_TIME 30*1000 //ms
-NibpMgr::NibpMgr(LinkMgr* pLinkMgr):BasicMgr(pLinkMgr,NIBP_CLIENT)
+Spo2Mgr::Spo2Mgr(LinkMgr* pLinkMgr):BasicMgr(pLinkMgr,SPO2_CLIENT)
 {
     memset(&m_tStartTimer,0,sizeof(m_tStartTimer));
 
     gettimeofday(&m_tStartTimer,NULL);
-    m_start = false;
-    //assert(openFile("datafile/nibpdata.txt"));
+    assert(openFile("datafile/SPO2/data.txt"));
 }
-NibpMgr::~NibpMgr()
+Spo2Mgr::~Spo2Mgr()
 {
     if(isOpenFile())
         assert(closeFile());
 
 }
-void NibpMgr::sendData(const BYTE* buf,int len){
+void Spo2Mgr::sendData(const BYTE* buf,int len){
     //cout<<"nibpmgr  senddata"<<endl;
     BasicMgr::sendData(Data_Msg,buf,len);
 }
 
-void NibpMgr::onTimer(){
+void Spo2Mgr::onTimer(){
     if(!getSendDataState()) return;
-    if(!m_start) return;
 
     int readnum = read();
 
     int time = test(readnum);
     if(time!=0){ // have not start test
-        printf("NibpMgr::onTimer   interval=%dms  readnum=%d  times=%d",time,readnum,m_testMsg.times);
+        printf("Spo2Mgr::onTimer   interval=%dms  readnum=%d  times=%d",time,readnum,m_testMsg.times);
         display();
     }
 }
 
-void NibpMgr::display(){
+void Spo2Mgr::display(){
 
     if(m_testMsg.usedtimeSum >= REFRESH_TIME){//auto display to ui
          ((MainWindow*)m_ui)->displayStatisicsResult(getTestMsg());
@@ -45,13 +43,15 @@ void NibpMgr::display(){
         ((MainWindow*)m_ui)->showData(m_readBuf);
 
 }
-bool NibpMgr::anal_DataPag(const BYTE* buf,const int len){
+bool Spo2Mgr::anal_DataPag(const BYTE* buf,const int len){
     switch(buf[3]){
     case ECG_CLIENT:
         break;
     case SPO2_CLIENT:
         break;
     case CO2_CLIENT:
+        break;
+    case NARCO_CLIENT:
         break;
     case NIBP_CLIENT:
         break;
@@ -67,37 +67,14 @@ bool NibpMgr::anal_DataPag(const BYTE* buf,const int len){
 
     return true;
 }
-void NibpMgr::analyseCmd(BYTE cmd){
+void Spo2Mgr::analyseCmd(BYTE cmd){
     char buf[100]={0};
     sprintf(buf,"cmd=%d",cmd);
     cout<<"buf="<<buf<<endl;
     //((MainWindow*)(m_pLinkMgr->m_window))->showData(buf);
-    switch(cmd){
-    case NIBP_ADULT:
-        closeFile();
-        assert(openFile("datafile/NIBP/nibp_adult.txt"));
-        break;
-    case NIBP_ENFANT:
-        closeFile();
-        assert(openFile("datafile/NIBP/nibp_enfant.txt"));
-        break;
-    case NIBP_BABY:
-        closeFile();
-        assert(openFile("datafile/NIBP/nibp_baby.txt"));
-        break;
-    case NIBP_START:
-        m_start = true;
-        printf("nibp_start......\n");
-        break;
-    case NIBP_STOP:
-        m_start = false;
-        printf("nibp_stop......\n");
-        break;
-    default:
-        break;
-    }
 }
 
-bool NibpMgr::anal_ConnectPag(const BYTE* buf,const int len){
+bool Spo2Mgr::anal_ConnectPag(const BYTE* buf,const int len){
     //return m_pLinkMgr->analLinkPag(buf,len);
+        return true;
 }

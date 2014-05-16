@@ -67,7 +67,7 @@
   <valuemap type="QVariantMap">
    <value key="ProjectExplorer.BuildConfiguration.DisplayName" type="QString">Debug</value>
    <valuelist key="abstractProcess.Environment" type="QVariantList">
-    <value type="QString">DBUS_SESSION_BUS_ADDRESS=unix:abstract=/tmp/dbus-YguH2GY3kQ,guid=1523ad2ab70cae94f77a9ebb53735081</value>
+    <value type="QString">DBUS_SESSION_BUS_ADDRESS=unix:abstract=/tmp/dbus-CdY2DG58bI,guid=763ac54b5c2d418da81b122753746e78</value>
     <value type="QString">DEFAULTS_PATH=/usr/share/gconf/gnome.default.path</value>
     <value type="QString">DESKTOP_SESSION=gnome</value>
     <value type="QString">DISPLAY=:0.0</value>
@@ -75,30 +75,29 @@
     <value type="QString">GDM_KEYBOARD_LAYOUT=us</value>
     <value type="QString">GDM_LANG=en_HK.UTF-8</value>
     <value type="QString">GNOME_DESKTOP_SESSION_ID=this-is-deprecated</value>
-    <value type="QString">GNOME_KEYRING_CONTROL=/tmp/keyring-uN0RWh</value>
-    <value type="QString">GNOME_KEYRING_PID=1248</value>
+    <value type="QString">GNOME_KEYRING_CONTROL=/tmp/keyring-qnJhv0</value>
+    <value type="QString">GNOME_KEYRING_PID=1572</value>
     <value type="QString">GTK_MODULES=canberra-gtk-module</value>
     <value type="QString">HOME=/root</value>
     <value type="QString">LANG=en_HK.UTF-8</value>
-    <value type="QString">LD_LIBRARY_PATH=/opt/qtcreator-1.3.0/lib/qtcreator:</value>
+    <value type="QString">LD_LIBRARY_PATH=/usr/lib/qtcreator</value>
     <value type="QString">LOGNAME=root</value>
     <value type="QString">MANDATORY_PATH=/usr/share/gconf/gnome.mandatory.path</value>
-    <value type="QString">MANPATH=/usr/local/Trolltech/Qt-4.3.2/man:</value>
     <value type="QString">ORBIT_SOCKETDIR=/tmp/orbit-root</value>
-    <value type="QString">PATH=/usr/bin:/usr/local/Trolltech/Qt-4.3.2/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games</value>
+    <value type="QString">PATH=/usr/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games</value>
     <value type="QString">PWD=/root</value>
     <value type="QString">QTDIR=/usr/share/qt4</value>
-    <value type="QString">SESSION_MANAGER=local/yxy-laptop:@/tmp/.ICE-unix/1266,unix/yxy-laptop:/tmp/.ICE-unix/1266</value>
+    <value type="QString">SESSION_MANAGER=local/yuxiuyang-desktop:@/tmp/.ICE-unix/1590,unix/yuxiuyang-desktop:/tmp/.ICE-unix/1590</value>
     <value type="QString">SHELL=/bin/bash</value>
     <value type="QString">SPEECHD_PORT=6560</value>
-    <value type="QString">SSH_AGENT_PID=1301</value>
-    <value type="QString">SSH_AUTH_SOCK=/tmp/keyring-uN0RWh/ssh</value>
+    <value type="QString">SSH_AGENT_PID=1625</value>
+    <value type="QString">SSH_AUTH_SOCK=/tmp/keyring-qnJhv0/ssh</value>
     <value type="QString">USER=root</value>
     <value type="QString">USERNAME=root</value>
-    <value type="QString">XAUTHORITY=/var/run/gdm/auth-for-root-4O4i5E/database</value>
+    <value type="QString">XAUTHORITY=/var/run/gdm/auth-for-root-TraNsB/database</value>
     <value type="QString">XDG_CONFIG_DIRS=/etc/xdg/xdg-gnome:/etc/xdg</value>
     <value type="QString">XDG_DATA_DIRS=/usr/share/gnome:/usr/local/share/:/usr/share/</value>
-    <value type="QString">XDG_SESSION_COOKIE=31d3befcddfa29781fce08a451dc123a-1400066177.53148-1769567716</value>
+    <value type="QString">XDG_SESSION_COOKIE=02a84948043a9d01d5bafcd4516bcad0-1400139384.784147-410124782</value>
    </valuelist>
    <valuelist key="abstractProcess.arguments" type="QVariantList">
     <value type="QString">/root/workspace/code/qt/ServerUi/ServerUi.pro</value>
@@ -117,7 +116,7 @@
   <valuemap type="QVariantMap">
    <value key="ProjectExplorer.BuildConfiguration.DisplayName" type="QString">Debug</value>
    <valuelist key="abstractProcess.Environment" type="QVariantList">
-    <value type="QString">DBUS_SESSION_BUS_ADDRESS=unix:abstract=/tmp/dbus-YguH2GY3kQ,guid=1523ad2ab70cae94f77a9ebb53735081</value>
+    <value type="QString">DBUS_SESSION_BUS_ADDRESS=unix:abstract=/tmp/dbus-CdY2DG58bI,guid=763ac54b5c2d418da81b122753746e78</value>
     <value type="QString">DEFAULTS_PATH=/usr/share/gconf/gnome.default.path</value>
     <value type="QString">DESKTOP_SESSION=gnome</value>
     <value type="QString">DISPLAY=:0.0</value>
@@ -125,30 +124,29 @@
     <value type="QString">GDM_KEYBOARD_LAYOUT=us</value>
     <value type="QString">GDM_LANG=en_HK.UTF-8</value>
     <value type="QString">GNOME_DESKTOP_SESSION_ID=this-is-deprecated</value>
-    <value type="QString">GNOME_KEYRING_CONTROL=/tmp/keyring-uN0RWh</value>
-    <value type="QString">GNOME_KEYRING_PID=1248</value>
+    <value type="QString">GNOME_KEYRING_CONTROL=/tmp/keyring-qnJhv0</value>
+    <value type="QString">GNOME_KEYRING_PID=1572</value>
     <value type="QString">GTK_MODULES=canberra-gtk-module</value>
     <value type="QString">HOME=/root</value>
     <value type="QString">LANG=en_HK.UTF-8</value>
-    <value type="QString">LD_LIBRARY_PATH=/opt/qtcreator-1.3.0/lib/qtcreator:</value>
+    <value type="QString">LD_LIBRARY_PATH=/usr/lib/qtcreator</value>
     <value type="QString">LOGNAME=root</value>
     <value type="QString">MANDATORY_PATH=/usr/share/gconf/gnome.mandatory.path</value>
-    <value type="QString">MANPATH=/usr/local/Trolltech/Qt-4.3.2/man:</value>
     <value type="QString">ORBIT_SOCKETDIR=/tmp/orbit-root</value>
-    <value type="QString">PATH=/usr/bin:/usr/local/Trolltech/Qt-4.3.2/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games</value>
+    <value type="QString">PATH=/usr/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games</value>
     <value type="QString">PWD=/root</value>
     <value type="QString">QTDIR=/usr/share/qt4</value>
-    <value type="QString">SESSION_MANAGER=local/yxy-laptop:@/tmp/.ICE-unix/1266,unix/yxy-laptop:/tmp/.ICE-unix/1266</value>
+    <value type="QString">SESSION_MANAGER=local/yuxiuyang-desktop:@/tmp/.ICE-unix/1590,unix/yuxiuyang-desktop:/tmp/.ICE-unix/1590</value>
     <value type="QString">SHELL=/bin/bash</value>
     <value type="QString">SPEECHD_PORT=6560</value>
-    <value type="QString">SSH_AGENT_PID=1301</value>
-    <value type="QString">SSH_AUTH_SOCK=/tmp/keyring-uN0RWh/ssh</value>
+    <value type="QString">SSH_AGENT_PID=1625</value>
+    <value type="QString">SSH_AUTH_SOCK=/tmp/keyring-qnJhv0/ssh</value>
     <value type="QString">USER=root</value>
     <value type="QString">USERNAME=root</value>
-    <value type="QString">XAUTHORITY=/var/run/gdm/auth-for-root-4O4i5E/database</value>
+    <value type="QString">XAUTHORITY=/var/run/gdm/auth-for-root-TraNsB/database</value>
     <value type="QString">XDG_CONFIG_DIRS=/etc/xdg/xdg-gnome:/etc/xdg</value>
     <value type="QString">XDG_DATA_DIRS=/usr/share/gnome:/usr/local/share/:/usr/share/</value>
-    <value type="QString">XDG_SESSION_COOKIE=31d3befcddfa29781fce08a451dc123a-1400066177.53148-1769567716</value>
+    <value type="QString">XDG_SESSION_COOKIE=02a84948043a9d01d5bafcd4516bcad0-1400139384.784147-410124782</value>
    </valuelist>
    <value key="abstractProcess.IgnoreReturnValue" type="bool">false</value>
    <valuelist key="abstractProcess.arguments" type="QVariantList">
@@ -164,7 +162,7 @@
   <valuemap type="QVariantMap">
    <value key="ProjectExplorer.BuildConfiguration.DisplayName" type="QString">Debug</value>
    <valuelist key="abstractProcess.Environment" type="QVariantList">
-    <value type="QString">DBUS_SESSION_BUS_ADDRESS=unix:abstract=/tmp/dbus-YguH2GY3kQ,guid=1523ad2ab70cae94f77a9ebb53735081</value>
+    <value type="QString">DBUS_SESSION_BUS_ADDRESS=unix:abstract=/tmp/dbus-DtgjkSu5ig,guid=dc3a749553c16cf5de09d393537400ca</value>
     <value type="QString">DEFAULTS_PATH=/usr/share/gconf/gnome.default.path</value>
     <value type="QString">DESKTOP_SESSION=gnome</value>
     <value type="QString">DISPLAY=:0.0</value>
@@ -172,30 +170,29 @@
     <value type="QString">GDM_KEYBOARD_LAYOUT=us</value>
     <value type="QString">GDM_LANG=en_HK.UTF-8</value>
     <value type="QString">GNOME_DESKTOP_SESSION_ID=this-is-deprecated</value>
-    <value type="QString">GNOME_KEYRING_CONTROL=/tmp/keyring-uN0RWh</value>
-    <value type="QString">GNOME_KEYRING_PID=1248</value>
+    <value type="QString">GNOME_KEYRING_CONTROL=/tmp/keyring-A4e2SW</value>
+    <value type="QString">GNOME_KEYRING_PID=1538</value>
     <value type="QString">GTK_MODULES=canberra-gtk-module</value>
     <value type="QString">HOME=/root</value>
     <value type="QString">LANG=en_HK.UTF-8</value>
-    <value type="QString">LD_LIBRARY_PATH=/opt/qtcreator-1.3.0/lib/qtcreator:</value>
+    <value type="QString">LD_LIBRARY_PATH=/usr/lib/qtcreator</value>
     <value type="QString">LOGNAME=root</value>
     <value type="QString">MANDATORY_PATH=/usr/share/gconf/gnome.mandatory.path</value>
-    <value type="QString">MANPATH=/usr/local/Trolltech/Qt-4.3.2/man:</value>
     <value type="QString">ORBIT_SOCKETDIR=/tmp/orbit-root</value>
-    <value type="QString">PATH=/usr/bin:/usr/local/Trolltech/Qt-4.3.2/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games</value>
+    <value type="QString">PATH=/usr/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games</value>
     <value type="QString">PWD=/root</value>
     <value type="QString">QTDIR=/usr/share/qt4</value>
-    <value type="QString">SESSION_MANAGER=local/yxy-laptop:@/tmp/.ICE-unix/1266,unix/yxy-laptop:/tmp/.ICE-unix/1266</value>
+    <value type="QString">SESSION_MANAGER=local/yuxiuyang-desktop:@/tmp/.ICE-unix/1556,unix/yuxiuyang-desktop:/tmp/.ICE-unix/1556</value>
     <value type="QString">SHELL=/bin/bash</value>
     <value type="QString">SPEECHD_PORT=6560</value>
-    <value type="QString">SSH_AGENT_PID=1301</value>
-    <value type="QString">SSH_AUTH_SOCK=/tmp/keyring-uN0RWh/ssh</value>
+    <value type="QString">SSH_AGENT_PID=1591</value>
+    <value type="QString">SSH_AUTH_SOCK=/tmp/keyring-A4e2SW/ssh</value>
     <value type="QString">USER=root</value>
     <value type="QString">USERNAME=root</value>
-    <value type="QString">XAUTHORITY=/var/run/gdm/auth-for-root-4O4i5E/database</value>
+    <value type="QString">XAUTHORITY=/var/run/gdm/auth-for-root-qoungE/database</value>
     <value type="QString">XDG_CONFIG_DIRS=/etc/xdg/xdg-gnome:/etc/xdg</value>
     <value type="QString">XDG_DATA_DIRS=/usr/share/gnome:/usr/local/share/:/usr/share/</value>
-    <value type="QString">XDG_SESSION_COOKIE=31d3befcddfa29781fce08a451dc123a-1400066177.53148-1769567716</value>
+    <value type="QString">XDG_SESSION_COOKIE=02a84948043a9d01d5bafcd4516bcad0-1400111306.724799-1754005017</value>
    </valuelist>
    <value key="abstractProcess.IgnoreReturnValue" type="bool">true</value>
    <valuelist key="abstractProcess.arguments" type="QVariantList">

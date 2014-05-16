@@ -15,7 +15,12 @@ SOURCES += main.cpp \
     ../common/file.cpp \
     nibpmgr.cpp \
     basicmgr.cpp \
-    ../common/state.cpp
+    ../common/state.cpp \
+    spo2mgr.cpp \
+    ecgmgr.cpp \
+    co2mgr.cpp \
+    narcomgr.cpp \
+    ibpmgr.cpp
 HEADERS += mainwindow.h \
     network_server.h \
     linkmgr.h \
@@ -28,7 +33,12 @@ HEADERS += mainwindow.h \
     ../common/file.h \
     nibpmgr.h \
     basicmgr.h \
-    ../common/state.h
+    ../common/state.h \
+    spo2mgr.h \
+    ecgmgr.h \
+    co2mgr.h \
+    narcomgr.h \
+    ibpmgr.h
 FORMS += mainwindow.ui
 INCLUDEPATH += $$quote(../thread_task)
 INCLUDEPATH += $$quote(../common)

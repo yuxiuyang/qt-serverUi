@@ -100,7 +100,6 @@ void MainWindow::radioChange(){
         cout<<"has not displayment"<<endl;
         return ;
     }
-    ui->pNibp_rb->setChecked(true);
     ui->pFre_edit->setText(QString::number(m_pDataMgr->getMgrbyId(m_dataType)->getFrequency()));
     ui->pTm_edit->setText(QString::number(m_pDataMgr->getMgrbyId(m_dataType)->getTimeout()));
     ui->pTm_edit->setReadOnly(true);
@@ -113,6 +112,9 @@ void MainWindow::radioChange(){
     ui->pFre_edit->setEnabled(false);
     ui->pFreCancel_btn->setEnabled(true);
     ui->pRcCancel_btn->setEnabled(true);
+
+
+    ui->pMsg_Txt->clear();
 }
 
 void MainWindow::start_click(){
@@ -278,7 +280,7 @@ void MainWindow::showReadDataCheckStateChanged(int state){
         m_pDataMgr->m_pNibpMgr->setShowDataSign(ui->pShowReadData_check->isChecked());
 }
 void MainWindow::sendDataCheckStateChanged(int state){
-
+    m_pDataMgr->getMgrbyId(m_dataType)->startSendData(ui->pSendData_check->isChecked());
 }
 
 void MainWindow::showData(const char* buf){

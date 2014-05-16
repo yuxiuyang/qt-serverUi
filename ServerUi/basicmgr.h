@@ -95,6 +95,13 @@ public:
         return m_clientId;
     }
 
+    void startSendData(bool b=true){
+        m_isStartSendData = b;
+    }
+    bool getSendDataState(){
+        return m_isStartSendData;
+    }
+
 protected:
     bool openFile(const char* filename);
     bool isOpenFile();
@@ -119,6 +126,7 @@ private:
     int m_curPos;
 
     ClientType_ m_clientId;
+    bool m_isStartSendData;
 
     QMutex m_readWriteMutex;
 };

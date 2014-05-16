@@ -3,6 +3,11 @@
 #include "../include/define.h"
 #include "linkmgr.h"
 #include "nibpmgr.h"
+#include "spo2mgr.h"
+#include "ecgmgr.h"
+#include "ibpmgr.h"
+#include "co2mgr.h"
+#include "narcomgr.h"
 #include <QTimer>
 #include <QObject>
 class DataMgr:public QObject
@@ -19,6 +24,11 @@ public:
     void generateTestFile(ClientType_ type);
     BasicMgr* getMgrbyId(ClientType_ type);
     NibpMgr* m_pNibpMgr;
+    Spo2Mgr* m_pSpo2Mgr;
+    EcgMgr*  m_pEcgMgr;
+    IbpMgr*  m_pIbpMgr;
+    Co2Mgr*  m_pCo2Mgr;
+    NarcoMgr* m_pNarcoMgr;
     LinkMgr* m_pLinkMgr;
 protected:
 

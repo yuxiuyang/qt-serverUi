@@ -1,7 +1,7 @@
 /********************************************************************************
 ** Form generated from reading UI file 'mainwindow.ui'
 **
-** Created: Thu May 15 08:23:44 2014
+** Created: Fri May 16 14:24:56 2014
 **      by: Qt User Interface Compiler version 4.6.2
 **
 ** WARNING! All changes made in this file will be lost when recompiling UI file!
@@ -67,6 +67,9 @@ public:
     QPushButton *pGenerateData_btn;
     QTextBrowser *pStatistics_txt;
     QCheckBox *pSendData_check;
+    QRadioButton *pIbp_rb;
+    QRadioButton *pCo2_rb;
+    QRadioButton *pNarco_rb;
     QMenuBar *menuBar;
     QToolBar *mainToolBar;
     QStatusBar *statusBar;
@@ -75,7 +78,7 @@ public:
     {
         if (MainWindow->objectName().isEmpty())
             MainWindow->setObjectName(QString::fromUtf8("MainWindow"));
-        MainWindow->resize(931, 625);
+        MainWindow->resize(941, 621);
         centralWidget = new QWidget(MainWindow);
         centralWidget->setObjectName(QString::fromUtf8("centralWidget"));
         pExit_btn = new QPushButton(centralWidget);
@@ -203,10 +206,19 @@ public:
         pSendData_check = new QCheckBox(pGloupBox);
         pSendData_check->setObjectName(QString::fromUtf8("pSendData_check"));
         pSendData_check->setGeometry(QRect(10, 300, 121, 22));
+        pIbp_rb = new QRadioButton(centralWidget);
+        pIbp_rb->setObjectName(QString::fromUtf8("pIbp_rb"));
+        pIbp_rb->setGeometry(QRect(860, 140, 61, 22));
+        pCo2_rb = new QRadioButton(centralWidget);
+        pCo2_rb->setObjectName(QString::fromUtf8("pCo2_rb"));
+        pCo2_rb->setGeometry(QRect(860, 170, 61, 22));
+        pNarco_rb = new QRadioButton(centralWidget);
+        pNarco_rb->setObjectName(QString::fromUtf8("pNarco_rb"));
+        pNarco_rb->setGeometry(QRect(860, 200, 81, 22));
         MainWindow->setCentralWidget(centralWidget);
         menuBar = new QMenuBar(MainWindow);
         menuBar->setObjectName(QString::fromUtf8("menuBar"));
-        menuBar->setGeometry(QRect(0, 0, 931, 32));
+        menuBar->setGeometry(QRect(0, 0, 941, 23));
         MainWindow->setMenuBar(menuBar);
         mainToolBar = new QToolBar(MainWindow);
         mainToolBar->setObjectName(QString::fromUtf8("mainToolBar"));
@@ -250,6 +262,9 @@ public:
         pStopSend->setText(QApplication::translate("MainWindow", "stop send", 0, QApplication::UnicodeUTF8));
         pGenerateData_btn->setText(QApplication::translate("MainWindow", "generateData", 0, QApplication::UnicodeUTF8));
         pSendData_check->setText(QApplication::translate("MainWindow", "send data", 0, QApplication::UnicodeUTF8));
+        pIbp_rb->setText(QApplication::translate("MainWindow", "IBP", 0, QApplication::UnicodeUTF8));
+        pCo2_rb->setText(QApplication::translate("MainWindow", "CO2", 0, QApplication::UnicodeUTF8));
+        pNarco_rb->setText(QApplication::translate("MainWindow", "NARCO", 0, QApplication::UnicodeUTF8));
     } // retranslateUi
 
 };

@@ -37,6 +37,7 @@ MainWindow::MainWindow(QWidget *parent) :
 
     ui->pStart_btn->setEnabled(true);
     ui->pStop_btn->setEnabled(false);
+    ui->pStart_label->setText("server running");
 
 
     setWindowTitle("Server....");

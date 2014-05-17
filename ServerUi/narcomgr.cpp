@@ -8,7 +8,7 @@ NarcoMgr::NarcoMgr(LinkMgr* pLinkMgr):BasicMgr(pLinkMgr,NARCO_CLIENT)
     memset(&m_tStartTimer,0,sizeof(m_tStartTimer));
 
     gettimeofday(&m_tStartTimer,NULL);
-    assert(openFile("datafile/ECG/data.txt"));
+    assert(openFile("datafile/NARCO/data.txt"));
 }
 NarcoMgr::~NarcoMgr()
 {

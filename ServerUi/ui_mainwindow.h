@@ -1,7 +1,7 @@
 /********************************************************************************
 ** Form generated from reading UI file 'mainwindow.ui'
 **
-** Created: Fri May 16 14:24:56 2014
+** Created: Sat May 17 18:19:03 2014
 **      by: Qt User Interface Compiler version 4.6.2
 **
 ** WARNING! All changes made in this file will be lost when recompiling UI file!
@@ -62,8 +62,6 @@ public:
     QPushButton *pClear_btn;
     QPushButton *pExit_btn_2;
     QPushButton *pSendIdCommand;
-    QPushButton *pSendData;
-    QPushButton *pStopSend;
     QPushButton *pGenerateData_btn;
     QTextBrowser *pStatistics_txt;
     QCheckBox *pSendData_check;
@@ -191,12 +189,6 @@ public:
         pSendIdCommand = new QPushButton(pGloupBox);
         pSendIdCommand->setObjectName(QString::fromUtf8("pSendIdCommand"));
         pSendIdCommand->setGeometry(QRect(340, 100, 211, 27));
-        pSendData = new QPushButton(pGloupBox);
-        pSendData->setObjectName(QString::fromUtf8("pSendData"));
-        pSendData->setGeometry(QRect(340, 140, 121, 27));
-        pStopSend = new QPushButton(pGloupBox);
-        pStopSend->setObjectName(QString::fromUtf8("pStopSend"));
-        pStopSend->setGeometry(QRect(340, 170, 121, 27));
         pGenerateData_btn = new QPushButton(pGloupBox);
         pGenerateData_btn->setObjectName(QString::fromUtf8("pGenerateData_btn"));
         pGenerateData_btn->setGeometry(QRect(340, 200, 121, 27));
@@ -218,7 +210,7 @@ public:
         MainWindow->setCentralWidget(centralWidget);
         menuBar = new QMenuBar(MainWindow);
         menuBar->setObjectName(QString::fromUtf8("menuBar"));
-        menuBar->setGeometry(QRect(0, 0, 941, 23));
+        menuBar->setGeometry(QRect(0, 0, 941, 32));
         MainWindow->setMenuBar(menuBar);
         mainToolBar = new QToolBar(MainWindow);
         mainToolBar->setObjectName(QString::fromUtf8("mainToolBar"));
@@ -258,8 +250,6 @@ public:
         pClear_btn->setText(QApplication::translate("MainWindow", "clear", 0, QApplication::UnicodeUTF8));
         pExit_btn_2->setText(QApplication::translate("MainWindow", "exit", 0, QApplication::UnicodeUTF8));
         pSendIdCommand->setText(QApplication::translate("MainWindow", "send comfire id commond", 0, QApplication::UnicodeUTF8));
-        pSendData->setText(QApplication::translate("MainWindow", "send data", 0, QApplication::UnicodeUTF8));
-        pStopSend->setText(QApplication::translate("MainWindow", "stop send", 0, QApplication::UnicodeUTF8));
         pGenerateData_btn->setText(QApplication::translate("MainWindow", "generateData", 0, QApplication::UnicodeUTF8));
         pSendData_check->setText(QApplication::translate("MainWindow", "send data", 0, QApplication::UnicodeUTF8));
         pIbp_rb->setText(QApplication::translate("MainWindow", "IBP", 0, QApplication::UnicodeUTF8));

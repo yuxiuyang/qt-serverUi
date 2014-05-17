@@ -8,7 +8,7 @@ IbpMgr::IbpMgr(LinkMgr* pLinkMgr):BasicMgr(pLinkMgr,IBP_CLIENT)
     memset(&m_tStartTimer,0,sizeof(m_tStartTimer));
 
     gettimeofday(&m_tStartTimer,NULL);
-    assert(openFile("datafile/ECG/data.txt"));
+    assert(openFile("datafile/IBP/data.txt"));
 }
 IbpMgr::~IbpMgr()
 {

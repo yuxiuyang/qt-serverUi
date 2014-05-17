@@ -8,7 +8,7 @@ Co2Mgr::Co2Mgr(LinkMgr* pLinkMgr):BasicMgr(pLinkMgr,CO2_CLIENT)
     memset(&m_tStartTimer,0,sizeof(m_tStartTimer));
 
     gettimeofday(&m_tStartTimer,NULL);
-    assert(openFile("datafile/ECG/data.txt"));
+    assert(openFile("datafile/CO2/data.txt"));
 }
 Co2Mgr::~Co2Mgr()
 {

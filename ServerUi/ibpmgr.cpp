@@ -7,6 +7,14 @@ IbpMgr::IbpMgr(LinkMgr* pLinkMgr):BasicMgr(pLinkMgr,IBP_CLIENT)
 {
     memset(&m_tStartTimer,0,sizeof(m_tStartTimer));
 
+    if(State::getInstance()->getStateData(IBP_TEST)){
+        startTest();
+    }else{
+        stopTest();
+    }
+    setShowDataSign(State::getInstance()->getStateData(IBP_SHOWDATA));
+    startSendData(State::getInstance()->getStateData(IBP_SENDDATA));
+
     gettimeofday(&m_tStartTimer,NULL);
     assert(openFile("datafile/IBP/data.txt"));
 }
@@ -27,20 +35,17 @@ void IbpMgr::onTimer(){
     int readnum = read();
 
     int time = test(readnum);
-    if(time!=0){ // have not start test
-        printf("IbpMgr::onTimer   interval=%dms  readnum=%d  times=%d",time,readnum,m_testMsg.times);
-        display();
-    }
+    display();
 }
 
 void IbpMgr::display(){
 
     if(m_testMsg.usedtimeSum >= REFRESH_TIME){//auto display to ui
-         ((MainWindow*)m_ui)->displayStatisicsResult(getTestMsg());
+         ((MainWindow*)m_ui)->displayStatisicsResult(IBP_CLIENT,getTestMsg());
          clearTestData();
      }
     if(isShowData())
-        ((MainWindow*)m_ui)->showData(m_readBuf);
+        ((MainWindow*)m_ui)->showData(IBP_CLIENT,m_readBuf);
 
 }
 bool IbpMgr::anal_DataPag(const BYTE* buf,const int len){

@@ -14,6 +14,11 @@ namespace Ui {
 enum SAVE_TYPE{
         SAVE_FRE,
         SAVE_READNUM,
+        SAVE_FILE_START_POS,
+        SAVE_FILE_END_POS,
+        SAVE_TEST,
+        SAVE_SHOWDATA,
+        SAVE_SENDDATA,
 };
 class MainWindow : public QMainWindow {
     Q_OBJECT
@@ -29,13 +34,20 @@ public Q_SLOTS:
     void clearDisplayMsg_click();
     void generateData_click();
     void sendRequestData_click();
+    void saveCollectDatas_click();
     void startTestCheckStateChanged (int state);
     void showReadDataCheckStateChanged(int state);
     void appendStatisticsMsg(char* buf);
-    void showData(const char* buf);
-    void displayStatisicsResult(TESTMSG* msg);
+    void showData(ClientType_ id,const char* buf);
+    void displayStatisicsResult(ClientType_ id,TESTMSG* msg);
+
+    void valueChanged(int);
+    void alarmChanged(int);
+
+    void setValue_slider(int);
 
     void sendDataCheckStateChanged(int state);
+    void collectDatasCheckStateChanged(int state);
     void appendMsg(const char* msg);
     void appendData(const char* msg);
     void appendData(const BYTE* msg,const int len);
@@ -56,6 +68,12 @@ public:
     void checkLinkState();
 
     void setSave(ClientType_ id, SAVE_TYPE saveType,int val);
+    int  getSaveValue(ClientType_ id,SAVE_TYPE saveType);
+
+    void handleCB();
+    void handleSlider();
+
+    void initClient();
 protected:
     void changeEvent(QEvent *e);
 
@@ -73,6 +91,7 @@ private:
     queue<string> m_queDataLine;
     queue<string> m_queConnectMsgLine;
     //queue<string> m_queStasticMsgLine;
+
 };
 
 #endif // MAINWINDOW_H

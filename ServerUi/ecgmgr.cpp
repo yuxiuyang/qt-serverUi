@@ -7,6 +7,14 @@ EcgMgr::EcgMgr(LinkMgr* pLinkMgr):BasicMgr(pLinkMgr,ECG_CLIENT)
 {
     memset(&m_tStartTimer,0,sizeof(m_tStartTimer));
 
+    if(State::getInstance()->getStateData(ECG_TEST)){
+        startTest();
+    }else{
+        stopTest();
+    }
+    setShowDataSign(State::getInstance()->getStateData(ECG_SHOWDATA));
+    startSendData(State::getInstance()->getStateData(ECG_SENDDATA));
+
     gettimeofday(&m_tStartTimer,NULL);
     assert(openFile("datafile/ECG/data.txt"));
 }
@@ -27,20 +35,17 @@ void EcgMgr::onTimer(){
     int readnum = read();
 
     int time = test(readnum);
-    if(time!=0){ // have not start test
-        printf("EcgMgr::onTimer   interval=%dms  readnum=%d  times=%d",time,readnum,m_testMsg.times);
-        display();
-    }
+    display();
 }
 
 void EcgMgr::display(){
 
     if(m_testMsg.usedtimeSum >= REFRESH_TIME){//auto display to ui
-         ((MainWindow*)m_ui)->displayStatisicsResult(getTestMsg());
+         ((MainWindow*)m_ui)->displayStatisicsResult(ECG_CLIENT,getTestMsg());
          clearTestData();
      }
     if(isShowData())
-        ((MainWindow*)m_ui)->showData(m_readBuf);
+        ((MainWindow*)m_ui)->showData(ECG_CLIENT,m_readBuf);
 
 }
 bool EcgMgr::anal_DataPag(const BYTE* buf,const int len){

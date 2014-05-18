@@ -3,8 +3,11 @@
 #include <stdio.h>
 #include <fstream>
 #include <string.h>
-using namespace std;
+
 #include <unistd.h>
+#include <assert.h>
+#include <iostream>
+using namespace std;
 #define BUF_LEN 1024
 class File
 {
@@ -42,6 +45,17 @@ public:
         m_isRepeatReadFile = isRepeatReadFile;
     }
 
+    void setStartPos(long pos){
+        if(pos>=0 && pos<=m_endPos)
+            m_startPos = pos;
+        else cout<<"set start pos failue"<<endl;
+    }
+
+    void setEndPos(long pos){
+        if(pos>=m_startPos&&pos<=m_fileSize)
+            m_endPos = pos;
+        else cout<<"set end pos failure"<<endl;
+    }
 
 private:
     char m_strFileName[256];//path+ filename
@@ -51,6 +65,10 @@ private:
     long m_fileSize;//file's size
     long m_readCurPos;//reading currend position in file
     bool m_isRepeatReadFile;//is need to repeat the file.
+
+    long m_startPos;
+    long m_endPos;
+
 };
 
 #endif // FILE_H

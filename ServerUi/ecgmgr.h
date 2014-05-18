@@ -18,6 +18,9 @@ protected:
     bool anal_DataPag(const BYTE* buf,const int len);
     bool anal_ConnectPag(const BYTE* buf,const int len);
     void analyseCmd(BYTE cmd);
+
+    QString m_ecgValues;
+    QString m_ecgAlarms;
 };
 
 #endif // NIBPMGR_H

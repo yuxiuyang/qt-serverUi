@@ -7,6 +7,13 @@ NarcoMgr::NarcoMgr(LinkMgr* pLinkMgr):BasicMgr(pLinkMgr,NARCO_CLIENT)
 {
     memset(&m_tStartTimer,0,sizeof(m_tStartTimer));
 
+    if(State::getInstance()->getStateData(NARCO_TEST)){
+        startTest();
+    }else{
+        stopTest();
+    }
+    setShowDataSign(State::getInstance()->getStateData(NARCO_SHOWDATA));
+    startSendData(State::getInstance()->getStateData(NARCO_SENDDATA));
     gettimeofday(&m_tStartTimer,NULL);
     assert(openFile("datafile/NARCO/data.txt"));
 }
@@ -27,20 +34,17 @@ void NarcoMgr::onTimer(){
     int readnum = read();
 
     int time = test(readnum);
-    if(time!=0){ // have not start test
-        printf("NarcoMgr::onTimer   interval=%dms  readnum=%d  times=%d",time,readnum,m_testMsg.times);
-        display();
-    }
+    display();
 }
 
 void NarcoMgr::display(){
 
     if(m_testMsg.usedtimeSum >= REFRESH_TIME){//auto display to ui
-         ((MainWindow*)m_ui)->displayStatisicsResult(getTestMsg());
+         ((MainWindow*)m_ui)->displayStatisicsResult(NARCO_CLIENT,getTestMsg());
          clearTestData();
      }
     if(isShowData())
-        ((MainWindow*)m_ui)->showData(m_readBuf);
+        ((MainWindow*)m_ui)->showData(NARCO_CLIENT,m_readBuf);
 
 }
 bool NarcoMgr::anal_DataPag(const BYTE* buf,const int len){

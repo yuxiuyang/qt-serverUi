@@ -7,6 +7,7 @@
 #include "file.h"
 #include "../common/datadev.h"
 #include "linkmgr.h"
+#include "state.h"
 #define MAX_READ_TXT 3*300+1
 #define MAX_BUF 1024
 #define READ_WRITE_INTEVAL 30//the interval beweent read and write  to arrived a blance.
@@ -65,7 +66,12 @@ public:
     bool isShowData(){
         return m_testMsg.isShowData;
     }
-
+    void startSendData(bool b=true){
+        m_isStartSendData = b;
+    }
+    bool getSendDataState(){
+        return m_isStartSendData;
+    }
     void stopTest(){
         m_testMsg.isStart = false;
         m_testMsg.isFrist = false;
@@ -99,11 +105,23 @@ public:
         return m_clientId;
     }
 
-    void startSendData(bool b=true){
-        m_isStartSendData = b;
+    void setReadFileStartPos(long startPos){
+        if(m_file){
+            m_file->setStartPos(startPos);
+
+        }
     }
-    bool getSendDataState(){
-        return m_isStartSendData;
+    void setReadFileEndPos(long endPos){
+        if(m_file){
+            m_file->setEndPos(endPos);
+        }
+    }
+    long getFileSize(){
+        if(m_file){
+            return m_file->getFileSize();
+        }else{
+            return 0;
+        }
     }
 
 protected:

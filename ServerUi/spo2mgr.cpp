@@ -7,6 +7,14 @@ Spo2Mgr::Spo2Mgr(LinkMgr* pLinkMgr):BasicMgr(pLinkMgr,SPO2_CLIENT)
 {
     memset(&m_tStartTimer,0,sizeof(m_tStartTimer));
 
+    if(State::getInstance()->getStateData(SPO2_TEST)){
+        startTest();
+    }else{
+        stopTest();
+    }
+    setShowDataSign(State::getInstance()->getStateData(SPO2_SHOWDATA));
+    startSendData(State::getInstance()->getStateData(SPO2_SENDDATA));
+
     gettimeofday(&m_tStartTimer,NULL);
     assert(openFile("datafile/SPO2/data.txt"));
 }
@@ -27,20 +35,17 @@ void Spo2Mgr::onTimer(){
     int readnum = read();
 
     int time = test(readnum);
-    if(time!=0){ // have not start test
-        printf("Spo2Mgr::onTimer   interval=%dms  readnum=%d  times=%d",time,readnum,m_testMsg.times);
-        display();
-    }
+    display();
 }
 
 void Spo2Mgr::display(){
 
     if(m_testMsg.usedtimeSum >= REFRESH_TIME){//auto display to ui
-         ((MainWindow*)m_ui)->displayStatisicsResult(getTestMsg());
+         ((MainWindow*)m_ui)->displayStatisicsResult(SPO2_CLIENT,getTestMsg());
          clearTestData();
      }
     if(isShowData())
-        ((MainWindow*)m_ui)->showData(m_readBuf);
+        ((MainWindow*)m_ui)->showData(SPO2_CLIENT,m_readBuf);
 
 }
 bool Spo2Mgr::anal_DataPag(const BYTE* buf,const int len){

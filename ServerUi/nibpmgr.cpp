@@ -7,9 +7,17 @@ NibpMgr::NibpMgr(LinkMgr* pLinkMgr):BasicMgr(pLinkMgr,NIBP_CLIENT)
 {
     memset(&m_tStartTimer,0,sizeof(m_tStartTimer));
 
+    if(State::getInstance()->getStateData(NIBP_TEST)){
+        startTest();
+    }else{
+        stopTest();
+    }
+    setShowDataSign(State::getInstance()->getStateData(NIBP_SHOWDATA));
+    startSendData(State::getInstance()->getStateData(NIBP_SENDDATA));
+    
     gettimeofday(&m_tStartTimer,NULL);
     m_start = false;
-    //assert(openFile("datafile/NIBP/nibpdata.txt"));
+    assert(openFile("datafile/NIBP/nibp_adult.txt"));
 }
 NibpMgr::~NibpMgr()
 {
@@ -28,22 +36,23 @@ void NibpMgr::onTimer(){
 
     int readnum = read();
 
-    int time = test(readnum);
-    if(time!=0){ // have not start test
-        printf("NibpMgr::onTimer   interval=%dms  readnum=%d  times=%d",time,readnum,m_testMsg.times);
-        display();
-    }
+    int count = test(readnum);
+//    if(count!=0){ // have not start test
+//        printf("NibpMgr::onTimer   interval=%dms  readnum=%d  times=%d",time,readnum,m_testMsg.times);
+//        display();
+//    }
+    display();
 }
 
 void NibpMgr::display(){
 
     if(m_testMsg.usedtimeSum >= REFRESH_TIME){//auto display to ui
-         ((MainWindow*)m_ui)->displayStatisicsResult(getTestMsg());
+         ((MainWindow*)m_ui)->displayStatisicsResult(NIBP_CLIENT,getTestMsg());
          clearTestData();
      }
-    if(isShowData())
-        ((MainWindow*)m_ui)->showData(m_readBuf);
-
+    if(isShowData()){
+        ((MainWindow*)m_ui)->showData(NIBP_CLIENT,m_readBuf);
+    }
 }
 bool NibpMgr::anal_DataPag(const BYTE* buf,const int len){
     switch(buf[3]){

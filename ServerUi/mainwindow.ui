@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>941</width>
-    <height>621</height>
+    <width>945</width>
+    <height>689</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -17,8 +17,8 @@
    <widget class="QPushButton" name="pExit_btn">
     <property name="geometry">
      <rect>
-      <x>420</x>
-      <y>510</y>
+      <x>350</x>
+      <y>560</y>
       <width>99</width>
       <height>32</height>
      </rect>
@@ -33,7 +33,7 @@
       <x>10</x>
       <y>40</y>
       <width>221</width>
-      <height>441</height>
+      <height>501</height>
      </rect>
     </property>
     <property name="cursor" stdset="0">
@@ -44,7 +44,7 @@
     <property name="geometry">
      <rect>
       <x>10</x>
-      <y>500</y>
+      <y>570</y>
       <width>99</width>
       <height>32</height>
      </rect>
@@ -56,8 +56,8 @@
    <widget class="QPushButton" name="pClearDisplay_btn">
     <property name="geometry">
      <rect>
-      <x>270</x>
-      <y>510</y>
+      <x>240</x>
+      <y>560</y>
       <width>99</width>
       <height>32</height>
      </rect>
@@ -84,19 +84,6 @@
     </property>
     <property name="text">
      <string>server is not start</string>
-    </property>
-   </widget>
-   <widget class="QPushButton" name="pStart_btn">
-    <property name="geometry">
-     <rect>
-      <x>20</x>
-      <y>0</y>
-      <width>99</width>
-      <height>32</height>
-     </rect>
-    </property>
-    <property name="text">
-     <string>start</string>
     </property>
    </widget>
    <widget class="QPushButton" name="pStop_btn">
@@ -157,7 +144,7 @@
       <x>240</x>
       <y>30</y>
       <width>611</width>
-      <height>461</height>
+      <height>511</height>
      </rect>
     </property>
     <property name="font">
@@ -211,9 +198,9 @@
      <property name="geometry">
       <rect>
        <x>10</x>
-       <y>40</y>
-       <width>311</width>
-       <height>211</height>
+       <y>30</y>
+       <width>371</width>
+       <height>201</height>
       </rect>
      </property>
      <property name="font">
@@ -222,165 +209,68 @@
       </font>
      </property>
     </widget>
-    <widget class="QLabel" name="label_2">
+    <widget class="QTextBrowser" name="pStatistics_txt">
      <property name="geometry">
       <rect>
-       <x>10</x>
-       <y>340</y>
-       <width>81</width>
-       <height>20</height>
-      </rect>
-     </property>
-     <property name="text">
-      <string>frequence</string>
-     </property>
-    </widget>
-    <widget class="QLabel" name="label_3">
-     <property name="geometry">
-      <rect>
-       <x>10</x>
-       <y>380</y>
-       <width>62</width>
-       <height>17</height>
-      </rect>
-     </property>
-     <property name="text">
-      <string>timeout</string>
-     </property>
-    </widget>
-    <widget class="QLabel" name="label">
-     <property name="geometry">
-      <rect>
-       <x>10</x>
-       <y>410</y>
-       <width>71</width>
-       <height>20</height>
-      </rect>
-     </property>
-     <property name="text">
-      <string>readcount</string>
-     </property>
-    </widget>
-    <widget class="QLineEdit" name="pFre_edit">
-     <property name="geometry">
-      <rect>
-       <x>90</x>
-       <y>340</y>
-       <width>91</width>
-       <height>27</height>
+       <x>320</x>
+       <y>320</y>
+       <width>291</width>
+       <height>181</height>
       </rect>
      </property>
     </widget>
-    <widget class="QLineEdit" name="pTm_edit">
-     <property name="enabled">
-      <bool>false</bool>
-     </property>
+    <widget class="QGroupBox" name="pBtnGroup">
      <property name="geometry">
       <rect>
-       <x>90</x>
-       <y>370</y>
-       <width>91</width>
-       <height>27</height>
+       <x>380</x>
+       <y>90</y>
+       <width>221</width>
+       <height>141</height>
       </rect>
      </property>
-     <property name="readOnly">
-      <bool>true</bool>
+     <property name="title">
+      <string/>
      </property>
-    </widget>
-    <widget class="QLineEdit" name="pRc_edit">
-     <property name="geometry">
-      <rect>
-       <x>90</x>
-       <y>410</y>
-       <width>91</width>
-       <height>27</height>
-      </rect>
-     </property>
-    </widget>
-    <widget class="QPushButton" name="pFreOk_btn">
-     <property name="geometry">
-      <rect>
-       <x>190</x>
-       <y>340</y>
-       <width>31</width>
-       <height>27</height>
-      </rect>
-     </property>
-     <property name="text">
-      <string>OK</string>
-     </property>
-    </widget>
-    <widget class="QPushButton" name="pRcOk_btn">
-     <property name="geometry">
-      <rect>
-       <x>190</x>
-       <y>410</y>
-       <width>31</width>
-       <height>27</height>
-      </rect>
-     </property>
-     <property name="text">
-      <string>OK</string>
-     </property>
-    </widget>
-    <widget class="QPushButton" name="pFreCancel_btn">
-     <property name="geometry">
-      <rect>
-       <x>230</x>
-       <y>340</y>
-       <width>61</width>
-       <height>27</height>
-      </rect>
-     </property>
-     <property name="text">
-      <string>Cancel</string>
-     </property>
-    </widget>
-    <widget class="QPushButton" name="pRcCancel_btn">
-     <property name="geometry">
-      <rect>
-       <x>230</x>
-       <y>410</y>
-       <width>61</width>
-       <height>27</height>
-      </rect>
-     </property>
-     <property name="text">
-      <string>Cancel</string>
-     </property>
-    </widget>
-    <widget class="QCheckBox" name="pST_check">
-     <property name="geometry">
-      <rect>
-       <x>10</x>
-       <y>270</y>
-       <width>121</width>
-       <height>22</height>
-      </rect>
-     </property>
-     <property name="text">
-      <string>start to test</string>
-     </property>
-    </widget>
-    <widget class="QCheckBox" name="pShowReadData_check">
-     <property name="geometry">
-      <rect>
-       <x>160</x>
-       <y>270</y>
-       <width>111</width>
-       <height>22</height>
-      </rect>
-     </property>
-     <property name="text">
-      <string>show data</string>
-     </property>
+     <widget class="QComboBox" name="pAlarm_cb">
+      <property name="geometry">
+       <rect>
+        <x>0</x>
+        <y>50</y>
+        <width>211</width>
+        <height>28</height>
+       </rect>
+      </property>
+     </widget>
+     <widget class="QComboBox" name="pValue_cb">
+      <property name="geometry">
+       <rect>
+        <x>0</x>
+        <y>10</y>
+        <width>211</width>
+        <height>28</height>
+       </rect>
+      </property>
+     </widget>
+     <widget class="QPushButton" name="pGenerateData_btn">
+      <property name="geometry">
+       <rect>
+        <x>10</x>
+        <y>90</y>
+        <width>121</width>
+        <height>27</height>
+       </rect>
+      </property>
+      <property name="text">
+       <string>generateData</string>
+      </property>
+     </widget>
     </widget>
     <widget class="QPushButton" name="pClear_btn">
      <property name="geometry">
       <rect>
-       <x>340</x>
-       <y>40</y>
-       <width>93</width>
+       <x>382</x>
+       <y>30</y>
+       <width>101</width>
        <height>27</height>
       </rect>
      </property>
@@ -388,25 +278,12 @@
       <string>clear</string>
      </property>
     </widget>
-    <widget class="QPushButton" name="pExit_btn_2">
-     <property name="geometry">
-      <rect>
-       <x>440</x>
-       <y>40</y>
-       <width>93</width>
-       <height>27</height>
-      </rect>
-     </property>
-     <property name="text">
-      <string>exit</string>
-     </property>
-    </widget>
     <widget class="QPushButton" name="pSendIdCommand">
      <property name="geometry">
       <rect>
-       <x>340</x>
-       <y>100</y>
-       <width>211</width>
+       <x>380</x>
+       <y>60</y>
+       <width>221</width>
        <height>27</height>
       </rect>
      </property>
@@ -414,42 +291,310 @@
       <string>send comfire id commond</string>
      </property>
     </widget>
-    <widget class="QPushButton" name="pGenerateData_btn">
+    <widget class="QGroupBox" name="groupBox">
      <property name="geometry">
       <rect>
-       <x>340</x>
-       <y>200</y>
-       <width>121</width>
-       <height>27</height>
-      </rect>
-     </property>
-     <property name="text">
-      <string>generateData</string>
-     </property>
-    </widget>
-    <widget class="QTextBrowser" name="pStatistics_txt">
-     <property name="geometry">
-      <rect>
-       <x>300</x>
-       <y>270</y>
+       <x>0</x>
+       <y>410</y>
        <width>301</width>
-       <height>181</height>
+       <height>101</height>
       </rect>
      </property>
+     <property name="title">
+      <string/>
+     </property>
+     <widget class="QLabel" name="label_2">
+      <property name="geometry">
+       <rect>
+        <x>10</x>
+        <y>10</y>
+        <width>81</width>
+        <height>20</height>
+       </rect>
+      </property>
+      <property name="text">
+       <string>frequence</string>
+      </property>
+     </widget>
+     <widget class="QLabel" name="label_3">
+      <property name="geometry">
+       <rect>
+        <x>10</x>
+        <y>40</y>
+        <width>62</width>
+        <height>17</height>
+       </rect>
+      </property>
+      <property name="text">
+       <string>timeout</string>
+      </property>
+     </widget>
+     <widget class="QLabel" name="label">
+      <property name="geometry">
+       <rect>
+        <x>10</x>
+        <y>70</y>
+        <width>71</width>
+        <height>16</height>
+       </rect>
+      </property>
+      <property name="text">
+       <string>readcount</string>
+      </property>
+     </widget>
+     <widget class="QLineEdit" name="pFre_edit">
+      <property name="geometry">
+       <rect>
+        <x>90</x>
+        <y>10</y>
+        <width>91</width>
+        <height>27</height>
+       </rect>
+      </property>
+     </widget>
+     <widget class="QLineEdit" name="pTm_edit">
+      <property name="enabled">
+       <bool>false</bool>
+      </property>
+      <property name="geometry">
+       <rect>
+        <x>90</x>
+        <y>40</y>
+        <width>91</width>
+        <height>27</height>
+       </rect>
+      </property>
+      <property name="readOnly">
+       <bool>true</bool>
+      </property>
+     </widget>
+     <widget class="QLineEdit" name="pRc_edit">
+      <property name="geometry">
+       <rect>
+        <x>90</x>
+        <y>70</y>
+        <width>91</width>
+        <height>27</height>
+       </rect>
+      </property>
+     </widget>
+     <widget class="QPushButton" name="pFreOk_btn">
+      <property name="geometry">
+       <rect>
+        <x>190</x>
+        <y>10</y>
+        <width>31</width>
+        <height>27</height>
+       </rect>
+      </property>
+      <property name="text">
+       <string>OK</string>
+      </property>
+     </widget>
+     <widget class="QPushButton" name="pFreCancel_btn">
+      <property name="geometry">
+       <rect>
+        <x>230</x>
+        <y>10</y>
+        <width>61</width>
+        <height>27</height>
+       </rect>
+      </property>
+      <property name="text">
+       <string>Cancel</string>
+      </property>
+     </widget>
+     <widget class="QPushButton" name="pRcOk_btn">
+      <property name="geometry">
+       <rect>
+        <x>190</x>
+        <y>60</y>
+        <width>31</width>
+        <height>27</height>
+       </rect>
+      </property>
+      <property name="text">
+       <string>OK</string>
+      </property>
+     </widget>
+     <widget class="QPushButton" name="pRcCancel_btn">
+      <property name="geometry">
+       <rect>
+        <x>230</x>
+        <y>60</y>
+        <width>61</width>
+        <height>27</height>
+       </rect>
+      </property>
+      <property name="text">
+       <string>Cancel</string>
+      </property>
+     </widget>
     </widget>
-    <widget class="QCheckBox" name="pSendData_check">
+    <widget class="QGroupBox" name="pChecksGroup">
+     <property name="geometry">
+      <rect>
+       <x>0</x>
+       <y>300</y>
+       <width>301</width>
+       <height>111</height>
+      </rect>
+     </property>
+     <property name="title">
+      <string/>
+     </property>
+     <widget class="QCheckBox" name="pST_check">
+      <property name="geometry">
+       <rect>
+        <x>10</x>
+        <y>20</y>
+        <width>121</width>
+        <height>22</height>
+       </rect>
+      </property>
+      <property name="text">
+       <string>start to test</string>
+      </property>
+     </widget>
+     <widget class="QCheckBox" name="pSendData_check">
+      <property name="geometry">
+       <rect>
+        <x>10</x>
+        <y>50</y>
+        <width>121</width>
+        <height>22</height>
+       </rect>
+      </property>
+      <property name="text">
+       <string>send data</string>
+      </property>
+     </widget>
+     <widget class="QCheckBox" name="pShowReadData_check">
+      <property name="geometry">
+       <rect>
+        <x>160</x>
+        <y>20</y>
+        <width>111</width>
+        <height>22</height>
+       </rect>
+      </property>
+      <property name="text">
+       <string>show data</string>
+      </property>
+     </widget>
+    </widget>
+    <widget class="QGroupBox" name="pCollectDatasBtnGroup">
+     <property name="geometry">
+      <rect>
+       <x>320</x>
+       <y>350</y>
+       <width>291</width>
+       <height>121</height>
+      </rect>
+     </property>
+     <property name="title">
+      <string/>
+     </property>
+     <widget class="QPushButton" name="pSaveCollectDatas">
+      <property name="geometry">
+       <rect>
+        <x>10</x>
+        <y>30</y>
+        <width>261</width>
+        <height>32</height>
+       </rect>
+      </property>
+      <property name="text">
+       <string>save collect datas</string>
+      </property>
+     </widget>
+    </widget>
+    <widget class="QGroupBox" name="pCheckCollectDatasGroup">
      <property name="geometry">
       <rect>
        <x>10</x>
-       <y>300</y>
-       <width>121</width>
+       <y>100</y>
+       <width>301</width>
+       <height>111</height>
+      </rect>
+     </property>
+     <property name="title">
+      <string/>
+     </property>
+     <widget class="QLabel" name="pCollectDatas_label">
+      <property name="geometry">
+       <rect>
+        <x>10</x>
+        <y>20</y>
+        <width>281</width>
+        <height>51</height>
+       </rect>
+      </property>
+      <property name="font">
+       <font>
+        <pointsize>26</pointsize>
+        <weight>75</weight>
+        <bold>true</bold>
+       </font>
+      </property>
+      <property name="text">
+       <string>collecting datas</string>
+      </property>
+     </widget>
+    </widget>
+    <widget class="QSlider" name="pReadStartPos_slider">
+     <property name="geometry">
+      <rect>
+       <x>10</x>
+       <y>270</y>
+       <width>251</width>
+       <height>21</height>
+      </rect>
+     </property>
+     <property name="orientation">
+      <enum>Qt::Horizontal</enum>
+     </property>
+    </widget>
+    <widget class="QLabel" name="pReadPos_label">
+     <property name="geometry">
+      <rect>
+       <x>10</x>
+       <y>240</y>
+       <width>441</width>
        <height>22</height>
       </rect>
      </property>
      <property name="text">
-      <string>send data</string>
+      <string>read data from start pos:     to end pos:</string>
      </property>
     </widget>
+    <widget class="QSlider" name="pReadEndPos_slider">
+     <property name="geometry">
+      <rect>
+       <x>260</x>
+       <y>270</y>
+       <width>251</width>
+       <height>21</height>
+      </rect>
+     </property>
+     <property name="orientation">
+      <enum>Qt::Horizontal</enum>
+     </property>
+    </widget>
+    <zorder>pBox_Label</zorder>
+    <zorder>pMsg_Txt</zorder>
+    <zorder>pStatistics_txt</zorder>
+    <zorder>pBtnGroup</zorder>
+    <zorder>pClear_btn</zorder>
+    <zorder>pSendIdCommand</zorder>
+    <zorder>groupBox</zorder>
+    <zorder>pChecksGroup</zorder>
+    <zorder>pCollectDatasBtnGroup</zorder>
+    <zorder>pCheckCollectDatasGroup</zorder>
+    <zorder>pReadStartPos_slider</zorder>
+    <zorder>pReadPos_label</zorder>
+    <zorder>pReadEndPos_slider</zorder>
+    <zorder>pShowReadData_check</zorder>
    </widget>
    <widget class="QRadioButton" name="pIbp_rb">
     <property name="geometry">
@@ -490,13 +635,39 @@
      <string>NARCO</string>
     </property>
    </widget>
+   <widget class="QCheckBox" name="pCollectDatas_check">
+    <property name="geometry">
+     <rect>
+      <x>610</x>
+      <y>10</y>
+      <width>201</width>
+      <height>22</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>Collect datas</string>
+    </property>
+   </widget>
+   <widget class="QPushButton" name="pStart_btn">
+    <property name="geometry">
+     <rect>
+      <x>30</x>
+      <y>0</y>
+      <width>99</width>
+      <height>32</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>start</string>
+    </property>
+   </widget>
   </widget>
   <widget class="QMenuBar" name="menuBar">
    <property name="geometry">
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>941</width>
+     <width>945</width>
      <height>32</height>
     </rect>
    </property>

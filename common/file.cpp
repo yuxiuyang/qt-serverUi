@@ -10,7 +10,10 @@ File::File()
     memset(m_strFileName,0,sizeof(m_strFileName));
     memset(m_strBuf,0,sizeof(m_strBuf));
 
-    m_readCurPos = 0;
+    m_startPos = 0;
+    m_endPos = 0;
+
+    m_readCurPos = m_startPos;
     m_fileSize = 0;
     m_isRepeatReadFile = false;
     m_pFile = NULL;
@@ -79,26 +82,33 @@ int File::read(char *buffer,int size){
         return 0;
     }
 
-    if(m_readCurPos<=m_fileSize){
-        assert(!fseek(m_pFile,m_readCurPos,SEEK_SET));//move cur point
-    }else{
-        m_readCurPos=0;
+    if(m_endPos == 0){
+        m_endPos = m_fileSize;//
     }
-
-    size_t numread=0;
-
-    numread=fread(buffer,1,size,m_pFile);
-
-    m_readCurPos += numread;
-
-    if(m_readCurPos>=m_fileSize){
+    if(m_readCurPos>m_endPos){
         if(m_isRepeatReadFile){
-           m_readCurPos = 0;//repeat to read file
+           m_readCurPos = m_startPos;//repeat to read file
            cout<<"repeat read file"<<endl;
         }else{
            cout<<"had arrived the file end"<<endl;
         }
     }
+
+    assert(!fseek(m_pFile,m_readCurPos,SEEK_SET));//move cur point
+
+
+    size_t numread=0;
+
+    if(m_readCurPos+size<=m_endPos){
+        numread=fread(buffer,1,size,m_pFile);
+    }
+    else{
+        numread = fread(buffer,1,m_readCurPos+size-m_endPos,m_pFile);
+    }
+
+    m_readCurPos += numread;
+
+
     return numread;
 }
 int File::flush(){//the cache is written to file
@@ -109,6 +119,7 @@ int File::flush(){//the cache is written to file
     return rel;
 }
 long File::getFileSize(){
+    cout<<"fopen m_strFileName= "<<m_strFileName<<"success"<<endl;
     FILE* file = fopen(m_strFileName, "r");
     long length=0;
     if(file){
@@ -119,7 +130,7 @@ long File::getFileSize(){
 
         fclose(file);
     }else{
-        cout<<"getfilesize failure"<<endl;
+        cout<<"m_strFileName="<<m_strFileName<<"getfilesize failure"<<endl;
     }
     cout<<"getfilesize="<<length<<endl;
 
@@ -135,7 +146,7 @@ long File::getFileSize(){
  */
 int File::readLine(char *strPtr, int strlen, char ellipsis) {
         /*   文件指针，存储读取数据的字符串数组，字符串数组长度，当一行数据以ellipsis值开头时废弃该行，注：ellipsis值为“.”时，直接输出所有行   */
-        int ch;
+        char ch;
         char *tmpPtr;
 
         memset(strPtr, 0x0, strlen);

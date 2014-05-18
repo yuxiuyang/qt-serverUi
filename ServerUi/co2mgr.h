@@ -13,6 +13,7 @@ public:
 
     void display();
     int data_Arrived(int fd);
+    
 
 protected:
     bool anal_DataPag(const BYTE* buf,const int len);

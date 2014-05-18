@@ -38,7 +38,8 @@ HEADERS += mainwindow.h \
     ecgmgr.h \
     co2mgr.h \
     narcomgr.h \
-    ibpmgr.h
+    ibpmgr.h \
+    ../include/global.h
 FORMS += mainwindow.ui
 INCLUDEPATH += $$quote(../thread_task)
 INCLUDEPATH += $$quote(../common)

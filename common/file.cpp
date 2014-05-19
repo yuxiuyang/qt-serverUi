@@ -57,7 +57,7 @@ int File::write(const char* msg,...){//external interface
          return 0;
     }
     va_end(ap);
-    
+
     len = fwrite(m_strBuf, 1,strlen(m_strBuf), m_pFile);
     //cout<<"len="<<len<<"  m_strBuf="<<m_strBuf<<"  m_strFileName="<<m_strFileName<<endl;
     return len;//return active size of writing to file.
@@ -137,6 +137,37 @@ long File::getFileSize(){
     return length;
 }
 
+void File::saveDataFromStartPosToEndPos(const char* filename){
+        if(m_pFile){
+                cout<<"IO is busying"<<endl;
+                return;
+        }
+
+        FILE* file = fopen(m_strFileName, "r");
+        if(!file){
+                cout<<"saveDataFromStartPosToEndPos   open file="<<m_strFileName<<"failure"<<endl;
+                return;
+        }
+
+        FILE* newFile = fopen(filename,"w");
+        if(!newFile){
+                cout<<"saveDataFromStartPosToEndPos   open file="<<filename<<"failure"<<endl;
+                return;
+        }
+
+        int pos = m_startPos;
+        assert(!fseek(file,m_startPos,SEEK_SET));//move cur point
+
+        char ch;
+        while((ch=fgetc(file))!=EOF && pos<=m_endPos){
+                fputc(ch, newFile);
+                pos++;
+        }
+
+        fclose(newFile);
+        fclose(file);
+
+}
 /*
  返回值列表：
  -1 文件结束；

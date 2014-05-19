@@ -27,6 +27,7 @@ public:
     void reset(){
         m_readCurPos = 0;
     }
+    void saveDataFromStartPosToEndPos(const char* filename);
 
     /*
      返回值列表：

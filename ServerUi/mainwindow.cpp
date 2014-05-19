@@ -3,6 +3,7 @@
 #include <QTimer>
 #include "state.h"
 #include "../include/global.h"
+#include <QMessageBox>
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
     ui(new Ui::MainWindow)
@@ -18,6 +19,7 @@ MainWindow::MainWindow(QWidget *parent) :
     connect(ui->pGenerateData_btn,SIGNAL(clicked()),this,SLOT(generateData_click()));
     connect(ui->pExit_btn,SIGNAL(clicked()),this,SLOT(exit_click()));
     connect(ui->pSaveCollectDatas,SIGNAL(clicked()),this,SLOT(saveCollectDatas_click()));
+    connect(ui->pUpdateFile,SIGNAL(clicked()),this,SLOT(updateFileFromStartToEndPos_click()));
     connect( m_pTestTimer, SIGNAL(timeout()), this, SLOT(sendTimer()) );
     connect(ui->pST_check, SIGNAL(stateChanged(int)), this, SLOT(startTestCheckStateChanged(int)));
     connect(ui->pShowReadData_check,SIGNAL(stateChanged(int)),this,SLOT(showReadDataCheckStateChanged(int)));
@@ -200,6 +202,10 @@ void MainWindow::clearDisplayMsg_click(){
 }
 void MainWindow::generateData_click(){
     m_pDataMgr->generateTestFile(m_dataType);
+    setSave(m_dataType,SAVE_FILE_START_POS,0);//init the datas
+    setSave(m_dataType,SAVE_FILE_END_POS,0);//init the datas
+    handleSlider();
+    QMessageBox::information(NULL, "notify", "generate file success", QMessageBox::Yes/* | QMessageBox::No*/, QMessageBox::Yes);
 }
 void MainWindow::sendRequestData_click(){
     m_pDataMgr->m_pLinkMgr->requestLinkMsg();
@@ -269,6 +275,41 @@ void MainWindow::saveCollectDatas_click(){
     cout<<"save Collect datas success"<<endl;
 }
 
+void MainWindow::updateFileFromStartToEndPos_click(){
+    cout<<"updateFileFromStartToEndPos_click"<<endl;
+
+    if(m_pDataMgr->getMgrbyId(m_dataType)->getSendDataState()){
+        QMessageBox::information(NULL, "notify", "please stop send data", QMessageBox::Yes/* | QMessageBox::No*/, QMessageBox::Yes);
+        return;
+    }
+    bool bCloseFile=false;
+    char fileName[256]={0};
+    if(m_pDataMgr->getMgrbyId(m_dataType)->isOpenFile()){
+        strcpy(fileName,m_pDataMgr->getMgrbyId(m_dataType)->getFileName());
+        m_pDataMgr->getMgrbyId(m_dataType)->closeFile();
+        bCloseFile = true;
+    }
+    bool rel = m_pDataMgr->getMgrbyId(m_dataType)->updateFileFromStartPosToEndPos();
+
+    if(bCloseFile){
+        m_pDataMgr->getMgrbyId(m_dataType)->openFile(fileName);
+    }
+
+    char mess[100]={0};
+    if(rel){
+        setSave(m_dataType,SAVE_FILE_START_POS,0);//init the datas
+        setSave(m_dataType,SAVE_FILE_END_POS,0);//init the datas
+        handleSlider();
+        cout<<"updateFileFromStartToEndPos success"<<endl;
+        strcpy(mess,"updateFileFromStartToEndPos success");
+    }else{
+        cout<<"updateFileFromStartToEndPos failure"<<endl;
+        strcpy(mess,"updateFileFromStartToEndPos failure");
+    }
+
+    QMessageBox::information(NULL, "notify", mess, QMessageBox::Yes/* | QMessageBox::No*/, QMessageBox::Yes);
+}
+
 void MainWindow::valueChanged(int index){
     cout<<"valuechanged index="<<index<<"   value="<<ui->pValue_cb->currentText().toStdString().c_str()<<endl;
 }
@@ -281,13 +322,16 @@ void MainWindow::setValue_slider(int val){
     char buf[200]={0};
     sprintf(buf,"read data from start pos: %lu   to end pos: %lu",ui->pReadStartPos_slider->value(),ui->pReadEndPos_slider->value());
 
+    cout<<"setValue_slider buf="<<buf<<endl;
     ui->pReadPos_label->setText(buf);
 
-    m_pDataMgr->getMgrbyId(m_dataType)->setReadFileStartPos(ui->pReadStartPos_slider->value());
-    m_pDataMgr->getMgrbyId(m_dataType)->setReadFileEndPos(ui->pReadEndPos_slider->value());
-
-    setSave(m_dataType,SAVE_FILE_START_POS,ui->pReadStartPos_slider->value());//save the datas
-    setSave(m_dataType,SAVE_FILE_END_POS,ui->pReadEndPos_slider->value());
+    if(sender() == ui->pReadStartPos_slider){
+        m_pDataMgr->getMgrbyId(m_dataType)->setReadFileStartPos(ui->pReadStartPos_slider->value());
+        setSave(m_dataType,SAVE_FILE_START_POS,ui->pReadStartPos_slider->value());//save the datas
+    }else{
+        m_pDataMgr->getMgrbyId(m_dataType)->setReadFileEndPos(ui->pReadEndPos_slider->value());
+        setSave(m_dataType,SAVE_FILE_END_POS,ui->pReadEndPos_slider->value());
+    }
 }
 
 void MainWindow::appendMsg(const char* msg){
@@ -304,16 +348,24 @@ void MainWindow::appendData(const char* msg){
     m_queDataLine.push(msg);
     m_pMutex.unlock();
 }
-void MainWindow::appendData(const BYTE* msg,const int len){
-    m_pMutex.lock();
+void MainWindow::appendData(ClientType_ id,const BYTE* msg,const int len){
+    //m_pMutex.lock();
+    if(!State::getInstance()->getStateData(COLLECT_DATA)) return;//just show data when collecting data.
+    if(id != m_dataType) return;
     string strBuf="";
     char tmp[10]={0};
     for(int i=0;i<len;i++){
         sprintf(tmp,"%02x ",msg[i]);
         strBuf += tmp;
     }
-    m_queDataLine.push(strBuf.c_str());
-    m_pMutex.unlock();
+
+    QTextCursor cursor =  ui->pMsg_Txt->textCursor();
+    cursor.movePosition(QTextCursor::End);
+    ui->pMsg_Txt->setTextCursor(cursor);
+    ui->pMsg_Txt->insertPlainText(strBuf.c_str());
+
+    //m_queDataLine.push(strBuf.c_str());
+    //m_pMutex.unlock();
 }
 
 void MainWindow::sendTimer(){
@@ -366,6 +418,11 @@ void MainWindow::sendDataCheckStateChanged(int state){
 }
 
 void MainWindow::collectDatasCheckStateChanged(int state){
+    if(m_pDataMgr->getMgrbyId(m_dataType)->getSendDataState()){
+        QMessageBox::information(NULL, "notify", "please stop send data", QMessageBox::Yes/* | QMessageBox::No*/, QMessageBox::Yes);
+        return;
+    }
+    State::getInstance()->setStateData(COLLECT_DATA,ui->pCollectDatas_check->isChecked());
     ui->pMsg_Txt->clear();
     if(ui->pCollectDatas_check->isChecked()){
         ui->pCollectDatas_check->setText("Collecting data");
@@ -467,14 +524,29 @@ void MainWindow::checkLinkState(){
 void MainWindow::handleSlider(){
     long max = m_pDataMgr->getMgrbyId(m_dataType)->getFileSize();
 
-    long mid = max/2-10;
+    long mid = max/2-2;
 
     cout<<"start slider   range  0 ~ "<<mid<<"  val="<<getSaveValue(m_dataType,SAVE_FILE_START_POS)<<endl;
     cout<<"end slider     range  "<<mid+1<<"~ "<<max<<"  val="<<getSaveValue(m_dataType,SAVE_FILE_END_POS)<<endl;
-    ui->pReadStartPos_slider->setRange(0,mid);
-    ui->pReadStartPos_slider->setValue(getSaveValue(m_dataType,SAVE_FILE_START_POS));
-    ui->pReadEndPos_slider->setRange(mid+1,max);
-    ui->pReadEndPos_slider->setValue(getSaveValue(m_dataType,SAVE_FILE_END_POS));
+
+    if(getSaveValue(m_dataType,SAVE_FILE_START_POS)==0 || getSaveValue(m_dataType,SAVE_FILE_START_POS)>mid){
+        ui->pReadStartPos_slider->setRange(0,mid);
+        ui->pReadStartPos_slider->setValue(0);
+    }else{
+        ui->pReadStartPos_slider->setRange(0,mid);
+        ui->pReadStartPos_slider->setValue(getSaveValue(m_dataType,SAVE_FILE_START_POS));
+    }
+
+
+    if(getSaveValue(m_dataType,SAVE_FILE_END_POS)==0 || getSaveValue(m_dataType,SAVE_FILE_END_POS)>max){
+        ui->pReadEndPos_slider->setRange(mid+1,max);
+        ui->pReadEndPos_slider->setValue(max);
+    }else{
+        ui->pReadEndPos_slider->setRange(mid+1,max);
+        ui->pReadEndPos_slider->setValue(getSaveValue(m_dataType,SAVE_FILE_END_POS));
+    }
+
+
 
 
     m_pDataMgr->getMgrbyId(m_dataType)->setReadFileStartPos(ui->pReadStartPos_slider->value());

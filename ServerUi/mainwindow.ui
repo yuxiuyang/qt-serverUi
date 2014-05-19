@@ -560,7 +560,7 @@
       <rect>
        <x>10</x>
        <y>240</y>
-       <width>441</width>
+       <width>371</width>
        <height>22</height>
       </rect>
      </property>
@@ -581,20 +581,19 @@
       <enum>Qt::Horizontal</enum>
      </property>
     </widget>
-    <zorder>pBox_Label</zorder>
-    <zorder>pMsg_Txt</zorder>
-    <zorder>pStatistics_txt</zorder>
-    <zorder>pBtnGroup</zorder>
-    <zorder>pClear_btn</zorder>
-    <zorder>pSendIdCommand</zorder>
-    <zorder>groupBox</zorder>
-    <zorder>pChecksGroup</zorder>
-    <zorder>pCollectDatasBtnGroup</zorder>
-    <zorder>pCheckCollectDatasGroup</zorder>
-    <zorder>pReadStartPos_slider</zorder>
-    <zorder>pReadPos_label</zorder>
-    <zorder>pReadEndPos_slider</zorder>
-    <zorder>pShowReadData_check</zorder>
+    <widget class="QPushButton" name="pUpdateFile">
+     <property name="geometry">
+      <rect>
+       <x>400</x>
+       <y>240</y>
+       <width>211</width>
+       <height>27</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>update file from start to end pos</string>
+     </property>
+    </widget>
    </widget>
    <widget class="QRadioButton" name="pIbp_rb">
     <property name="geometry">

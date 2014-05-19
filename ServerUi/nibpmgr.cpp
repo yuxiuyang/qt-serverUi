@@ -55,25 +55,8 @@ void NibpMgr::display(){
     }
 }
 bool NibpMgr::anal_DataPag(const BYTE* buf,const int len){
-    switch(buf[3]){
-    case ECG_CLIENT:
-        break;
-    case SPO2_CLIENT:
-        break;
-    case CO2_CLIENT:
-        break;
-    case NIBP_CLIENT:
-        break;
-    case IBP_CLIENT:
-        break;
-    case CMD_CLIENT:
-        break;
-    case DISPLAY_CLIENT:
-        break;
-    default:
-        break;
-    }
 
+    ((MainWindow*)(m_pLinkMgr->m_window))->appendData(NIBP_CLIENT,buf,len);
     return true;
 }
 void NibpMgr::analyseCmd(BYTE cmd){

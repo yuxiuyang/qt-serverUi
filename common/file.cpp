@@ -85,7 +85,7 @@ int File::read(char *buffer,int size){
     if(m_endPos == 0){
         m_endPos = m_fileSize;//
     }
-    if(m_readCurPos>m_endPos){
+    if(m_readCurPos>=m_endPos){
         if(m_isRepeatReadFile){
            m_readCurPos = m_startPos;//repeat to read file
            cout<<"repeat read file"<<endl;
@@ -137,35 +137,36 @@ long File::getFileSize(){
     return length;
 }
 
-void File::saveDataFromStartPosToEndPos(const char* filename){
+bool File::saveDataFromStartPosToEndPos(const char* filename){
         if(m_pFile){
                 cout<<"IO is busying"<<endl;
-                return;
+                return false;
         }
 
         FILE* file = fopen(m_strFileName, "r");
         if(!file){
                 cout<<"saveDataFromStartPosToEndPos   open file="<<m_strFileName<<"failure"<<endl;
-                return;
+                return false;
         }
 
         FILE* newFile = fopen(filename,"w");
         if(!newFile){
                 cout<<"saveDataFromStartPosToEndPos   open file="<<filename<<"failure"<<endl;
-                return;
+                return false;
         }
 
         int pos = m_startPos;
         assert(!fseek(file,m_startPos,SEEK_SET));//move cur point
 
         char ch;
-        while((ch=fgetc(file))!=EOF && pos<=m_endPos){
+        while((ch=fgetc(file))!=EOF && pos<m_endPos){
                 fputc(ch, newFile);
                 pos++;
         }
 
         fclose(newFile);
         fclose(file);
+        return true;
 
 }
 /*

@@ -123,11 +123,17 @@ public:
             return 0;
         }
     }
-
-protected:
+    bool updateFileFromStartPosToEndPos();
+    bool copyFile(const char* destFileName,const char* strFileName);
     bool openFile(const char* filename);
     bool isOpenFile();
     bool closeFile();
+    char* getFileName(){
+        return m_strFileName;
+    }
+
+protected:
+
     virtual int read();//return the read count
     char m_readBuf[MAX_READ_TXT];//just tmp
     BYTE m_recieveBuf[MAX_READ_TXT];//just tmp
@@ -136,7 +142,7 @@ protected:
 
     LinkMgr* m_pLinkMgr;
     void* m_ui;//used to display msg on the window
-
+    char m_strFileName[256];
 private:
     File* m_file;
     int m_iFrequency;//how many times call the fun-onTimer in 1 sec.
@@ -149,7 +155,6 @@ private:
 
     ClientType_ m_clientId;
     bool m_isStartSendData;
-
     QMutex m_readWriteMutex;
 };
 

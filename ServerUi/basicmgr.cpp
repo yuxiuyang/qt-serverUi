@@ -12,6 +12,7 @@ BasicMgr::BasicMgr(LinkMgr* pLinkMgr,ClientType_ clientId):m_dataQueue(MAX_BUF)
     m_curPos = 0;
     m_file = NULL;
     memset(m_readBuf,0,sizeof(m_readBuf));
+    memset(m_strFileName,0,sizeof(m_strFileName));
     DataDev::getInstance()->start();
     m_pLinkMgr = pLinkMgr;
 
@@ -141,20 +142,26 @@ bool BasicMgr::openFile(const char* filename){
         m_readWriteMutex.unlock();
         return false;
     }
-    m_file = new File();
+    if(!m_file)
+        m_file = new File();
     assert(m_file);
     m_file->setFileName(filename);
     m_file->setReadFileProperty(true);
 
     printf("open file=%s success\n",filename);
     bool rel = m_file->open("a+");
+    if(rel){
+        strcpy(m_strFileName,filename);
+    }
     m_readWriteMutex.unlock();
     return rel;
 
 }
 
 bool BasicMgr::isOpenFile(){
-    return m_file==NULL?false:true;
+    if(!m_file) return false;
+
+    return m_file->isOpen();
 }
 
 bool BasicMgr::closeFile(){
@@ -165,8 +172,6 @@ bool BasicMgr::closeFile(){
         return false;
     }
     assert(m_file->close());
-    delete m_file;
-    m_file = NULL;
     printf("close file success\n");
     m_readWriteMutex.unlock();
     return true;
@@ -284,5 +289,39 @@ bool BasicMgr::anal_pag(const BYTE* buf,const int len){
         break;
     }
 
+    return true;
+}
+bool BasicMgr::updateFileFromStartPosToEndPos(){
+    if(!isOpenFile()){
+        if(m_file->saveDataFromStartPosToEndPos("~tmp.txt")){
+            if(copyFile(m_strFileName,"~tmp.txt")){
+                system("rm -f ~tmp.txt");
+                return true;
+            }
+        }
+    }
+    return false;
+}
+
+bool BasicMgr::copyFile(const char* destFileName,const char* srcFileName){
+    FILE* file = fopen(srcFileName, "r");
+    if(!file){
+            cout<<"copyFile   open file="<<srcFileName<<"failure"<<endl;
+            return false;
+    }
+
+    FILE* newFile = fopen(destFileName,"w");
+    if(!newFile){
+            cout<<"copyFile   open file="<<destFileName<<"failure"<<endl;
+            return false;
+    }
+
+    char ch;
+    while((ch=fgetc(file))!=EOF){
+            fputc(ch, newFile);
+    }
+
+    fclose(newFile);
+    fclose(file);
     return true;
 }

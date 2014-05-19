@@ -1,7 +1,7 @@
 /********************************************************************************
 ** Form generated from reading UI file 'mainwindow.ui'
 **
-** Created: Sun May 18 22:56:06 2014
+** Created: Mon May 19 21:13:11 2014
 **      by: Qt User Interface Compiler version 4.6.2
 **
 ** WARNING! All changes made in this file will be lost when recompiling UI file!
@@ -77,6 +77,7 @@ public:
     QSlider *pReadStartPos_slider;
     QLabel *pReadPos_label;
     QSlider *pReadEndPos_slider;
+    QPushButton *pUpdateFile;
     QRadioButton *pIbp_rb;
     QRadioButton *pCo2_rb;
     QRadioButton *pNarco_rb;
@@ -244,25 +245,14 @@ public:
         pReadStartPos_slider->setOrientation(Qt::Horizontal);
         pReadPos_label = new QLabel(pGloupBox);
         pReadPos_label->setObjectName(QString::fromUtf8("pReadPos_label"));
-        pReadPos_label->setGeometry(QRect(10, 240, 441, 22));
+        pReadPos_label->setGeometry(QRect(10, 240, 371, 22));
         pReadEndPos_slider = new QSlider(pGloupBox);
         pReadEndPos_slider->setObjectName(QString::fromUtf8("pReadEndPos_slider"));
         pReadEndPos_slider->setGeometry(QRect(260, 270, 251, 21));
         pReadEndPos_slider->setOrientation(Qt::Horizontal);
-        pBox_Label->raise();
-        pMsg_Txt->raise();
-        pStatistics_txt->raise();
-        pBtnGroup->raise();
-        pClear_btn->raise();
-        pSendIdCommand->raise();
-        groupBox->raise();
-        pChecksGroup->raise();
-        pCollectDatasBtnGroup->raise();
-        pCheckCollectDatasGroup->raise();
-        pReadStartPos_slider->raise();
-        pReadPos_label->raise();
-        pReadEndPos_slider->raise();
-        pShowReadData_check->raise();
+        pUpdateFile = new QPushButton(pGloupBox);
+        pUpdateFile->setObjectName(QString::fromUtf8("pUpdateFile"));
+        pUpdateFile->setGeometry(QRect(400, 240, 211, 27));
         pIbp_rb = new QRadioButton(centralWidget);
         pIbp_rb->setObjectName(QString::fromUtf8("pIbp_rb"));
         pIbp_rb->setGeometry(QRect(860, 140, 61, 22));
@@ -329,6 +319,7 @@ public:
         pCheckCollectDatasGroup->setTitle(QString());
         pCollectDatas_label->setText(QApplication::translate("MainWindow", "collecting datas", 0, QApplication::UnicodeUTF8));
         pReadPos_label->setText(QApplication::translate("MainWindow", "read data from start pos:     to end pos:", 0, QApplication::UnicodeUTF8));
+        pUpdateFile->setText(QApplication::translate("MainWindow", "update file from start to end pos", 0, QApplication::UnicodeUTF8));
         pIbp_rb->setText(QApplication::translate("MainWindow", "IBP", 0, QApplication::UnicodeUTF8));
         pCo2_rb->setText(QApplication::translate("MainWindow", "CO2", 0, QApplication::UnicodeUTF8));
         pNarco_rb->setText(QApplication::translate("MainWindow", "NARCO", 0, QApplication::UnicodeUTF8));

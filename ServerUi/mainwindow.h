@@ -40,6 +40,7 @@ public Q_SLOTS:
     void appendStatisticsMsg(char* buf);
     void showData(ClientType_ id,const char* buf);
     void displayStatisicsResult(ClientType_ id,TESTMSG* msg);
+    void updateFileFromStartToEndPos_click();
 
     void valueChanged(int);
     void alarmChanged(int);
@@ -50,7 +51,7 @@ public Q_SLOTS:
     void collectDatasCheckStateChanged(int state);
     void appendMsg(const char* msg);
     void appendData(const char* msg);
-    void appendData(const BYTE* msg,const int len);
+    void appendData(ClientType_ id,const BYTE* msg,const int len);
     void radioChange();
 
     void freOk_click();

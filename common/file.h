@@ -19,6 +19,10 @@ public:
     int write(const char*,...);//external interface
     int read(char *buffer,int size);
     void setFileName(const char* name);
+    bool isOpen(){
+        return m_pFile==NULL?false:true;
+    }
+
     bool open(const char* type);
     bool close();
     long getFileSize();
@@ -27,7 +31,7 @@ public:
     void reset(){
         m_readCurPos = 0;
     }
-    void saveDataFromStartPosToEndPos(const char* filename);
+    bool saveDataFromStartPosToEndPos(const char* filename);
 
     /*
      返回值列表：

@@ -1,7 +1,7 @@
 /********************************************************************************
 ** Form generated from reading UI file 'mainwindow.ui'
 **
-** Created: Mon May 19 21:13:11 2014
+** Created: Tue May 20 10:22:02 2014
 **      by: Qt User Interface Compiler version 4.6.2
 **
 ** WARNING! All changes made in this file will be lost when recompiling UI file!
@@ -252,7 +252,7 @@ public:
         pReadEndPos_slider->setOrientation(Qt::Horizontal);
         pUpdateFile = new QPushButton(pGloupBox);
         pUpdateFile->setObjectName(QString::fromUtf8("pUpdateFile"));
-        pUpdateFile->setGeometry(QRect(400, 240, 211, 27));
+        pUpdateFile->setGeometry(QRect(390, 240, 221, 27));
         pIbp_rb = new QRadioButton(centralWidget);
         pIbp_rb->setObjectName(QString::fromUtf8("pIbp_rb"));
         pIbp_rb->setGeometry(QRect(860, 140, 61, 22));
@@ -271,7 +271,7 @@ public:
         MainWindow->setCentralWidget(centralWidget);
         menuBar = new QMenuBar(MainWindow);
         menuBar->setObjectName(QString::fromUtf8("menuBar"));
-        menuBar->setGeometry(QRect(0, 0, 945, 32));
+        menuBar->setGeometry(QRect(0, 0, 945, 23));
         MainWindow->setMenuBar(menuBar);
         mainToolBar = new QToolBar(MainWindow);
         mainToolBar->setObjectName(QString::fromUtf8("mainToolBar"));

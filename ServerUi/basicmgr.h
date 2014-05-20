@@ -143,6 +143,8 @@ protected:
     LinkMgr* m_pLinkMgr;
     void* m_ui;//used to display msg on the window
     char m_strFileName[256];
+
+    FILE* m_collectDataFile;
 private:
     File* m_file;
     int m_iFrequency;//how many times call the fun-onTimer in 1 sec.

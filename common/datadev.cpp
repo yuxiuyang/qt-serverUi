@@ -132,7 +132,6 @@ void DataDev::sendData(int fd,const BYTE* buf,int len){
 
     INFO_DATA* pci=(INFO_DATA*)pkg->Alloc(sizeof(INFO_DATA));
     assert(pci);
-    pci->buf = new BYTE[len];
     pci->fd = fd;
     pci->len = len;
     pci->pThis = this;

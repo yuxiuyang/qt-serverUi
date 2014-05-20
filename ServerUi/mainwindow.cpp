@@ -422,6 +422,15 @@ void MainWindow::collectDatasCheckStateChanged(int state){
         QMessageBox::information(NULL, "notify", "please stop send data", QMessageBox::Yes/* | QMessageBox::No*/, QMessageBox::Yes);
         return;
     }
+    //close all files
+    m_pDataMgr->getMgrbyId(ECG_CLIENT)->closeFile();
+    m_pDataMgr->getMgrbyId(SPO2_CLIENT)->closeFile();
+    m_pDataMgr->getMgrbyId(CO2_CLIENT)->closeFile();
+    m_pDataMgr->getMgrbyId(NIBP_CLIENT)->closeFile();
+    m_pDataMgr->getMgrbyId(IBP_CLIENT)->closeFile();
+    m_pDataMgr->getMgrbyId(NARCO_CLIENT)->closeFile();
+    //exit send thread
+
     State::getInstance()->setStateData(COLLECT_DATA,ui->pCollectDatas_check->isChecked());
     ui->pMsg_Txt->clear();
     if(ui->pCollectDatas_check->isChecked()){

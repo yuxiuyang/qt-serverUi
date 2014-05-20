@@ -56,6 +56,20 @@ void NibpMgr::display(){
 }
 bool NibpMgr::anal_DataPag(const BYTE* buf,const int len){
 
+    if(State::getInstance()->getStateData(COLLECT_DATA)){
+        if(State::getInstance()->getStateData(COLLECT_START)){//start collect data
+            if(!m_collectDataFile){
+                m_collectDataFile = fopen("datafile/NIBP/~tmp_nibp.txt","w");
+                if(!m_collectDataFile){
+                    cout<<"NibpMgr  open collect data file failure"<<endl;
+                }
+            }
+            fwrite(buf, 1,len, m_collectDataFile);
+        }else{
+            fclose(m_collectDataFile);
+            m_collectDataFile = NULL;
+        }
+    }
     ((MainWindow*)(m_pLinkMgr->m_window))->appendData(NIBP_CLIENT,buf,len);
     return true;
 }

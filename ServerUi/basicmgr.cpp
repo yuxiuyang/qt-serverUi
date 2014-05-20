@@ -19,6 +19,7 @@ BasicMgr::BasicMgr(LinkMgr* pLinkMgr,ClientType_ clientId):m_dataQueue(MAX_BUF)
     m_clientId = clientId;
     m_ui = NULL;
     m_isStartSendData = false;
+    m_collectDataFile = NULL;
 }
 
 void BasicMgr::setFrequency(int fre){

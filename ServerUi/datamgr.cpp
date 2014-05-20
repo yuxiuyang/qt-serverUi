@@ -154,6 +154,8 @@ void DataMgr::generateTestFile(ClientType_ type){
 
 void DataMgr::_onWriteTimeout(){
     if(m_vecObject.size()<=0) return;
+    //if collecting data ,stop timeout
+    if(State::getInstance()->getStateData(COLLECT_DATA)) return;
     //cout<<"m_vecObject.size()="<<m_vecObject.size()<<endl;
     for(vector<void*>::iterator iter=m_vecObject.begin();iter!=m_vecObject.end();iter++){
         BasicMgr* mgr = (BasicMgr*)(*iter);

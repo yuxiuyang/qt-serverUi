@@ -4,6 +4,7 @@
 #include "state.h"
 #include "../include/global.h"
 #include <QMessageBox>
+#include <QFileDialog>
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
     ui(new Ui::MainWindow)
@@ -173,6 +174,8 @@ void MainWindow::radioChange(){
     }else{
         m_dataType = NIBP_CLIENT;
     }
+
+    m_pDataMgr->getMgrbyId(m_dataType)->clearTestData();
     State::getInstance()->setStateData(CUR_CLIENT,m_dataType);
     initClient();
 }
@@ -280,14 +283,28 @@ void MainWindow::saveCollectDatas_click(){
         return ;
     }
 
-    m_pDataMgr->getMgrbyId(m_dataType)->copyFile("...",m_pDataMgr->getMgrbyId(m_dataType)->getCollectDataTmpFile());
+    QString fileName = QFileDialog::getOpenFileName(this);
+    if (fileName.isEmpty())
+    {
+        return;
+    }
+
+    cout<<"filename="<<fileName.toStdString().c_str()<<endl;
+    bool ret = m_pDataMgr->getMgrbyId(m_dataType)->copyFile(fileName.toStdString().c_str(),m_pDataMgr->getMgrbyId(m_dataType)->getCollectDataTmpFile());
 
     ui->pStartCollectDatas->setEnabled(true);
     ui->pStopCollectDatas->setEnabled(false);
     ui->pSaveCollectDatas->setEnabled(false);
     ui->pDelCollectDatas->setEnabled(false);
-    cout<<"save Collect datas success"<<endl;
-    QMessageBox::information(NULL, "notify", "save success", QMessageBox::Yes/* | QMessageBox::No*/, QMessageBox::Yes);
+
+
+    if(ret){
+        cout<<"save Collect datas success"<<endl;
+        QMessageBox::information(NULL, "notify", "save success", QMessageBox::Yes/* | QMessageBox::No*/, QMessageBox::Yes);
+    }else{
+        cout<<"save Collect datas failure"<<endl;
+        QMessageBox::information(NULL, "notify", "save success", QMessageBox::Yes/* | QMessageBox::No*/, QMessageBox::Yes);
+    }
 }
 
 void MainWindow::delCollectDatas_click(){
@@ -462,6 +479,8 @@ void MainWindow::showReadDataCheckStateChanged(int state){
 void MainWindow::sendDataCheckStateChanged(int state){
     setSave(m_dataType,SAVE_SENDDATA,ui->pSendData_check->isChecked());
     m_pDataMgr->getMgrbyId(m_dataType)->startSendData(ui->pSendData_check->isChecked());
+
+    m_pDataMgr->getMgrbyId(m_dataType)->clearTestData();
 }
 
 void MainWindow::collectDatasCheckStateChanged(int state){

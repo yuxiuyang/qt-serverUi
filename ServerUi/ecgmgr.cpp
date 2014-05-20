@@ -49,6 +49,32 @@ void EcgMgr::display(){
 
 }
 bool EcgMgr::anal_DataPag(const BYTE* buf,const int len){
+    if(State::getInstance()->getStateData(COLLECT_DATA)){
+        if(State::getInstance()->getStateData(COLLECT_START)){//start collect data
+            if(!m_collectDataFile){
+                m_collectDataFile = fopen("datafile/NIBP/~tmp_nibp.txt","w");
+                if(!m_collectDataFile){
+                    cout<<"NibpMgr  open collect data file failure"<<endl;
+                }
+            }
+            fwrite(buf, 1,len, m_collectDataFile);
+        }else{
+            fclose(m_collectDataFile);
+            m_collectDataFile = NULL;
+        }
+    }
+    if(!isTestRunning()){
+        startTest();
+    }
+    string strBuf="";
+    char tmp[10]={0};
+    for(int i=0;i<len;i++){
+        sprintf(tmp,"%02x ",buf[i]);
+        strBuf += tmp;
+    }
+    memset(m_readBuf,0,sizeof(m_readBuf));
+    strcpy(m_readBuf,strBuf.c_str());
+    display();
     return true;
 }
 void EcgMgr::analyseCmd(BYTE cmd){

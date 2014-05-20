@@ -70,7 +70,19 @@ bool NibpMgr::anal_DataPag(const BYTE* buf,const int len){
             m_collectDataFile = NULL;
         }
     }
-    ((MainWindow*)(m_pLinkMgr->m_window))->appendData(NIBP_CLIENT,buf,len);
+    if(!isTestRunning()){
+        startTest();
+    }
+    string strBuf="";
+    char tmp[10]={0};
+    for(int i=0;i<len;i++){
+        sprintf(tmp,"%02x ",buf[i]);
+        strBuf += tmp;
+    }
+    memset(m_readBuf,0,sizeof(m_readBuf));
+    strcpy(m_readBuf,strBuf.c_str());
+    display();
+    //((MainWindow*)(m_pLinkMgr->m_window))->appendData(NIBP_CLIENT,buf,len);
     return true;
 }
 void NibpMgr::analyseCmd(BYTE cmd){

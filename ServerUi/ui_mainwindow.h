@@ -1,7 +1,7 @@
 /********************************************************************************
 ** Form generated from reading UI file 'mainwindow.ui'
 **
-** Created: Tue May 20 23:48:30 2014
+** Created: Wed May 21 06:51:30 2014
 **      by: Qt User Interface Compiler version 4.6.2
 **
 ** WARNING! All changes made in this file will be lost when recompiling UI file!
@@ -28,7 +28,6 @@
 #include <QtGui/QStatusBar>
 #include <QtGui/QTextBrowser>
 #include <QtGui/QToolBar>
-#include <QtGui/QToolButton>
 #include <QtGui/QWidget>
 
 QT_BEGIN_NAMESPACE
@@ -87,7 +86,6 @@ public:
     QRadioButton *pNarco_rb;
     QCheckBox *pCollectDatas_check;
     QPushButton *pStart_btn;
-    QToolButton *toolButton;
     QMenuBar *menuBar;
     QToolBar *mainToolBar;
     QStatusBar *statusBar;
@@ -282,9 +280,6 @@ public:
         pStart_btn = new QPushButton(centralWidget);
         pStart_btn->setObjectName(QString::fromUtf8("pStart_btn"));
         pStart_btn->setGeometry(QRect(30, 0, 99, 32));
-        toolButton = new QToolButton(centralWidget);
-        toolButton->setObjectName(QString::fromUtf8("toolButton"));
-        toolButton->setGeometry(QRect(870, 440, 35, 31));
         MainWindow->setCentralWidget(centralWidget);
         menuBar = new QMenuBar(MainWindow);
         menuBar->setObjectName(QString::fromUtf8("menuBar"));
@@ -345,7 +340,6 @@ public:
         pNarco_rb->setText(QApplication::translate("MainWindow", "NARCO", 0, QApplication::UnicodeUTF8));
         pCollectDatas_check->setText(QApplication::translate("MainWindow", "Collect datas", 0, QApplication::UnicodeUTF8));
         pStart_btn->setText(QApplication::translate("MainWindow", "start", 0, QApplication::UnicodeUTF8));
-        toolButton->setText(QApplication::translate("MainWindow", "...", 0, QApplication::UnicodeUTF8));
     } // retranslateUi
 
 };

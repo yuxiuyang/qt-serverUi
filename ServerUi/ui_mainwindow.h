@@ -1,7 +1,7 @@
 /********************************************************************************
 ** Form generated from reading UI file 'mainwindow.ui'
 **
-** Created: Tue May 20 10:22:02 2014
+** Created: Tue May 20 23:48:30 2014
 **      by: Qt User Interface Compiler version 4.6.2
 **
 ** WARNING! All changes made in this file will be lost when recompiling UI file!
@@ -28,6 +28,7 @@
 #include <QtGui/QStatusBar>
 #include <QtGui/QTextBrowser>
 #include <QtGui/QToolBar>
+#include <QtGui/QToolButton>
 #include <QtGui/QWidget>
 
 QT_BEGIN_NAMESPACE
@@ -72,6 +73,9 @@ public:
     QCheckBox *pShowReadData_check;
     QGroupBox *pCollectDatasBtnGroup;
     QPushButton *pSaveCollectDatas;
+    QPushButton *pStartCollectDatas;
+    QPushButton *pStopCollectDatas;
+    QPushButton *pDelCollectDatas;
     QGroupBox *pCheckCollectDatasGroup;
     QLabel *pCollectDatas_label;
     QSlider *pReadStartPos_slider;
@@ -83,6 +87,7 @@ public:
     QRadioButton *pNarco_rb;
     QCheckBox *pCollectDatas_check;
     QPushButton *pStart_btn;
+    QToolButton *toolButton;
     QMenuBar *menuBar;
     QToolBar *mainToolBar;
     QStatusBar *statusBar;
@@ -224,10 +229,19 @@ public:
         pShowReadData_check->setGeometry(QRect(160, 20, 111, 22));
         pCollectDatasBtnGroup = new QGroupBox(pGloupBox);
         pCollectDatasBtnGroup->setObjectName(QString::fromUtf8("pCollectDatasBtnGroup"));
-        pCollectDatasBtnGroup->setGeometry(QRect(320, 350, 291, 121));
+        pCollectDatasBtnGroup->setGeometry(QRect(320, 340, 291, 131));
         pSaveCollectDatas = new QPushButton(pCollectDatasBtnGroup);
         pSaveCollectDatas->setObjectName(QString::fromUtf8("pSaveCollectDatas"));
-        pSaveCollectDatas->setGeometry(QRect(10, 30, 261, 32));
+        pSaveCollectDatas->setGeometry(QRect(10, 90, 111, 32));
+        pStartCollectDatas = new QPushButton(pCollectDatasBtnGroup);
+        pStartCollectDatas->setObjectName(QString::fromUtf8("pStartCollectDatas"));
+        pStartCollectDatas->setGeometry(QRect(10, 10, 231, 32));
+        pStopCollectDatas = new QPushButton(pCollectDatasBtnGroup);
+        pStopCollectDatas->setObjectName(QString::fromUtf8("pStopCollectDatas"));
+        pStopCollectDatas->setGeometry(QRect(10, 50, 231, 32));
+        pDelCollectDatas = new QPushButton(pCollectDatasBtnGroup);
+        pDelCollectDatas->setObjectName(QString::fromUtf8("pDelCollectDatas"));
+        pDelCollectDatas->setGeometry(QRect(130, 90, 111, 32));
         pCheckCollectDatasGroup = new QGroupBox(pGloupBox);
         pCheckCollectDatasGroup->setObjectName(QString::fromUtf8("pCheckCollectDatasGroup"));
         pCheckCollectDatasGroup->setGeometry(QRect(10, 100, 301, 111));
@@ -252,7 +266,7 @@ public:
         pReadEndPos_slider->setOrientation(Qt::Horizontal);
         pUpdateFile = new QPushButton(pGloupBox);
         pUpdateFile->setObjectName(QString::fromUtf8("pUpdateFile"));
-        pUpdateFile->setGeometry(QRect(390, 240, 221, 27));
+        pUpdateFile->setGeometry(QRect(370, 240, 221, 27));
         pIbp_rb = new QRadioButton(centralWidget);
         pIbp_rb->setObjectName(QString::fromUtf8("pIbp_rb"));
         pIbp_rb->setGeometry(QRect(860, 140, 61, 22));
@@ -268,10 +282,13 @@ public:
         pStart_btn = new QPushButton(centralWidget);
         pStart_btn->setObjectName(QString::fromUtf8("pStart_btn"));
         pStart_btn->setGeometry(QRect(30, 0, 99, 32));
+        toolButton = new QToolButton(centralWidget);
+        toolButton->setObjectName(QString::fromUtf8("toolButton"));
+        toolButton->setGeometry(QRect(870, 440, 35, 31));
         MainWindow->setCentralWidget(centralWidget);
         menuBar = new QMenuBar(MainWindow);
         menuBar->setObjectName(QString::fromUtf8("menuBar"));
-        menuBar->setGeometry(QRect(0, 0, 945, 23));
+        menuBar->setGeometry(QRect(0, 0, 945, 32));
         MainWindow->setMenuBar(menuBar);
         mainToolBar = new QToolBar(MainWindow);
         mainToolBar->setObjectName(QString::fromUtf8("mainToolBar"));
@@ -315,7 +332,10 @@ public:
         pSendData_check->setText(QApplication::translate("MainWindow", "send data", 0, QApplication::UnicodeUTF8));
         pShowReadData_check->setText(QApplication::translate("MainWindow", "show data", 0, QApplication::UnicodeUTF8));
         pCollectDatasBtnGroup->setTitle(QString());
-        pSaveCollectDatas->setText(QApplication::translate("MainWindow", "save collect datas", 0, QApplication::UnicodeUTF8));
+        pSaveCollectDatas->setText(QApplication::translate("MainWindow", "save datas", 0, QApplication::UnicodeUTF8));
+        pStartCollectDatas->setText(QApplication::translate("MainWindow", "start collecting datas", 0, QApplication::UnicodeUTF8));
+        pStopCollectDatas->setText(QApplication::translate("MainWindow", "stop collecting datas", 0, QApplication::UnicodeUTF8));
+        pDelCollectDatas->setText(QApplication::translate("MainWindow", "delete datas", 0, QApplication::UnicodeUTF8));
         pCheckCollectDatasGroup->setTitle(QString());
         pCollectDatas_label->setText(QApplication::translate("MainWindow", "collecting datas", 0, QApplication::UnicodeUTF8));
         pReadPos_label->setText(QApplication::translate("MainWindow", "read data from start pos:     to end pos:", 0, QApplication::UnicodeUTF8));
@@ -325,6 +345,7 @@ public:
         pNarco_rb->setText(QApplication::translate("MainWindow", "NARCO", 0, QApplication::UnicodeUTF8));
         pCollectDatas_check->setText(QApplication::translate("MainWindow", "Collect datas", 0, QApplication::UnicodeUTF8));
         pStart_btn->setText(QApplication::translate("MainWindow", "start", 0, QApplication::UnicodeUTF8));
+        toolButton->setText(QApplication::translate("MainWindow", "...", 0, QApplication::UnicodeUTF8));
     } // retranslateUi
 
 };

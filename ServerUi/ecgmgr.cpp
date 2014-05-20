@@ -62,3 +62,6 @@ bool EcgMgr::anal_ConnectPag(const BYTE* buf,const int len){
     //return m_pLinkMgr->analLinkPag(buf,len);
         return true;
 }
+char* EcgMgr::getCollectDataTmpFile(){
+    return "datafile/ECG/~tmp_ecg.txt";
+}

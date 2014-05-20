@@ -107,3 +107,6 @@ void NibpMgr::analyseCmd(BYTE cmd){
 bool NibpMgr::anal_ConnectPag(const BYTE* buf,const int len){
     //return m_pLinkMgr->analLinkPag(buf,len);
 }
+char* NibpMgr::getCollectDataTmpFile(){
+    return "datafile/NIBP/~tmp_nibp.txt";
+}

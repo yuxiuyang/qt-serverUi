@@ -62,3 +62,6 @@ bool IbpMgr::anal_ConnectPag(const BYTE* buf,const int len){
     //return m_pLinkMgr->analLinkPag(buf,len);
         return true;
 }
+char* IbpMgr::getCollectDataTmpFile(){
+    return "datafile/IBP/~tmp_ibp.txt";
+}

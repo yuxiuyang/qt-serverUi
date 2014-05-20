@@ -37,6 +37,7 @@ public:
     virtual void onTimer()=0;
     virtual void display()=0;//display
     virtual void sendData(const BYTE* buf,int len)=0;
+    virtual char* getCollectDataTmpFile()=0;
     void setFrequency(int fre);
     void setReadNum(int num);
     int getFrequency(){
@@ -126,6 +127,7 @@ public:
     bool updateFileFromStartPosToEndPos();
     bool copyFile(const char* destFileName,const char* strFileName);
     bool openFile(const char* filename);
+    bool openFile();
     bool isOpenFile();
     bool closeFile();
     char* getFileName(){

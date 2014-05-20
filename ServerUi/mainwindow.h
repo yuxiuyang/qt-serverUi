@@ -34,7 +34,10 @@ public Q_SLOTS:
     void clearDisplayMsg_click();
     void generateData_click();
     void sendRequestData_click();
+    void startCollectDatas_click();
+    void stopCollectDatas_click();
     void saveCollectDatas_click();
+    void delCollectDatas_click();
     void startTestCheckStateChanged (int state);
     void showReadDataCheckStateChanged(int state);
     void appendStatisticsMsg(char* buf);

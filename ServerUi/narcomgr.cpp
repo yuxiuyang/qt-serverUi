@@ -61,3 +61,6 @@ bool NarcoMgr::anal_ConnectPag(const BYTE* buf,const int len){
     //return m_pLinkMgr->analLinkPag(buf,len);
         return true;
 }
+char* NarcoMgr::getCollectDataTmpFile(){
+    return "datafile/NARCO/~tmp_narco.txt";
+}

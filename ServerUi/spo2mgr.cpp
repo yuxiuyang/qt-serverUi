@@ -83,3 +83,6 @@ bool Spo2Mgr::anal_ConnectPag(const BYTE* buf,const int len){
     //return m_pLinkMgr->analLinkPag(buf,len);
         return true;
 }
+char* Spo2Mgr::getCollectDataTmpFile(){
+    return "datafile/SPO2/~tmp_spo2.txt";
+}

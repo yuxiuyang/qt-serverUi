@@ -18,7 +18,10 @@ MainWindow::MainWindow(QWidget *parent) :
     connect(ui->pSendIdCommand,SIGNAL(clicked()), this, SLOT(sendRequestData_click()));
     connect(ui->pGenerateData_btn,SIGNAL(clicked()),this,SLOT(generateData_click()));
     connect(ui->pExit_btn,SIGNAL(clicked()),this,SLOT(exit_click()));
+    connect(ui->pStartCollectDatas,SIGNAL(clicked()),this,SLOT(startCollectDatas_click()));
+    connect(ui->pStopCollectDatas,SIGNAL(clicked()),this,SLOT(stopCollectDatas_click()));
     connect(ui->pSaveCollectDatas,SIGNAL(clicked()),this,SLOT(saveCollectDatas_click()));
+    connect(ui->pDelCollectDatas,SIGNAL(clicked()),this,SLOT(delCollectDatas_click()));
     connect(ui->pUpdateFile,SIGNAL(clicked()),this,SLOT(updateFileFromStartToEndPos_click()));
     connect( m_pTestTimer, SIGNAL(timeout()), this, SLOT(sendTimer()) );
     connect(ui->pST_check, SIGNAL(stateChanged(int)), this, SLOT(startTestCheckStateChanged(int)));
@@ -272,7 +275,51 @@ void MainWindow::rcCancel_click(){
 }
 
 void MainWindow::saveCollectDatas_click(){
+    if(State::getInstance()->getStateData(COLLECT_START)){
+        QMessageBox::information(NULL, "notify", "please stop collecting data,first", QMessageBox::Yes/* | QMessageBox::No*/, QMessageBox::Yes);
+        return ;
+    }
+
+    m_pDataMgr->getMgrbyId(m_dataType)->copyFile("...",m_pDataMgr->getMgrbyId(m_dataType)->getCollectDataTmpFile());
+
+    ui->pStartCollectDatas->setEnabled(true);
+    ui->pStopCollectDatas->setEnabled(false);
+    ui->pSaveCollectDatas->setEnabled(false);
+    ui->pDelCollectDatas->setEnabled(false);
     cout<<"save Collect datas success"<<endl;
+    QMessageBox::information(NULL, "notify", "save success", QMessageBox::Yes/* | QMessageBox::No*/, QMessageBox::Yes);
+}
+
+void MainWindow::delCollectDatas_click(){
+
+    char cmdLine[100]={0};
+    sprintf(cmdLine,"rm -f %s",m_pDataMgr->getMgrbyId(m_dataType)->getCollectDataTmpFile());
+    system(cmdLine);
+    ui->pStartCollectDatas->setEnabled(true);
+    ui->pStopCollectDatas->setEnabled(false);
+    ui->pSaveCollectDatas->setEnabled(false);
+    ui->pDelCollectDatas->setEnabled(false);
+    QMessageBox::information(NULL, "notify", "delete success", QMessageBox::Yes/* | QMessageBox::No*/, QMessageBox::Yes);
+}
+
+void MainWindow::startCollectDatas_click(){
+    cout<<"start Collect datas success"<<endl;
+    State::getInstance()->setStateData(COLLECT_START,1);
+
+    ui->pStartCollectDatas->setEnabled(false);
+    ui->pStopCollectDatas->setEnabled(true);
+    ui->pSaveCollectDatas->setEnabled(false);
+    ui->pDelCollectDatas->setEnabled(false);
+}
+
+void MainWindow::stopCollectDatas_click(){
+    cout<<"stop Collect datas success"<<endl;
+    State::getInstance()->setStateData(COLLECT_START,0);
+
+    ui->pStartCollectDatas->setEnabled(false);
+    ui->pStopCollectDatas->setEnabled(false);
+    ui->pSaveCollectDatas->setEnabled(true);
+    ui->pDelCollectDatas->setEnabled(true);
 }
 
 void MainWindow::updateFileFromStartToEndPos_click(){
@@ -418,23 +465,27 @@ void MainWindow::sendDataCheckStateChanged(int state){
 }
 
 void MainWindow::collectDatasCheckStateChanged(int state){
+    cout<<"collectDatasCheckStateChanged"<<endl;
     if(m_pDataMgr->getMgrbyId(m_dataType)->getSendDataState()){
         QMessageBox::information(NULL, "notify", "please stop send data", QMessageBox::Yes/* | QMessageBox::No*/, QMessageBox::Yes);
+        ui->pCollectDatas_check->setChecked(false);
         return;
     }
-    //close all files
-    m_pDataMgr->getMgrbyId(ECG_CLIENT)->closeFile();
-    m_pDataMgr->getMgrbyId(SPO2_CLIENT)->closeFile();
-    m_pDataMgr->getMgrbyId(CO2_CLIENT)->closeFile();
-    m_pDataMgr->getMgrbyId(NIBP_CLIENT)->closeFile();
-    m_pDataMgr->getMgrbyId(IBP_CLIENT)->closeFile();
-    m_pDataMgr->getMgrbyId(NARCO_CLIENT)->closeFile();
-    //exit send thread
-
     State::getInstance()->setStateData(COLLECT_DATA,ui->pCollectDatas_check->isChecked());
+
     ui->pMsg_Txt->clear();
+
     if(ui->pCollectDatas_check->isChecked()){
         ui->pCollectDatas_check->setText("Collecting data");
+
+        //close all files
+        m_pDataMgr->getMgrbyId(ECG_CLIENT)->closeFile();
+        m_pDataMgr->getMgrbyId(SPO2_CLIENT)->closeFile();
+        m_pDataMgr->getMgrbyId(CO2_CLIENT)->closeFile();
+        m_pDataMgr->getMgrbyId(NIBP_CLIENT)->closeFile();
+        m_pDataMgr->getMgrbyId(IBP_CLIENT)->closeFile();
+        m_pDataMgr->getMgrbyId(NARCO_CLIENT)->closeFile();
+
 
         ui->pCollectDatasBtnGroup->move(ui->pBtnGroup->x(),ui->pBtnGroup->y());
         ui->pBtnGroup->hide();
@@ -448,9 +499,33 @@ void MainWindow::collectDatasCheckStateChanged(int state){
         ui->pReadEndPos_slider->hide();
         ui->pReadStartPos_slider->hide();
         ui->pReadPos_label->hide();
+        ui->pUpdateFile->hide();
+        ui->pFreCancel_btn->hide();
+        ui->pFreOk_btn->hide();
+        ui->pRcCancel_btn->hide();
+        ui->pRcOk_btn->hide();
+
+        ui->pFre_edit->setText("");
+        ui->pTm_edit->setText("");
+        ui->pRc_edit->setText("");
+        //ui->pTm_edit->insert(QString::number(m_pDataMgr->getMgrbyId(m_dataType)->getTimeout()));
+
+        ui->pStartCollectDatas->setEnabled(true);
+        ui->pStopCollectDatas->setEnabled(false);
+        ui->pSaveCollectDatas->setEnabled(false);
+        ui->pDelCollectDatas->setEnabled(false);
+
 
     }else{
         ui->pCollectDatas_check->setText("Collect datas");
+
+
+        m_pDataMgr->getMgrbyId(ECG_CLIENT)->openFile();
+        m_pDataMgr->getMgrbyId(SPO2_CLIENT)->openFile();
+        m_pDataMgr->getMgrbyId(CO2_CLIENT)->openFile();
+        m_pDataMgr->getMgrbyId(NIBP_CLIENT)->openFile();
+        m_pDataMgr->getMgrbyId(IBP_CLIENT)->openFile();
+        m_pDataMgr->getMgrbyId(NARCO_CLIENT)->openFile();
 
 
         ui->pBtnGroup->show();
@@ -461,6 +536,15 @@ void MainWindow::collectDatasCheckStateChanged(int state){
         ui->pReadEndPos_slider->show();
         ui->pReadStartPos_slider->show();
         ui->pReadPos_label->show();
+        ui->pUpdateFile->show();
+        ui->pFreCancel_btn->show();
+        ui->pFreOk_btn->show();
+        ui->pRcCancel_btn->show();
+        ui->pRcOk_btn->show();
+
+        ui->pFre_edit->setText(QString::number(m_pDataMgr->getMgrbyId(m_dataType)->getFrequency()));
+        ui->pTm_edit->setText(QString::number(m_pDataMgr->getMgrbyId(m_dataType)->getTimeout()));
+        ui->pRc_edit->setText(QString::number(m_pDataMgr->getMgrbyId(m_dataType)->getReadNum()));
 
     }
 }

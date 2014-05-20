@@ -13,6 +13,8 @@ public:
 
     void display();
     int data_Arrived(int fd);
+
+    char* getCollectDataTmpFile();
     
 
 protected:

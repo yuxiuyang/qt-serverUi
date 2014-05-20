@@ -62,3 +62,6 @@ bool Co2Mgr::anal_ConnectPag(const BYTE* buf,const int len){
     //return m_pLinkMgr->analLinkPag(buf,len);
         return true;
 }
+char* Co2Mgr::getCollectDataTmpFile(){
+    return "datafile/CO2/~tmp_co2.txt";
+}

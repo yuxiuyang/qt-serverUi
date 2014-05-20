@@ -158,6 +158,9 @@ bool BasicMgr::openFile(const char* filename){
     return rel;
 
 }
+bool BasicMgr::openFile(){
+    return openFile(m_strFileName);
+}
 
 bool BasicMgr::isOpenFile(){
     if(!m_file) return false;

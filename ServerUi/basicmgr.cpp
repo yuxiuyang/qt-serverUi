@@ -303,7 +303,9 @@ bool BasicMgr::anal_pag(const BYTE* buf,const int len){
         anal_ConnectPag(buf,len);
         break;
     case Cmd_Msg:
-        analyseCmd(buf[4],buf[5]);
+        //Intercept cmd
+        if(!State::getInstance()->getStateData(COLLECT_DATA))
+            analyseCmd(buf[4],buf[5]);
         break;
     default:
         break;

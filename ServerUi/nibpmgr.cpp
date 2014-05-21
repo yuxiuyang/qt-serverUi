@@ -42,9 +42,10 @@ void NibpMgr::onTimer(){
 
 void NibpMgr::display(){
 
-    if(m_testMsg.usedtimeSum >= REFRESH_TIME){//auto display to ui
+    if(m_testMsg.usedtimeSum >= 4*1000/*REFRESH_TIME*/){//auto display to ui
          ((MainWindow*)m_ui)->displayStatisicsResult(NIBP_CLIENT,getTestMsg());
          clearTestData();
+
      }
     if(isShowData()){
         ((MainWindow*)m_ui)->showData(NIBP_CLIENT,m_readBuf);
@@ -71,6 +72,10 @@ bool NibpMgr::anal_DataPag(const BYTE* buf,const int len){
         startTest();
         setShowDataSign(true);
     }
+
+    int count = test(len);
+
+
     string strBuf="";
     char tmp[10]={0};
     for(int i=0;i<len;i++){
@@ -87,7 +92,7 @@ void NibpMgr::analyseCmd(BYTE cmd,BYTE param){
     char buf[100]={0};
     sprintf(buf,"cmd=%d",cmd);
     cout<<"buf="<<buf<<endl;
-    ((MainWindow*)(m_pLinkMgr->m_window))->showData(NIBP_CLIENT,buf);
+    //((MainWindow*)(m_pLinkMgr->m_window))->showData(NIBP_CLIENT,buf);
     switch(cmd){
     case NIBP_TYPE:
         {

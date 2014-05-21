@@ -188,13 +188,6 @@ void LinkMgr::requestLinkMsg(){
     }
 }
 void LinkMgr::sendRequestIdMsg(int fd){
-    BYTE tmpBuf[5];
-    tmpBuf[0] = 0x99;//start
-    tmpBuf[1] = 0x05;//
-    tmpBuf[2] = Link_Request;
-    tmpBuf[3] = tmpBuf[1]+tmpBuf[2];
-    tmpBuf[4] = 0xdd;
-
     DataDev::getInstance()->sendData(fd,Link_Request,NONE_CLIENT);
 }
 
@@ -217,16 +210,23 @@ int LinkMgr::data_Arrived(int Fd){
              {
                  char tmp[100]={0};
                  sprintf(tmp,"0x%02x comfire id",socketId->clientId);
-                 if(socketId->clientId<0) sendRequestIdMsg(Fd);//request id msg
-                 else ((MainWindow*)m_window)->appendMsg(tmp);
+                 if(socketId->clientId<0){
+                     sendRequestIdMsg(Fd);
+                 }//request id msg
+                 else{
+                     if(State::getInstance()->getStateData(COLLECT_DATA)){//if in collecting data
+                         DataDev::getInstance()->sendData(socketId->fd,Cmd_Msg,socketId->clientId,MODE_COLLECTDATAS);
+                     }
+                     ((MainWindow*)m_window)->appendMsg(tmp);
+                 }
              }
          }else{
              if(m_pDataMgr){
-                 printf("receive data len=%d\n",len);
-                 for(int i=0;i<len;i++){
-                     printf("%02x ",tmpbuf[i]);
-                 }
-                 printf("end .....\n");
+//                 printf("receive data len=%d\n",len);
+//                 for(int i=0;i<len;i++){
+//                     printf("%02x ",tmpbuf[i]);
+//                 }
+//                 printf("end .....\n");
                ((DataMgr*)m_pDataMgr)->handle(socketId->clientId,tmpbuf,len);
              }
          }

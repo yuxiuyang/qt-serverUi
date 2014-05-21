@@ -10,7 +10,7 @@
 #include "fltkLog.h"
 #include <iostream>
 using namespace std;
-fltkLog log;
+//fltkLog log;
 
 DataDev* DataDev::m_instance = new DataDev();
 DataDev::DataDev(QObject *parent) :
@@ -33,7 +33,7 @@ DataDev::~DataDev(){
 }
 void DataDev::start ( Priority priority ){
     if(!m_callbackFdVec.empty()){
-        log.Write("start......");
+        //log.Write("start......");
         QThread::start(priority);
     }
     m_pthreadState = THREAD_RUNNING;
@@ -47,9 +47,9 @@ DataDev* DataDev::getInstance(){
     return m_instance;
 }
 void DataDev::run(){//device recv data
-    log.Write("thread run start thread=%lu",pthread_self());
+    //log.Write("thread run start thread=%lu",pthread_self());
     recvData();
-    log.Write("thread run end thread=%lu",pthread_self());
+    //log.Write("thread run end thread=%lu",pthread_self());
 }
 
 
@@ -72,7 +72,7 @@ void DataDev::recvData(){
                close((*iter)->fd);
                delete (*iter);
                m_callbackFdVec.erase(iter);
-               log.Write("removeFd fd=%d",(*iter)->fd);
+               //log.Write("removeFd fd=%d",(*iter)->fd);
                continue;
            }
            sockaddr_in addrMy;
@@ -80,7 +80,7 @@ void DataDev::recvData(){
             socklen_t len = sizeof(addrMy);
 
             if(-1 == getsockname((*iter)->fd,(sockaddr*)&addrMy,&len)){
-                log.Write("start listen a closed socket fd=%d",(*iter)->fd);
+                //log.Write("start listen a closed socket fd=%d",(*iter)->fd);
             }
 
            //add active connection to fd set
@@ -106,13 +106,12 @@ void DataDev::recvData(){
         for(int i=0;i<m_callbackFdVec.size();i++){
             if (FD_ISSET(m_callbackFdVec[i]->fd, &fdSet)) {
                 cout<<"select success m_callbackFdVec[i]="<<m_callbackFdVec[i]->fd<<endl;
-                log.Write("select success m_callbackFdVec[i].fd=%d",m_callbackFdVec[i]->fd);
+                //log.Write("select success m_callbackFdVec[i].fd=%d",m_callbackFdVec[i]->fd);
+                if(!checkRecvFd(m_callbackFdVec[i]->fd))  removeFd(m_callbackFdVec[i]->fd);
                 if(m_callbackFdVec[i]->object){
                     m_callbackFdVec[i]->object->data_Arrived(m_callbackFdVec[i]->fd);
                 }else if(m_callbackFdVec[i]->callBack_)
                 m_callbackFdVec[i]->callBack_(m_callbackFdVec[i]->fd);
-
-                if(!checkRecvFd(m_callbackFdVec[i]->fd))  removeFd(m_callbackFdVec[i]->fd);
 
             }
         }
@@ -226,18 +225,18 @@ bool DataDev::displayRemoteClientSocketMsg(int socketFd){
      if (ret != 0)
      {
        cout<<"Getsockname Error!"<<endl;
-       log.Write("Get Sockname error,sockFd=%d,errno=%d",socketFd,errno);
+       //log.Write("Get Sockname error,sockFd=%d,errno=%d",socketFd,errno);
        return -1;
      }
 
      if(addrMy.sin_family != AF_INET)
      {
         sprintf(bufTmp, "Not an Internet socket.");
-        log.Write(bufTmp);
+        //log.Write(bufTmp);
         return -1;
      }
      sprintf(bufTmp, "socket=%d ==> address is: %s : %d", socketFd, inet_ntoa(addrMy.sin_addr), ntohs(addrMy.sin_port));
-     log.Write(bufTmp);
+     //log.Write(bufTmp);
      return 0;
 
 }
@@ -262,7 +261,7 @@ bool DataDev::checkRecvFd(int Fd){
     BYTE buf[100];
     int len = recv(Fd,buf,sizeof(buf),MSG_PEEK);
     if(len==0){//this client socket has closed
-        log.Write("isValidatefd listen success and close fd=%d",Fd);
+        //log.Write("isValidatefd listen success and close fd=%d",Fd);
         return false;
     }
     return true;
@@ -336,7 +335,7 @@ void DataDev::sendTestData(int type){
     tmp[2] = 0x77;
     int socket = 23;
     int size = send(m_callbackFdVec[type]->fd,tmp,3,0);
-    log.Write("fd=%d,size=%d   send success",m_callbackFdVec[type]->fd,size);
+    //log.Write("fd=%d,size=%d   send success",m_callbackFdVec[type]->fd,size);
     if(size<=0){
         cout<<"main window send failure\n";
     }
@@ -371,7 +370,7 @@ int DataDev::sendData(int fd,MsgType_ type,ClientType_ clientId,const BYTE* buf,
             return sendData(fd,tmpBuf,6+len);
 }
 int DataDev::sendData(int fd,MsgType_ type,ClientType_ clientId){
-    if(type==Data_Msg) return 0;
+    if(type!=Link_Msg) return 0;
         BYTE tmp[6];
         tmp[0] = 0x99;
         tmp[1] = 0x06;
@@ -396,11 +395,11 @@ int DataDev::sendData(int fd,MsgType_ msgType,ClientType_ clientId,BYTE cmd,BYTE
         return sendData(fd,tmp,8);
 }
 int DataDev::sendData(int fd,const BYTE* data, int len) {
-        printf("sendData start len=%d\n",len);
-        for(int i=0;i<len;i++){
-                printf("%02x ",data[i]);
-        }
-        printf("  end....\n");
+//        printf("sendData start len=%d\n",len);
+//        for(int i=0;i<len;i++){
+//                printf("%02x ",data[i]);
+//        }
+//        printf("  end....\n");
         int total = 0;
         while (1) {
                 int size = send(fd, data + total, len, 0);

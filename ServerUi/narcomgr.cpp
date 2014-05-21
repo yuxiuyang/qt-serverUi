@@ -61,6 +61,9 @@ bool NarcoMgr::anal_DataPag(const BYTE* buf,const int len){
         startTest();
         setShowDataSign(true);
     }
+
+    int count = test(len);
+
     string strBuf="";
     char tmp[10]={0};
     for(int i=0;i<len;i++){

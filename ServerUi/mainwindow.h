@@ -38,13 +38,17 @@ public Q_SLOTS:
     void stopCollectDatas_click();
     void saveCollectDatas_click();
     void delCollectDatas_click();
+
+    //append msg
+    void appendMsg(const char* msg);
     void startTestCheckStateChanged (int state);
     void showReadDataCheckStateChanged(int state);
     void appendStatisticsMsg(char* buf);
     void showData(ClientType_ id,const char* buf);
     void displayStatisicsResult(ClientType_ id,TESTMSG* msg);
-    void updateFileFromStartToEndPos_click();
+    /////////////////////////////////////////////
 
+    void updateFileFromStartToEndPos_click();
     void valueChanged(int);
     void alarmChanged(int);
 
@@ -52,9 +56,7 @@ public Q_SLOTS:
 
     void sendDataCheckStateChanged(int state);
     void collectDatasCheckStateChanged(int state);
-    void appendMsg(const char* msg);
-    void appendData(const char* msg);
-    void appendData(ClientType_ id,const BYTE* msg,const int len);
+
     void radioChange();
 
     void freOk_click();
@@ -92,7 +94,8 @@ private:
 
     QTimer *m_pTestTimer;
     QMutex  m_pMutex;
-    queue<string> m_queDataLine;
+    queue<string> m_queDataLine[CLIENT_NUM];
+    queue<string> m_queStasticMsgLine[CLIENT_NUM];
     queue<string> m_queConnectMsgLine;
     //queue<string> m_queStasticMsgLine;
 

@@ -50,7 +50,7 @@ MainWindow::MainWindow(QWidget *parent) :
     connect(ui->pValue_cb, SIGNAL(currentIndexChanged(int)), this, SLOT(valueChanged(int)));
     connect(ui->pAlarm_cb, SIGNAL(currentIndexChanged(int)), this, SLOT(alarmChanged(int)));
 
-    ui->pStart_btn->setEnabled(true);
+    ui->pStart_btn->setEnabled(false);
     ui->pStop_btn->hide();
     ui->pStart_label->setText("server running");
 
@@ -181,8 +181,104 @@ void MainWindow::radioChange(){
     initClient();
 
     if(State::getInstance()->getStateData(COLLECT_DATA)){
+        ui->pFre_edit->setText("");
+        ui->pTm_edit->setText("");
+        ui->pRc_edit->setText("");
         m_pDataMgr->getMgrbyId(m_dataType)->sendData(Cmd_Msg,m_dataType,MODE_COLLECTDATAS);
     }else{
+        m_pDataMgr->getMgrbyId(m_dataType)->sendData(Cmd_Msg,m_dataType,MODE_NORMAL);
+    }
+}
+
+void MainWindow::collectDatasCheckStateChanged(int state){
+    cout<<"collectDatasCheckStateChanged"<<endl;
+    bool send_nibp = m_pDataMgr->getMgrbyId(NIBP_CLIENT)->getSendDataState();
+    bool send_spo2 = m_pDataMgr->getMgrbyId(SPO2_CLIENT)->getSendDataState();
+    bool send_ecg = m_pDataMgr->getMgrbyId(ECG_CLIENT)->getSendDataState();
+    bool send_ibp = m_pDataMgr->getMgrbyId(IBP_CLIENT)->getSendDataState();
+    bool send_co2 = m_pDataMgr->getMgrbyId(CO2_CLIENT)->getSendDataState();
+    bool send_narco = m_pDataMgr->getMgrbyId(NARCO_CLIENT)->getSendDataState();
+
+    if(send_nibp || send_spo2 || send_ecg || send_ibp || send_co2 || send_narco){
+        QMessageBox::information(NULL, "notify", "please stop send data", QMessageBox::Yes/* | QMessageBox::No*/, QMessageBox::Yes);
+        ui->pCollectDatas_check->setChecked(false);
+        return;
+    }
+    State::getInstance()->setStateData(COLLECT_DATA,ui->pCollectDatas_check->isChecked());
+
+    ui->pMsg_Txt->clear();
+
+    if(ui->pCollectDatas_check->isChecked()){
+        ui->pCollectDatas_check->setText("Collecting data");
+
+        //close all files
+        m_pDataMgr->getMgrbyId(ECG_CLIENT)->closeFile();
+        m_pDataMgr->getMgrbyId(SPO2_CLIENT)->closeFile();
+        m_pDataMgr->getMgrbyId(CO2_CLIENT)->closeFile();
+        m_pDataMgr->getMgrbyId(NIBP_CLIENT)->closeFile();
+        m_pDataMgr->getMgrbyId(IBP_CLIENT)->closeFile();
+        m_pDataMgr->getMgrbyId(NARCO_CLIENT)->closeFile();
+
+
+        ui->pCollectDatasBtnGroup->move(ui->pBtnGroup->x(),ui->pBtnGroup->y());
+        ui->pBtnGroup->hide();
+        ui->pCollectDatasBtnGroup->show();
+
+        ui->pCheckCollectDatasGroup->move(ui->pChecksGroup->x(),ui->pChecksGroup->y());
+        ui->pChecksGroup->hide();
+        ui->pCheckCollectDatasGroup->show();
+
+
+        ui->pReadEndPos_slider->hide();
+        ui->pReadStartPos_slider->hide();
+        ui->pReadPos_label->hide();
+        ui->pUpdateFile->hide();
+        ui->pFreCancel_btn->hide();
+        ui->pFreOk_btn->hide();
+        ui->pRcCancel_btn->hide();
+        ui->pRcOk_btn->hide();
+
+        ui->pFre_edit->setText("");
+        ui->pTm_edit->setText("");
+        ui->pRc_edit->setText("");
+        //ui->pTm_edit->insert(QString::number(m_pDataMgr->getMgrbyId(m_dataType)->getTimeout()));
+
+        ui->pStartCollectDatas->setEnabled(true);
+        ui->pStopCollectDatas->setEnabled(false);
+        ui->pSaveCollectDatas->setEnabled(false);
+        ui->pDelCollectDatas->setEnabled(false);
+
+        m_pDataMgr->getMgrbyId(m_dataType)->sendData(Cmd_Msg,m_dataType,MODE_COLLECTDATAS);
+    }else{
+        ui->pCollectDatas_check->setText("Collect datas");
+
+
+        m_pDataMgr->getMgrbyId(ECG_CLIENT)->openFile();
+        m_pDataMgr->getMgrbyId(SPO2_CLIENT)->openFile();
+        m_pDataMgr->getMgrbyId(CO2_CLIENT)->openFile();
+        m_pDataMgr->getMgrbyId(NIBP_CLIENT)->openFile();
+        m_pDataMgr->getMgrbyId(IBP_CLIENT)->openFile();
+        m_pDataMgr->getMgrbyId(NARCO_CLIENT)->openFile();
+
+
+        ui->pBtnGroup->show();
+        ui->pCollectDatasBtnGroup->hide();
+        ui->pChecksGroup->show();
+        ui->pCheckCollectDatasGroup->hide();
+
+        ui->pReadEndPos_slider->show();
+        ui->pReadStartPos_slider->show();
+        ui->pReadPos_label->show();
+        ui->pUpdateFile->show();
+        ui->pFreCancel_btn->show();
+        ui->pFreOk_btn->show();
+        ui->pRcCancel_btn->show();
+        ui->pRcOk_btn->show();
+
+        ui->pFre_edit->setText(QString::number(m_pDataMgr->getMgrbyId(m_dataType)->getFrequency()));
+        ui->pTm_edit->setText(QString::number(m_pDataMgr->getMgrbyId(m_dataType)->getTimeout()));
+        ui->pRc_edit->setText(QString::number(m_pDataMgr->getMgrbyId(m_dataType)->getReadNum()));
+
         m_pDataMgr->getMgrbyId(m_dataType)->sendData(Cmd_Msg,m_dataType,MODE_NORMAL);
     }
 }
@@ -405,70 +501,36 @@ void MainWindow::setValue_slider(int val){
     }
 }
 
-void MainWindow::appendMsg(const char* msg){
-    m_pMutex.lock();
-    //ui->pConnectMsg_txt->append(msg);
-    m_queConnectMsgLine.push(msg);
-    m_pMutex.unlock();
-}
+
 void MainWindow::exit_click(){
     close();
 }
-void MainWindow::appendData(const char* msg){
-    m_pMutex.lock();
-    m_queDataLine.push(msg);
-    m_pMutex.unlock();
-}
-void MainWindow::appendData(ClientType_ id,const BYTE* msg,const int len){
-    //m_pMutex.lock();
-    if(!State::getInstance()->getStateData(COLLECT_DATA)) return;//just show data when collecting data.
-    if(id != m_dataType) return;
-    string strBuf="";
-    char tmp[10]={0};
-    for(int i=0;i<len;i++){
-        sprintf(tmp,"%02x ",msg[i]);
-        strBuf += tmp;
-    }
-
-    QTextCursor cursor =  ui->pMsg_Txt->textCursor();
-    cursor.movePosition(QTextCursor::End);
-    ui->pMsg_Txt->setTextCursor(cursor);
-    ui->pMsg_Txt->insertPlainText(strBuf.c_str());
-
-    //m_queDataLine.push(strBuf.c_str());
-    //m_pMutex.unlock();
-}
-
-void MainWindow::sendTimer(){
-    //cout<<"helllooo"<<endl;
-//    while(!m_queDataLine.empty()){
-//         QTextCursor cursor =  ui->pDisplay_txt->textCursor();
-//         cursor.movePosition(QTextCursor::End);
-//         ui->pDisplay_txt->setTextCursor(cursor);
-//         ui->pDisplay_txt->insertPlainText(m_queDataLine.front().c_str());
-//         m_pMutex.lock();
-//         m_queDataLine.pop();
-//         m_pMutex.unlock();
+//void MainWindow::appendData(const char* msg){
+//    m_pMutex.lock();
+//    m_queDataLine.push(msg);
+//    m_pMutex.unlock();
+//}
+//void MainWindow::appendData(ClientType_ id,const BYTE* msg,const int len){
+//    //m_pMutex.lock();
+//    if(!State::getInstance()->getStateData(COLLECT_DATA)) return;//just show data when collecting data.
+//    if(id != m_dataType) return;
+//    string strBuf="";
+//    char tmp[10]={0};
+//    for(int i=0;i<len;i++){
+//        sprintf(tmp,"%02x ",msg[i]);
+//        strBuf += tmp;
 //    }
+//
+//    QTextCursor cursor =  ui->pMsg_Txt->textCursor();
+//    cursor.movePosition(QTextCursor::End);
+//    ui->pMsg_Txt->setTextCursor(cursor);
+//    ui->pMsg_Txt->insertPlainText(strBuf.c_str());
+//
+//    //m_queDataLine.push(strBuf.c_str());
+//    //m_pMutex.unlock();
+//}
 
-    while(!m_queConnectMsgLine.empty()){
-         ui->pConnectMsg_txt->append(m_queConnectMsgLine.front().c_str());
-         m_pMutex.lock();
-         m_queConnectMsgLine.pop();
-         m_pMutex.unlock();
-    }
-//    while(!m_queStasticMsgLine.empty()){
-//         QTextCursor cursor =  ui->pStatistics_txt->textCursor();
-//         cursor.movePosition(QTextCursor::End);
-//         ui->pStatistics_txt->setTextCursor(cursor);
-//         ui->pStatistics_txt->insertPlainText(m_queStasticMsgLine.front().c_str());
-//         m_pMutex.lock();
-//         m_queStasticMsgLine.pop();
-//         m_pMutex.unlock();
-//    }
 
-        checkLinkState();
-}
 void MainWindow::startTestCheckStateChanged(int state){
     setSave(m_dataType,SAVE_TEST,ui->pST_check->isChecked());
     if(ui->pST_check->isChecked()){
@@ -490,106 +552,62 @@ void MainWindow::sendDataCheckStateChanged(int state){
     m_pDataMgr->getMgrbyId(m_dataType)->clearTestData();
 }
 
-void MainWindow::collectDatasCheckStateChanged(int state){
-    cout<<"collectDatasCheckStateChanged"<<endl;
-    if(m_pDataMgr->getMgrbyId(m_dataType)->getSendDataState()){
-        QMessageBox::information(NULL, "notify", "please stop send data", QMessageBox::Yes/* | QMessageBox::No*/, QMessageBox::Yes);
-        ui->pCollectDatas_check->setChecked(false);
-        return;
+
+void MainWindow::sendTimer(){
+    //cout<<"helllooo"<<endl;
+    while(!m_queDataLine[m_dataType].empty()){
+         QTextCursor cursor =  ui->pMsg_Txt->textCursor();
+         cursor.movePosition(QTextCursor::End);
+         ui->pMsg_Txt->setTextCursor(cursor);
+         ui->pMsg_Txt->insertPlainText(m_queDataLine[m_dataType].front().c_str());
+         m_pMutex.lock();
+         m_queDataLine[m_dataType].pop();
+         m_pMutex.unlock();
     }
-    State::getInstance()->setStateData(COLLECT_DATA,ui->pCollectDatas_check->isChecked());
 
-    ui->pMsg_Txt->clear();
-
-    if(ui->pCollectDatas_check->isChecked()){
-        ui->pCollectDatas_check->setText("Collecting data");
-
-        //close all files
-        m_pDataMgr->getMgrbyId(ECG_CLIENT)->closeFile();
-        m_pDataMgr->getMgrbyId(SPO2_CLIENT)->closeFile();
-        m_pDataMgr->getMgrbyId(CO2_CLIENT)->closeFile();
-        m_pDataMgr->getMgrbyId(NIBP_CLIENT)->closeFile();
-        m_pDataMgr->getMgrbyId(IBP_CLIENT)->closeFile();
-        m_pDataMgr->getMgrbyId(NARCO_CLIENT)->closeFile();
-
-
-        ui->pCollectDatasBtnGroup->move(ui->pBtnGroup->x(),ui->pBtnGroup->y());
-        ui->pBtnGroup->hide();
-        ui->pCollectDatasBtnGroup->show();
-
-        ui->pCheckCollectDatasGroup->move(ui->pChecksGroup->x(),ui->pChecksGroup->y());
-        ui->pChecksGroup->hide();
-        ui->pCheckCollectDatasGroup->show();
-
-
-        ui->pReadEndPos_slider->hide();
-        ui->pReadStartPos_slider->hide();
-        ui->pReadPos_label->hide();
-        ui->pUpdateFile->hide();
-        ui->pFreCancel_btn->hide();
-        ui->pFreOk_btn->hide();
-        ui->pRcCancel_btn->hide();
-        ui->pRcOk_btn->hide();
-
-        ui->pFre_edit->setText("");
-        ui->pTm_edit->setText("");
-        ui->pRc_edit->setText("");
-        //ui->pTm_edit->insert(QString::number(m_pDataMgr->getMgrbyId(m_dataType)->getTimeout()));
-
-        ui->pStartCollectDatas->setEnabled(true);
-        ui->pStopCollectDatas->setEnabled(false);
-        ui->pSaveCollectDatas->setEnabled(false);
-        ui->pDelCollectDatas->setEnabled(false);
-
-        m_pDataMgr->getMgrbyId(m_dataType)->sendData(Cmd_Msg,m_dataType,MODE_COLLECTDATAS);
-    }else{
-        ui->pCollectDatas_check->setText("Collect datas");
-
-
-        m_pDataMgr->getMgrbyId(ECG_CLIENT)->openFile();
-        m_pDataMgr->getMgrbyId(SPO2_CLIENT)->openFile();
-        m_pDataMgr->getMgrbyId(CO2_CLIENT)->openFile();
-        m_pDataMgr->getMgrbyId(NIBP_CLIENT)->openFile();
-        m_pDataMgr->getMgrbyId(IBP_CLIENT)->openFile();
-        m_pDataMgr->getMgrbyId(NARCO_CLIENT)->openFile();
-
-
-        ui->pBtnGroup->show();
-        ui->pCollectDatasBtnGroup->hide();
-        ui->pChecksGroup->show();
-        ui->pCheckCollectDatasGroup->hide();
-
-        ui->pReadEndPos_slider->show();
-        ui->pReadStartPos_slider->show();
-        ui->pReadPos_label->show();
-        ui->pUpdateFile->show();
-        ui->pFreCancel_btn->show();
-        ui->pFreOk_btn->show();
-        ui->pRcCancel_btn->show();
-        ui->pRcOk_btn->show();
-
-        ui->pFre_edit->setText(QString::number(m_pDataMgr->getMgrbyId(m_dataType)->getFrequency()));
-        ui->pTm_edit->setText(QString::number(m_pDataMgr->getMgrbyId(m_dataType)->getTimeout()));
-        ui->pRc_edit->setText(QString::number(m_pDataMgr->getMgrbyId(m_dataType)->getReadNum()));
-
-        m_pDataMgr->getMgrbyId(m_dataType)->sendData(Cmd_Msg,m_dataType,MODE_NORMAL);
+    while(!m_queConnectMsgLine.empty()){
+         ui->pConnectMsg_txt->append(m_queConnectMsgLine.front().c_str());
+         m_pMutex.lock();
+         m_queConnectMsgLine.pop();
+         m_pMutex.unlock();
     }
+    while(!m_queStasticMsgLine[m_dataType].empty()){
+//         QTextCursor cursor =  ui->pStatistics_txt->textCursor();
+//         cursor.movePosition(QTextCursor::End);
+//         ui->pStatistics_txt->setTextCursor(cursor);
+//         ui->pStatistics_txt->insertPlainText(m_queStasticMsgLine[m_dataType].front().c_str());
+         ui->pStatistics_txt->append(m_queStasticMsgLine[m_dataType].front().c_str());
+         m_pMutex.lock();
+         m_queStasticMsgLine[m_dataType].pop();
+         m_pMutex.unlock();
+    }
+
+        checkLinkState();
 }
-
 void MainWindow::showData(ClientType_ id,const char* buf){
     if(id != m_dataType) return ;
 
-    QTextCursor cursor =  ui->pMsg_Txt->textCursor();
-    cursor.movePosition(QTextCursor::End);
-    ui->pMsg_Txt->setTextCursor(cursor);
-    ui->pMsg_Txt->insertPlainText(buf);
-    //ui->pMsg_Txt->append(buf);
+    m_pMutex.lock();
+    m_queDataLine[id].push(buf);
+    m_pMutex.unlock();
+}
+
+void MainWindow::appendMsg(const char* msg){
+    m_pMutex.lock();
+    //ui->pConnectMsg_txt->append(msg);
+    m_queConnectMsgLine.push(msg);
+    m_pMutex.unlock();
 }
 void MainWindow::appendStatisticsMsg(char* buf){
-    QTextCursor cursor =  ui->pStatistics_txt->textCursor();
-    cursor.movePosition(QTextCursor::End);
-    ui->pStatistics_txt->setTextCursor(cursor);
-    ui->pStatistics_txt->append(buf);
+//    QTextCursor cursor =  ui->pStatistics_txt->textCursor();
+//    cursor.movePosition(QTextCursor::End);
+//    ui->pStatistics_txt->setTextCursor(cursor);
+//    ui->pStatistics_txt->append(buf);
+    assert(buf);
+    m_pMutex.lock();
+    //ui->pConnectMsg_txt->append(msg);
+    m_queStasticMsgLine[m_dataType].push(buf);
+    m_pMutex.unlock();
 }
 void MainWindow::displayStatisicsResult(ClientType_ id,TESTMSG* msg){
     if(id != m_dataType) return;
@@ -614,12 +632,19 @@ void MainWindow::displayStatisicsResult(ClientType_ id,TESTMSG* msg){
     appendStatisticsMsg(buf);
 
     appendStatisticsMsg("------------caculator  end ------------");
-    /*QTextCursor cs=ui.chat_edit->textCursor();
-                cs.movePosition(QTextCursor::Start, QTextCursor::MoveAnchor);
-                cs.movePosition(QTextCursor::NextBlock,QTextCursor::KeepAnchor, iLines);
-                cs.removeSelectedText();
-          qt qtextbrowser 添加字符
-*/
+
+
+    if(State::getInstance()->getStateData(COLLECT_DATA)){
+        int fre = 1000.0 * msg->times/msg->usedtimeSum;
+        int timeout = 1000/fre;
+        if(timeout%2)//if not 2's Integer multiples
+            timeout+=1;//m_iTimeout have to >=2 ms
+        int readnum = msg->readSum/msg->times;
+
+        ui->pFre_edit->setText(QString::number(fre));
+        ui->pTm_edit->setText(QString::number(timeout));
+        ui->pRc_edit->setText(QString::number(readnum));
+    }
 }
 void MainWindow::checkLinkState(){
     LinkState state = m_pDataMgr->m_pLinkMgr->getLinkState(m_dataType);

@@ -79,7 +79,7 @@ class DataDev : public QThread
 
         int sendData(int fd,MsgType_ type,ClientType_ clientId,const BYTE* buf,int len);
         int sendData(int fd,MsgType_ type,ClientType_ clientId);
-        int sendData(int fd,MsgType_ msgType,ClientType_ clientId,BYTE cmd,BYTE param);
+        int sendData(int fd,MsgType_ msgType,ClientType_ clientId,BYTE cmd,BYTE param=0);
 
 protected:
         int sendData(int fd,const BYTE* data, int len);

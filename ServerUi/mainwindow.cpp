@@ -74,6 +74,7 @@ MainWindow::MainWindow(QWidget *parent) :
 
     initClient();
 
+    m_pDataMgr->getMgrbyId(m_dataType)->sendData(Cmd_Msg,m_dataType,MODE_NORMAL);
 }
 
 MainWindow::~MainWindow()
@@ -178,6 +179,12 @@ void MainWindow::radioChange(){
     m_pDataMgr->getMgrbyId(m_dataType)->clearTestData();
     State::getInstance()->setStateData(CUR_CLIENT,m_dataType);
     initClient();
+
+    if(State::getInstance()->getStateData(COLLECT_DATA)){
+        m_pDataMgr->getMgrbyId(m_dataType)->sendData(Cmd_Msg,m_dataType,MODE_COLLECTDATAS);
+    }else{
+        m_pDataMgr->getMgrbyId(m_dataType)->sendData(Cmd_Msg,m_dataType,MODE_NORMAL);
+    }
 }
 
 void MainWindow::start_click(){
@@ -534,7 +541,7 @@ void MainWindow::collectDatasCheckStateChanged(int state){
         ui->pSaveCollectDatas->setEnabled(false);
         ui->pDelCollectDatas->setEnabled(false);
 
-
+        m_pDataMgr->getMgrbyId(m_dataType)->sendData(Cmd_Msg,m_dataType,MODE_COLLECTDATAS);
     }else{
         ui->pCollectDatas_check->setText("Collect datas");
 
@@ -565,6 +572,7 @@ void MainWindow::collectDatasCheckStateChanged(int state){
         ui->pTm_edit->setText(QString::number(m_pDataMgr->getMgrbyId(m_dataType)->getTimeout()));
         ui->pRc_edit->setText(QString::number(m_pDataMgr->getMgrbyId(m_dataType)->getReadNum()));
 
+        m_pDataMgr->getMgrbyId(m_dataType)->sendData(Cmd_Msg,m_dataType,MODE_NORMAL);
     }
 }
 

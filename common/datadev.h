@@ -10,6 +10,7 @@
 #include "l_jn.h"
 #include <algorithm>//使用泛型算法必须包含头文件algorithm
 #include "../common/recvobject.h"
+#include "../include/define.h"
 using namespace std;
 class DataDev;
 struct INFO_DATA{
@@ -59,8 +60,8 @@ class DataDev : public QThread
         static DataDev* getInstance();
 
         void sendTestData(int type);
-        void sendData(int fd,const BYTE* buf,int len);
-        //void sendData(int socketFd,MsgType_ msgType,ClientType_ clientType,DataSource_ dataSource,const BYTE* buf,const int len);
+
+
         bool checkData(const BYTE* buf,const int len,const BYTE value);
 
         bool removeFd(int fd);
@@ -73,7 +74,16 @@ class DataDev : public QThread
         bool checkRecvFd(int Fd);
         void start ( Priority priority = InheritPriority );
         void stop();
+
+
+
+        int sendData(int fd,MsgType_ type,ClientType_ clientId,const BYTE* buf,int len);
+        int sendData(int fd,MsgType_ type,ClientType_ clientId);
+        int sendData(int fd,MsgType_ msgType,ClientType_ clientId,BYTE cmd,BYTE param);
+
 protected:
+        int sendData(int fd,const BYTE* data, int len);
+        void sendData_thread(int fd,const BYTE* buf,int len);
         static void sendData_(void* pv);
         void recvData();
         virtual void run();

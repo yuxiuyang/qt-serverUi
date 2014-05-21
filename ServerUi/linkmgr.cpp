@@ -195,7 +195,7 @@ void LinkMgr::sendRequestIdMsg(int fd){
     tmpBuf[3] = tmpBuf[1]+tmpBuf[2];
     tmpBuf[4] = 0xdd;
 
-    DataDev::getInstance()->sendData(fd,tmpBuf,5);
+    DataDev::getInstance()->sendData(fd,Link_Request,NONE_CLIENT);
 }
 
 int LinkMgr::data_Arrived(int Fd){

@@ -105,7 +105,7 @@ void DataDev::recvData(){
         // check every active client fd in the set
         for(int i=0;i<m_callbackFdVec.size();i++){
             if (FD_ISSET(m_callbackFdVec[i]->fd, &fdSet)) {
-                cout<<"select success m_callbackFdVec[i]="<<m_callbackFdVec[i]<<endl;
+                cout<<"select success m_callbackFdVec[i]="<<m_callbackFdVec[i]->fd<<endl;
                 log.Write("select success m_callbackFdVec[i].fd=%d",m_callbackFdVec[i]->fd);
                 if(m_callbackFdVec[i]->object){
                     m_callbackFdVec[i]->object->data_Arrived(m_callbackFdVec[i]->fd);
@@ -117,79 +117,6 @@ void DataDev::recvData(){
             }
         }
     }
-}
-
-void DataDev::sendData(int fd,const BYTE* buf,int len){
-    if(fd<=0)return;
-    //cout<<"sendData fd="<<fd<<endl;
-    if(!isValidateFd(fd)) return;
-    m_sendMutex.lock();
-
-    //驱动任务巢
-    CJobPkg* pkg=m_pDataJob->GetJobPkg(0);
-    assert(pkg);
-
-
-    INFO_DATA* pci=(INFO_DATA*)pkg->Alloc(sizeof(INFO_DATA));
-    assert(pci);
-    pci->fd = fd;
-    pci->len = len;
-    pci->pThis = this;
-    memcpy(pci->buf,buf,sizeof(BYTE)*len);
-
-
-    pkg->SetExecFunction(sendData_);
-    pkg->SetExecParam(pci);
-    pkg->SetID(1);//different thread have different source. as to this ID ,can delete the soucre.
-
-    m_pDataJob->SubmitJobPkg(pkg);
-
-    m_sendMutex.unlock();
-}
-
-bool DataDev::checkData(const BYTE* buf,const int len,const BYTE value){
-    BYTE sum=0x00;
-    for(int i=0;i<len;i++){
-        sum += buf[i];
-    }
-
-    return sum==value?true:false;
-}
-
-void DataDev::sendData_(void* pv){
-    INFO_DATA* dataMsg = (INFO_DATA*)pv;
-    assert(dataMsg);
-
-
-    int total = 0;
-    int len = dataMsg->len;
-    while(1){
-        int size = send(dataMsg->fd,dataMsg->buf+total,len,0);
-        if(size<=0){
-            cout<<"maybe a error  send failure,and close fd="<<dataMsg->fd<<endl;
-            close(dataMsg->fd);
-        }
-        total += size;
-        if(size<len){
-            len -= size;
-            continue;
-        }else{
-            break;
-        }
-    }
-}
-void DataDev::sendTestData(int type){
-    BYTE tmp[3];
-    tmp[0] = 0x99;
-    tmp[1] = 0x88;
-    tmp[2] = 0x77;
-    int socket = 23;
-    int size = send(m_callbackFdVec[type]->fd,tmp,3,0);
-    log.Write("fd=%d,size=%d   send success",m_callbackFdVec[type]->fd,size);
-    if(size<=0){
-        cout<<"main window send failure\n";
-    }
-    return;
 }
 
 bool DataDev::addFd(const int fd,int(*callback)(int)){
@@ -339,4 +266,156 @@ bool DataDev::checkRecvFd(int Fd){
         return false;
     }
     return true;
+}
+
+
+
+void DataDev::sendData_thread(int fd,const BYTE* buf,int len){
+    if(fd<=0)return;
+    //cout<<"sendData fd="<<fd<<endl;
+    if(!isValidateFd(fd)) return;
+    m_sendMutex.lock();
+
+    //驱动任务巢
+    CJobPkg* pkg=m_pDataJob->GetJobPkg(0);
+    assert(pkg);
+
+
+    INFO_DATA* pci=(INFO_DATA*)pkg->Alloc(sizeof(INFO_DATA));
+    assert(pci);
+    pci->fd = fd;
+    pci->len = len;
+    pci->pThis = this;
+    memcpy(pci->buf,buf,sizeof(BYTE)*len);
+
+
+    pkg->SetExecFunction(sendData_);
+    pkg->SetExecParam(pci);
+    pkg->SetID(1);//different thread have different source. as to this ID ,can delete the soucre.
+
+    m_pDataJob->SubmitJobPkg(pkg);
+
+    m_sendMutex.unlock();
+}
+
+bool DataDev::checkData(const BYTE* buf,const int len,const BYTE value){
+    BYTE sum=0x00;
+    for(int i=0;i<len;i++){
+        sum += buf[i];
+    }
+
+    return sum==value?true:false;
+}
+
+void DataDev::sendData_(void* pv){
+    INFO_DATA* dataMsg = (INFO_DATA*)pv;
+    assert(dataMsg);
+
+
+    int total = 0;
+    int len = dataMsg->len;
+    while(1){
+        int size = send(dataMsg->fd,dataMsg->buf+total,len,0);
+        if(size<=0){
+            cout<<"maybe a error  send failure,and close fd="<<dataMsg->fd<<endl;
+            close(dataMsg->fd);
+        }
+        total += size;
+        if(size<len){
+            len -= size;
+            continue;
+        }else{
+            break;
+        }
+    }
+}
+void DataDev::sendTestData(int type){
+    BYTE tmp[3];
+    tmp[0] = 0x99;
+    tmp[1] = 0x88;
+    tmp[2] = 0x77;
+    int socket = 23;
+    int size = send(m_callbackFdVec[type]->fd,tmp,3,0);
+    log.Write("fd=%d,size=%d   send success",m_callbackFdVec[type]->fd,size);
+    if(size<=0){
+        cout<<"main window send failure\n";
+    }
+    return;
+}
+
+int DataDev::sendData(int fd,MsgType_ type,ClientType_ clientId,const BYTE* buf,int len){
+            assert(len+7<=100);
+
+            BYTE tmpBuf[100];
+            tmpBuf[0] = 0x99;//start
+            tmpBuf[1] = len+6;//
+            tmpBuf[2] = type;
+            tmpBuf[3] = clientId;
+
+
+            BYTE calSum = 0x00;
+            for(int i=0;i<len;i++){
+                tmpBuf[4+i] = buf[i];
+                calSum += buf[i];
+            }
+            tmpBuf[4+len] = tmpBuf[1] + tmpBuf[2] + tmpBuf[3] + calSum;
+
+            tmpBuf[4+len+1] = 0xdd;//end
+
+
+            if(type == Data_Msg){
+                sendData_thread(fd,tmpBuf,6+len);
+                return (6+len);
+             }
+
+            return sendData(fd,tmpBuf,6+len);
+}
+int DataDev::sendData(int fd,MsgType_ type,ClientType_ clientId){
+    if(type==Data_Msg) return 0;
+        BYTE tmp[6];
+        tmp[0] = 0x99;
+        tmp[1] = 0x06;
+        tmp[2] = type;
+        tmp[3] = clientId;
+        tmp[4] = tmp[1]+tmp[2]+tmp[3];
+        tmp[5] = 0xdd;
+        return sendData(fd,tmp,6);
+}
+
+int DataDev::sendData(int fd,MsgType_ msgType,ClientType_ clientId,BYTE cmd,BYTE param){
+    if(msgType==Data_Msg) return 0;
+        BYTE tmp[8];
+        tmp[0] = 0x99;
+        tmp[1] = 0x08;
+        tmp[2] = msgType;
+        tmp[3] = clientId;
+        tmp[4] = cmd;
+        tmp[5] = param;
+        tmp[6] = tmp[1]+tmp[2]+tmp[3]+tmp[4]+tmp[5];
+        tmp[7] = 0xdd;
+        return sendData(fd,tmp,8);
+}
+int DataDev::sendData(int fd,const BYTE* data, int len) {
+        printf("sendData start len=%d\n",len);
+        for(int i=0;i<len;i++){
+                printf("%02x ",data[i]);
+        }
+        printf("  end....\n");
+        int total = 0;
+        while (1) {
+                int size = send(fd, data + total, len, 0);
+                if (size <= 0) {
+                        printf("maybe a error  send failure,and close fd=%d\n", fd);
+                        close (fd);
+                        break;
+                }
+                total += size;
+                if (size < len) {
+                        len -= size;
+                        continue;
+                } else {
+                        break;
+                }
+        }
+        return total;
 }

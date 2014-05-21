@@ -24,10 +24,6 @@ Spo2Mgr::~Spo2Mgr()
         assert(closeFile());
 
 }
-void Spo2Mgr::sendData(const BYTE* buf,int len){
-    //cout<<"nibpmgr  senddata"<<endl;
-    BasicMgr::sendData(Data_Msg,buf,len);
-}
 
 void Spo2Mgr::onTimer(){
     if(!getSendDataState()) return;
@@ -65,6 +61,7 @@ bool Spo2Mgr::anal_DataPag(const BYTE* buf,const int len){
     }
     if(!isTestRunning()){
         startTest();
+        setShowDataSign(true);
     }
     string strBuf="";
     char tmp[10]={0};
@@ -78,7 +75,7 @@ bool Spo2Mgr::anal_DataPag(const BYTE* buf,const int len){
 
     return true;
 }
-void Spo2Mgr::analyseCmd(BYTE cmd){
+void Spo2Mgr::analyseCmd(BYTE cmd,BYTE param){
     char buf[100]={0};
     sprintf(buf,"cmd=%d",cmd);
     cout<<"buf="<<buf<<endl;

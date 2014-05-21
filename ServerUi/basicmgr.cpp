@@ -38,29 +38,45 @@ void BasicMgr::setReadNum(int num){
     if(m_file)
         m_file->reset();
 }
-void BasicMgr::sendData(MsgType_ msgType,const BYTE* buf,const int len){
+//void BasicMgr::sendData(MsgType_ msgType,const BYTE* buf,const int len){
+//    int sock = m_pLinkMgr->findClientSocket(getCurClientId());
+//    assert(sock);
+//    assert(len+5<=100);
+//
+//    BYTE tmpBuf[100];
+//    tmpBuf[0] = 0x99;//start
+//    tmpBuf[1] = len+5;//
+//    tmpBuf[2] = msgType;
+//
+//
+//    BYTE calSum = 0x00;
+//    for(int i=0;i<len;i++){
+//        tmpBuf[3+i] = buf[i];
+//        calSum += buf[i];
+//    }
+//    tmpBuf[3+len] = tmpBuf[1] + tmpBuf[2] + calSum;
+//
+//    tmpBuf[3+len+1] = 0xdd;//end
+//
+//
+//    DataDev::getInstance()->sendData(sock,tmpBuf,5+len);
+//}
+int BasicMgr::sendData(MsgType_ type,ClientType_ clientId,const BYTE* buf,int len){
     int sock = m_pLinkMgr->findClientSocket(getCurClientId());
-    assert(sock);
-    assert(len+5<=100);
-
-    BYTE tmpBuf[100];
-    tmpBuf[0] = 0x99;//start
-    tmpBuf[1] = len+5;//
-    tmpBuf[2] = msgType;
-
-
-    BYTE calSum = 0x00;
-    for(int i=0;i<len;i++){
-        tmpBuf[3+i] = buf[i];
-        calSum += buf[i];
-    }
-    tmpBuf[3+len] = tmpBuf[1] + tmpBuf[2] + calSum;
-
-    tmpBuf[3+len+1] = 0xdd;//end
-
-
-    DataDev::getInstance()->sendData(sock,tmpBuf,5+len);
+    return DataDev::getInstance()->sendData(sock,type,clientId,buf,len);
 }
+
+int BasicMgr::sendData(MsgType_ type,ClientType_ clientId){
+    int sock = m_pLinkMgr->findClientSocket(getCurClientId());
+    return DataDev::getInstance()->sendData(sock,type,clientId);
+}
+
+int BasicMgr::sendData(MsgType_ msgType,ClientType_ clientId,BYTE cmd,BYTE param){
+    int sock = m_pLinkMgr->findClientSocket(getCurClientId());
+    return DataDev::getInstance()->sendData(sock,msgType,clientId,cmd,param);
+}
+
+
 void BasicMgr::sendRequestIdData(){
     m_pLinkMgr->requestLinkMsg();//send request id msg
 }
@@ -128,7 +144,7 @@ int BasicMgr::read(){
     if(recieveBuf_len){
         //m_dataQueue.push(m_recieveBuf,recieveBuf_len);
         //printf("m_iReadNum=%d,len=%d,recieveBuf_len=%d,thread=%lu\n",m_iReadNum,len,recieveBuf_len,pthread_self());
-        sendData(m_recieveBuf,recieveBuf_len);
+        sendData(Data_Msg,m_clientId,m_recieveBuf,recieveBuf_len);
     }else{
         cout<<"resolveProtocol error happen"<<endl;
     }
@@ -281,13 +297,13 @@ bool BasicMgr::anal_pag(const BYTE* buf,const int len){
     }
     switch(buf[2]){
     case Data_Msg:
-        anal_DataPag(buf,len);
+        anal_DataPag(buf+4,len-6);
         break;
     case Link_Msg:
         anal_ConnectPag(buf,len);
         break;
     case Cmd_Msg:
-        analyseCmd(buf[4]);
+        analyseCmd(buf[4],buf[5]);
         break;
     default:
         break;

@@ -56,7 +56,7 @@ enum DataSource_{
     Server_Link
 };
 enum ClientType_{
-    ECG_CLIENT=0x20,
+    ECG_CLIENT=0,
     SPO2_CLIENT,
     CO2_CLIENT,
     NIBP_CLIENT,
@@ -65,6 +65,7 @@ enum ClientType_{
     CMD_CLIENT,//命令参数
     DISPLAY_CLIENT,
     NONE_CLIENT,
+    CLIENT_NUM
 };
 
 struct NotifyMsg_{
@@ -141,18 +142,21 @@ enum LinkState{
     link_and_comfirmId,
     dis_link,
 };
+enum CMDTYPE{
+        NIBP_TYPE,
+        MODE_COLLECTDATAS,
+        MODE_NORMAL,
+};
 enum PatientType{
-	NIBP_ADULT,					//成人
-	NIBP_ENFANT,					//儿童
-	NIBP_BABY,						//婴儿
-	NIBP_NONE,
+        NIBP_ADULT,					//成人
+        NIBP_ENFANT,					//儿童
+        NIBP_BABY,						//婴儿
+        NIBP_NONE,
 };
 enum NIBP_STATE{
     NIBP_START=0x87,
     NIBP_STOP,
-    NIBP_TYPE,
 };
-
 
 //shutdown save
 enum STATE_SAVE{

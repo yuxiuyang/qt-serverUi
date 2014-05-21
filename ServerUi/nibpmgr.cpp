@@ -25,10 +25,6 @@ NibpMgr::~NibpMgr()
         assert(closeFile());
 
 }
-void NibpMgr::sendData(const BYTE* buf,int len){
-    //cout<<"nibpmgr  senddata"<<endl;
-    BasicMgr::sendData(Data_Msg,buf,len);
-}
 
 void NibpMgr::onTimer(){
     if(!getSendDataState()) return;
@@ -66,12 +62,14 @@ bool NibpMgr::anal_DataPag(const BYTE* buf,const int len){
             }
             fwrite(buf, 1,len, m_collectDataFile);
         }else{
-            fclose(m_collectDataFile);
+            if(m_collectDataFile)
+                fclose(m_collectDataFile);
             m_collectDataFile = NULL;
         }
     }
     if(!isTestRunning()){
         startTest();
+        setShowDataSign(true);
     }
     string strBuf="";
     char tmp[10]={0};
@@ -85,23 +83,32 @@ bool NibpMgr::anal_DataPag(const BYTE* buf,const int len){
     //((MainWindow*)(m_pLinkMgr->m_window))->appendData(NIBP_CLIENT,buf,len);
     return true;
 }
-void NibpMgr::analyseCmd(BYTE cmd){
+void NibpMgr::analyseCmd(BYTE cmd,BYTE param){
     char buf[100]={0};
     sprintf(buf,"cmd=%d",cmd);
     cout<<"buf="<<buf<<endl;
-    //((MainWindow*)(m_pLinkMgr->m_window))->showData(buf);
+    ((MainWindow*)(m_pLinkMgr->m_window))->showData(NIBP_CLIENT,buf);
     switch(cmd){
-    case NIBP_ADULT:
-        closeFile();
-        assert(openFile("datafile/NIBP/nibp_adult.txt"));
-        break;
-    case NIBP_ENFANT:
-        closeFile();
-        assert(openFile("datafile/NIBP/nibp_enfant.txt"));
-        break;
-    case NIBP_BABY:
-        closeFile();
-        assert(openFile("datafile/NIBP/nibp_baby.txt"));
+    case NIBP_TYPE:
+        {
+            switch(param){
+            case NIBP_ADULT:
+                closeFile();
+                assert(openFile("datafile/NIBP/nibp_adult.txt"));
+                break;
+            case NIBP_ENFANT:
+                closeFile();
+                assert(openFile("datafile/NIBP/nibp_enfant.txt"));
+                break;
+            case NIBP_BABY:
+                closeFile();
+                assert(openFile("datafile/NIBP/nibp_baby.txt"));
+                break;
+            default:
+                break;
+            }
+
+        }
         break;
     case NIBP_START:
         m_start = true;

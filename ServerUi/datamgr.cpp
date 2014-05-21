@@ -81,6 +81,10 @@ DataMgr::~DataMgr()
 
 void DataMgr::handle(ClientType_ id,const BYTE* buf,int len){
     BasicMgr* mgr = getMgrbyId(id);
+    if(!mgr){
+        cout<<"handle    id error"<<endl;
+        return;
+    }
     assert(mgr);
     mgr->addBuf(buf,len);
     mgr->open_block();

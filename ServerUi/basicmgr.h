@@ -36,8 +36,13 @@ public:
 
     virtual void onTimer()=0;
     virtual void display()=0;//display
-    virtual void sendData(const BYTE* buf,int len)=0;
+    //virtual void sendData(const BYTE* buf,int len)=0;
     virtual char* getCollectDataTmpFile()=0;
+
+    int sendData(MsgType_ type,ClientType_ clientId,const BYTE* buf,int len);
+    int sendData(MsgType_ type,ClientType_ clientId);
+    int sendData(MsgType_ msgType,ClientType_ clientId,BYTE cmd,BYTE param=0x00);
+
     void setFrequency(int fre);
     void setReadNum(int num);
     int getFrequency(){
@@ -99,7 +104,7 @@ public:
     bool anal_pag(const BYTE* buf,const int len);
     virtual bool anal_DataPag(const BYTE* buf,const int len)=0;
     virtual bool anal_ConnectPag(const BYTE* buf,const int len)=0;
-    virtual void analyseCmd(BYTE cmd)=0;
+    virtual void analyseCmd(BYTE cmd,BYTE param)=0;
 
 
     ClientType_ getCurClientId(){

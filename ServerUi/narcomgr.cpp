@@ -23,11 +23,6 @@ NarcoMgr::~NarcoMgr()
         assert(closeFile());
 
 }
-void NarcoMgr::sendData(const BYTE* buf,int len){
-    //cout<<"nibpmgr  senddata"<<endl;
-    BasicMgr::sendData(Data_Msg,buf,len);
-}
-
 void NarcoMgr::onTimer(){
     if(!getSendDataState()) return;
 
@@ -64,6 +59,7 @@ bool NarcoMgr::anal_DataPag(const BYTE* buf,const int len){
     }
     if(!isTestRunning()){
         startTest();
+        setShowDataSign(true);
     }
     string strBuf="";
     char tmp[10]={0};
@@ -76,7 +72,7 @@ bool NarcoMgr::anal_DataPag(const BYTE* buf,const int len){
     display();
     return true;
 }
-void NarcoMgr::analyseCmd(BYTE cmd){
+void NarcoMgr::analyseCmd(BYTE cmd,BYTE param){
     char buf[100]={0};
     sprintf(buf,"cmd=%d",cmd);
     cout<<"buf="<<buf<<endl;

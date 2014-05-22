@@ -34,8 +34,9 @@ bool File::open(const char* type){
     return true;
 }
 bool File::close(){
-    if(m_pFile)
+    if(m_pFile){
         assert(fclose(m_pFile)==0);
+    }
     m_pFile = NULL;
     m_readCurPos=0;
     return true;
@@ -201,3 +202,45 @@ int File::readLine(char *strPtr, int strlen, char ellipsis) {
                 return 0;
 
 }
+
+int File::write(const BYTE* buf,int len){
+    for(int i=0;i<len;i++){
+        write("%02x ",buf[i]);
+    }
+    //flush();
+}
+
+void File::resolveProtocol(const char* buf,int size,BYTE* recieveBuf,int& recieveBuf_len){//
+    //cout<<"buf=%s"<<buf<<endl;
+    char tmp[3]={0};
+    int index=0;
+    recieveBuf_len = 0;
+        for(int i=0;i<size;){
+            while(buf[i]==' '&&i<size) i++;//Filter space
+            if(i==size) return;
+
+            bool sign = true;
+            while(buf[i]!=' '&&i<size){
+                    if(index<2){//get the data.
+                            tmp[index++] = buf[i];
+                            //printf("tmp[%d]=%d\n",index-1,tmp[index-1]);
+                    }else{
+                            cout<<"may be error"<<endl;
+                            sign = false;
+                            i++;
+                            break;
+                    }
+                    i++;
+            }
+
+            if(sign&&index == 2){//hex to dec.
+                    recieveBuf[recieveBuf_len++] = twoBYTEConverToHex(charConvertToHex(tmp[0]),charConvertToHex(tmp[1]));
+                    //printf("%02x ",rel);
+            }else if(sign&&index!=2){
+                    cout<<endl<<"may be error  tmp[0]="<<tmp[0]<<endl;
+            }
+            memset(tmp,0,sizeof(tmp));
+            index = 0;
+        }
+}
+

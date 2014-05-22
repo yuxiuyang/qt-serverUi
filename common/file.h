@@ -7,6 +7,7 @@
 #include <unistd.h>
 #include <assert.h>
 #include <iostream>
+#include "../include/define.h"
 using namespace std;
 #define BUF_LEN 1024
 class File
@@ -16,13 +17,14 @@ public:
     virtual ~File();
 
 public:
-    int write(const char*,...);//external interface
+    int write(const BYTE* buf,int len);
     int read(char *buffer,int size);
+//    void resolveProtocol(const char* buf,int size,BYTE* recieveBuf,int& recieveBuf_len);
     void setFileName(const char* name);
     bool isOpen(){
         return m_pFile==NULL?false:true;
     }
-
+    void resolveProtocol(const char* buf,int size,BYTE* recieveBuf,int& recieveBuf_len);
     bool open(const char* type);
     bool close();
     long getFileSize();
@@ -63,6 +65,7 @@ public:
     }
 
 private:
+    int write(const char*,...);//external interface
     char m_strFileName[256];//path+ filename
     FILE *m_pFile;
     char m_strBuf[BUF_LEN];//just a buffer

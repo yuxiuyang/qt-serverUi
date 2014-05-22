@@ -29,7 +29,7 @@ NibpMgr::~NibpMgr()
 void NibpMgr::onTimer(){
     if(!getSendDataState()) return;
     if(!m_start) return;
-if(m_pLinkMgr->findClientSocket(CO2_CLIENT)==-1) return;
+    if(m_pLinkMgr->findClientSocket(NIBP_CLIENT)==-1) return;
     int readnum = read();
 
     int count = test(readnum);
@@ -54,18 +54,19 @@ void NibpMgr::display(){
 bool NibpMgr::anal_DataPag(const BYTE* buf,const int len){
 
     if(State::getInstance()->getStateData(COLLECT_DATA)){
+        printf("getStateData(COLLECT_START)=%d\n",State::getInstance()->getStateData(COLLECT_START));
         if(State::getInstance()->getStateData(COLLECT_START)){//start collect data
-            if(!m_collectDataFile){
-                m_collectDataFile = fopen("datafile/NIBP/~tmp_nibp.txt","w");
-                if(!m_collectDataFile){
+            if(!m_collectDataFile.isOpen()){
+                m_collectDataFile.setFileName("datafile/NIBP/~tmp_nibp.txt");
+                if(!m_collectDataFile.open("w")){
                     cout<<"NibpMgr  open collect data file failure"<<endl;
+                    return false;
                 }
             }
-            fwrite(buf, 1,len, m_collectDataFile);
+            m_collectDataFile.write(buf,len);
+
         }else{
-            if(m_collectDataFile)
-                fclose(m_collectDataFile);
-            m_collectDataFile = NULL;
+            m_collectDataFile.close();
         }
     }
     if(!isTestRunning()){

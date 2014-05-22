@@ -92,7 +92,6 @@ public:
     int test(int num);
 
     virtual void generateTestFile();//
-    virtual void append(const char* data);
 
     void sendData(MsgType_ msgType,const BYTE* buf,const int len);
     void sendRequestIdData();
@@ -151,7 +150,7 @@ protected:
     void* m_ui;//used to display msg on the window
     char m_strFileName[256];
 
-    FILE* m_collectDataFile;
+    File m_collectDataFile;
 private:
     File* m_file;
     int m_iFrequency;//how many times call the fun-onTimer in 1 sec.

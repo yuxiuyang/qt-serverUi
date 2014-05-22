@@ -19,7 +19,6 @@ BasicMgr::BasicMgr(LinkMgr* pLinkMgr,ClientType_ clientId):m_dataQueue(MAX_BUF)
     m_clientId = clientId;
     m_ui = NULL;
     m_isStartSendData = false;
-    m_collectDataFile = NULL;
 }
 
 void BasicMgr::setFrequency(int fre){
@@ -110,17 +109,12 @@ void BasicMgr::generateTestFile(){//
         cout<<"read failure  please call openFile to create a file"<<endl;
         return;
     }
+    BYTE buf[256];
     for(int i=0;i<256;i++){
-        m_file->write("%02x ",i);
+        buf[i] = i;
     }
-    m_file->flush();
-}
-void BasicMgr::append(const char* data){//
-    if(!isOpenFile()){
-        cout<<"read failure  please call openFile to create a file"<<endl;
-        return;
-    }
-    m_file->write(data);
+    const BYTE* p = buf;
+    m_file->write(p,256);
     m_file->flush();
 }
 
@@ -140,7 +134,7 @@ int BasicMgr::read(){
         return 0;
     }
     int recieveBuf_len=0;
-    resolveProtocol(m_readBuf,len,m_recieveBuf,recieveBuf_len);
+    m_file->resolveProtocol(m_readBuf,len,m_recieveBuf,recieveBuf_len);
     if(recieveBuf_len){
         //m_dataQueue.push(m_recieveBuf,recieveBuf_len);
         //printf("m_iReadNum=%d,len=%d,recieveBuf_len=%d,thread=%lu\n",m_iReadNum,len,recieveBuf_len,pthread_self());
@@ -196,39 +190,39 @@ bool BasicMgr::closeFile(){
     m_readWriteMutex.unlock();
     return true;
 }
-void BasicMgr::resolveProtocol(const char* buf,int size,BYTE* recieveBuf,int& recieveBuf_len){//
-    //cout<<"buf=%s"<<buf<<endl;
-    char tmp[3]={0};
-    int index=0;
-    recieveBuf_len = 0;
-        for(int i=0;i<size;){
-            while(buf[i]==' '&&i<size) i++;//Filter space
-            if(i==size) return;
-
-            bool sign = true;
-            while(buf[i]!=' '&&i<size){
-                    if(index<2){//get the data.
-                            tmp[index++] = buf[i];
-                            //printf("tmp[%d]=%d\n",index-1,tmp[index-1]);
-                    }else{
-                            cout<<"may be error"<<endl;
-                            sign = false;
-                            i++;
-                            break;
-                    }
-                    i++;
-            }
-
-            if(sign&&index == 2){//hex to dec.
-                    recieveBuf[recieveBuf_len++] = twoBYTEConverToHex(charConvertToHex(tmp[0]),charConvertToHex(tmp[1]));
-                    //printf("%02x ",rel);
-            }else if(sign&&index!=2){
-                    cout<<endl<<"may be error  tmp[0]="<<tmp[0]<<endl;
-            }
-            memset(tmp,0,sizeof(tmp));
-            index = 0;
-        }
-}
+//void BasicMgr::resolveProtocol(const char* buf,int size,BYTE* recieveBuf,int& recieveBuf_len){//
+//    //cout<<"buf=%s"<<buf<<endl;
+//    char tmp[3]={0};
+//    int index=0;
+//    recieveBuf_len = 0;
+//        for(int i=0;i<size;){
+//            while(buf[i]==' '&&i<size) i++;//Filter space
+//            if(i==size) return;
+//
+//            bool sign = true;
+//            while(buf[i]!=' '&&i<size){
+//                    if(index<2){//get the data.
+//                            tmp[index++] = buf[i];
+//                            //printf("tmp[%d]=%d\n",index-1,tmp[index-1]);
+//                    }else{
+//                            cout<<"may be error"<<endl;
+//                            sign = false;
+//                            i++;
+//                            break;
+//                    }
+//                    i++;
+//            }
+//
+//            if(sign&&index == 2){//hex to dec.
+//                    recieveBuf[recieveBuf_len++] = twoBYTEConverToHex(charConvertToHex(tmp[0]),charConvertToHex(tmp[1]));
+//                    //printf("%02x ",rel);
+//            }else if(sign&&index!=2){
+//                    cout<<endl<<"may be error  tmp[0]="<<tmp[0]<<endl;
+//            }
+//            memset(tmp,0,sizeof(tmp));
+//            index = 0;
+//        }
+//}
 
 void BasicMgr::clearTestData(){
     m_testMsg.usedtimeSum = 0;

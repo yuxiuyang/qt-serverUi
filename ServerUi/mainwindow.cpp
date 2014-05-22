@@ -412,7 +412,7 @@ void MainWindow::saveCollectDatas_click(){
         QMessageBox::information(NULL, "notify", "save success", QMessageBox::Yes/* | QMessageBox::No*/, QMessageBox::Yes);
     }else{
         cout<<"save Collect datas failure"<<endl;
-        QMessageBox::information(NULL, "notify", "save success", QMessageBox::Yes/* | QMessageBox::No*/, QMessageBox::Yes);
+        QMessageBox::information(NULL, "notify", "save failure", QMessageBox::Yes/* | QMessageBox::No*/, QMessageBox::Yes);
     }
 }
 
@@ -431,6 +431,7 @@ void MainWindow::delCollectDatas_click(){
 void MainWindow::startCollectDatas_click(){
     cout<<"start Collect datas success"<<endl;
     State::getInstance()->setStateData(COLLECT_START,1);
+    printf("startCollectDatas_click  getStateData(COLLECT_START)=%d\n",State::getInstance()->getStateData(COLLECT_START));
 
     ui->pStartCollectDatas->setEnabled(false);
     ui->pStopCollectDatas->setEnabled(true);

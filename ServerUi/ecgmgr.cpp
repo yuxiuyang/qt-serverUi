@@ -27,7 +27,7 @@ EcgMgr::~EcgMgr()
 
 void EcgMgr::onTimer(){
     if(!getSendDataState()) return;
-    if(m_pLinkMgr->findClientSocket(CO2_CLIENT)==-1) return;
+    if(m_pLinkMgr->findClientSocket(ECG_CLIENT)==-1) return;
     int readnum = read();
 
     int time = test(readnum);
@@ -47,17 +47,17 @@ void EcgMgr::display(){
 bool EcgMgr::anal_DataPag(const BYTE* buf,const int len){
     if(State::getInstance()->getStateData(COLLECT_DATA)){
         if(State::getInstance()->getStateData(COLLECT_START)){//start collect data
-            if(!m_collectDataFile){
-                m_collectDataFile = fopen("datafile/NIBP/~tmp_nibp.txt","w");
-                if(!m_collectDataFile){
-                    cout<<"NibpMgr  open collect data file failure"<<endl;
+            if(!m_collectDataFile.isOpen()){
+                m_collectDataFile.setFileName("datafile/ECG/~tmp_ecg.txt");
+                if(!m_collectDataFile.open("w")){
+                    cout<<"EcgMgr  open collect data file failure"<<endl;
+                    return false;
                 }
             }
-            fwrite(buf, 1,len, m_collectDataFile);
+            m_collectDataFile.write(buf,len);
+
         }else{
-            if(m_collectDataFile)
-                fclose(m_collectDataFile);
-            m_collectDataFile = NULL;
+            m_collectDataFile.close();
         }
     }
     if(!isTestRunning()){

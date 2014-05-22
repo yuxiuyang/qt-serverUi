@@ -91,6 +91,7 @@ private:
 
 
     ClientType_ m_dataType;
+    ClientType_ m_oldEnterCollectModeType;
 
     QTimer *m_pTestTimer;
     QMutex  m_pMutex;

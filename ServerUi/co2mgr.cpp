@@ -28,6 +28,8 @@ Co2Mgr::~Co2Mgr()
 void Co2Mgr::onTimer(){
     if(!getSendDataState()) return;
 
+    if(m_pLinkMgr->findClientSocket(CO2_CLIENT)==-1) return;
+
     int readnum = read();
 
     int time = test(readnum);
@@ -55,7 +57,8 @@ bool Co2Mgr::anal_DataPag(const BYTE* buf,const int len){
             }
             fwrite(buf, 1,len, m_collectDataFile);
         }else{
-            fclose(m_collectDataFile);
+            if(m_collectDataFile)
+                fclose(m_collectDataFile);
             m_collectDataFile = NULL;
         }
     }

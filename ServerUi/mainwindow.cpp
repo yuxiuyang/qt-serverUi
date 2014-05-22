@@ -74,6 +74,7 @@ MainWindow::MainWindow(QWidget *parent) :
 
     initClient();
 
+    m_oldEnterCollectModeType = NONE_CLIENT;
     m_pDataMgr->getMgrbyId(m_dataType)->sendData(Cmd_Msg,m_dataType,MODE_NORMAL);
 }
 
@@ -184,6 +185,10 @@ void MainWindow::radioChange(){
         ui->pFre_edit->setText("");
         ui->pTm_edit->setText("");
         ui->pRc_edit->setText("");
+        if(m_pDataMgr->getMgrbyId(m_oldEnterCollectModeType))
+            m_pDataMgr->getMgrbyId(m_oldEnterCollectModeType)->sendData(Cmd_Msg,m_oldEnterCollectModeType,MODE_NORMAL);
+
+        m_oldEnterCollectModeType = m_dataType;
         m_pDataMgr->getMgrbyId(m_dataType)->sendData(Cmd_Msg,m_dataType,MODE_COLLECTDATAS);
     }else{
         m_pDataMgr->getMgrbyId(m_dataType)->sendData(Cmd_Msg,m_dataType,MODE_NORMAL);
@@ -248,6 +253,7 @@ void MainWindow::collectDatasCheckStateChanged(int state){
         ui->pSaveCollectDatas->setEnabled(false);
         ui->pDelCollectDatas->setEnabled(false);
 
+        m_oldEnterCollectModeType = m_dataType;
         m_pDataMgr->getMgrbyId(m_dataType)->sendData(Cmd_Msg,m_dataType,MODE_COLLECTDATAS);
     }else{
         ui->pCollectDatas_check->setText("Collect datas");
@@ -505,30 +511,6 @@ void MainWindow::setValue_slider(int val){
 void MainWindow::exit_click(){
     close();
 }
-//void MainWindow::appendData(const char* msg){
-//    m_pMutex.lock();
-//    m_queDataLine.push(msg);
-//    m_pMutex.unlock();
-//}
-//void MainWindow::appendData(ClientType_ id,const BYTE* msg,const int len){
-//    //m_pMutex.lock();
-//    if(!State::getInstance()->getStateData(COLLECT_DATA)) return;//just show data when collecting data.
-//    if(id != m_dataType) return;
-//    string strBuf="";
-//    char tmp[10]={0};
-//    for(int i=0;i<len;i++){
-//        sprintf(tmp,"%02x ",msg[i]);
-//        strBuf += tmp;
-//    }
-//
-//    QTextCursor cursor =  ui->pMsg_Txt->textCursor();
-//    cursor.movePosition(QTextCursor::End);
-//    ui->pMsg_Txt->setTextCursor(cursor);
-//    ui->pMsg_Txt->insertPlainText(strBuf.c_str());
-//
-//    //m_queDataLine.push(strBuf.c_str());
-//    //m_pMutex.unlock();
-//}
 
 
 void MainWindow::startTestCheckStateChanged(int state){
@@ -635,10 +617,14 @@ void MainWindow::displayStatisicsResult(ClientType_ id,TESTMSG* msg){
 
 
     if(State::getInstance()->getStateData(COLLECT_DATA)){
-        int fre = 1000.0 * msg->times/msg->usedtimeSum;
-        int timeout = 1000/fre;
-        if(timeout%2)//if not 2's Integer multiples
-            timeout+=1;//m_iTimeout have to >=2 ms
+        printf("msg->times=%d,,msg->usedtimeSum=%d\n",msg->times,msg->usedtimeSum);
+        int fre = (float)(1000.0 *msg->times)/(float)msg->usedtimeSum;
+        int timeout = 0;
+        if(fre){
+            timeout = 1000/fre;
+            if(timeout%2)//if not 2's Integer multiples
+                timeout+=1;//m_iTimeout have to >=2 ms
+        }
         int readnum = msg->readSum/msg->times;
 
         ui->pFre_edit->setText(QString::number(fre));

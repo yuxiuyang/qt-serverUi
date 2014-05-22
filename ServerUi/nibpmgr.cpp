@@ -29,7 +29,7 @@ NibpMgr::~NibpMgr()
 void NibpMgr::onTimer(){
     if(!getSendDataState()) return;
     if(!m_start) return;
-
+if(m_pLinkMgr->findClientSocket(CO2_CLIENT)==-1) return;
     int readnum = read();
 
     int count = test(readnum);

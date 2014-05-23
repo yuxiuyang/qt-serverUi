@@ -105,7 +105,7 @@ void DataDev::recvData(){
         // check every active client fd in the set
         for(int i=0;i<m_callbackFdVec.size();i++){
             if (FD_ISSET(m_callbackFdVec[i]->fd, &fdSet)) {
-                cout<<"select success m_callbackFdVec[i]="<<m_callbackFdVec[i]->fd<<endl;
+                //cout<<"select success m_callbackFdVec[i]="<<m_callbackFdVec[i]->fd<<endl;
                 //log.Write("select success m_callbackFdVec[i].fd=%d",m_callbackFdVec[i]->fd);
                 if(!checkRecvFd(m_callbackFdVec[i]->fd))  removeFd(m_callbackFdVec[i]->fd);
                 if(m_callbackFdVec[i]->object){

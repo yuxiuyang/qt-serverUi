@@ -76,7 +76,7 @@ void State::loadConf(){
             printf("loadConf  open the file configure failue\n");
             return ;
         }
-        printf("end ...\n");
+//        printf("end ...\n");
         int size = fread(m_value,SHUTDOWN_SAVE*4,1,file);
         if(size==0){
             printf("read configure failue size=%d\n",size);
@@ -85,9 +85,9 @@ void State::loadConf(){
         }
         fclose(file);
 
-        for(int i=0;i<STATE_COUNT;i++){
-            printf("m_value[%d]=%d\n",i,m_value[i]);
-        }
+//        for(int i=0;i<STATE_COUNT;i++){
+//            printf("m_value[%d]=%d\n",i,m_value[i]);
+//        }
 }
 bool State::isExistConf(){
     FILE* file = fopen(m_fileName, "r");
@@ -102,7 +102,7 @@ int  State::getStateData(STATE_SAVE id){
 void State::setStateData(STATE_SAVE id,int data){
     assert(id>0 && id<STATE_COUNT);
     m_value[id] = data;
-   cout<<"setStateData id="<<id<<"   value="<<m_value[id]<<endl;
+//   cout<<"setStateData id="<<id<<"   value="<<m_value[id]<<endl;
 
     setSave();
 }

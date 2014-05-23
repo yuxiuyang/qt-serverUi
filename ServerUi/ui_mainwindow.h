@@ -1,7 +1,7 @@
 /********************************************************************************
 ** Form generated from reading UI file 'mainwindow.ui'
 **
-** Created: Thu May 22 18:45:35 2014
+** Created: Fri May 23 07:57:51 2014
 **      by: Qt User Interface Compiler version 4.6.2
 **
 ** WARNING! All changes made in this file will be lost when recompiling UI file!
@@ -53,6 +53,8 @@ public:
     QComboBox *pAlarm_cb;
     QComboBox *pValue_cb;
     QPushButton *pGenerateData_btn;
+    QPushButton *pAddValue_btn;
+    QPushButton *pAddAlarm_btn;
     QPushButton *pClear_btn;
     QPushButton *pSendIdCommand;
     QGroupBox *groupBox;
@@ -165,13 +167,19 @@ public:
         pBtnGroup->setGeometry(QRect(380, 90, 221, 141));
         pAlarm_cb = new QComboBox(pBtnGroup);
         pAlarm_cb->setObjectName(QString::fromUtf8("pAlarm_cb"));
-        pAlarm_cb->setGeometry(QRect(0, 50, 211, 28));
+        pAlarm_cb->setGeometry(QRect(0, 50, 141, 28));
         pValue_cb = new QComboBox(pBtnGroup);
         pValue_cb->setObjectName(QString::fromUtf8("pValue_cb"));
-        pValue_cb->setGeometry(QRect(0, 10, 211, 28));
+        pValue_cb->setGeometry(QRect(0, 10, 141, 28));
         pGenerateData_btn = new QPushButton(pBtnGroup);
         pGenerateData_btn->setObjectName(QString::fromUtf8("pGenerateData_btn"));
         pGenerateData_btn->setGeometry(QRect(10, 90, 121, 27));
+        pAddValue_btn = new QPushButton(pBtnGroup);
+        pAddValue_btn->setObjectName(QString::fromUtf8("pAddValue_btn"));
+        pAddValue_btn->setGeometry(QRect(150, 10, 71, 27));
+        pAddAlarm_btn = new QPushButton(pBtnGroup);
+        pAddAlarm_btn->setObjectName(QString::fromUtf8("pAddAlarm_btn"));
+        pAddAlarm_btn->setGeometry(QRect(150, 50, 71, 27));
         pClear_btn = new QPushButton(pGloupBox);
         pClear_btn->setObjectName(QString::fromUtf8("pClear_btn"));
         pClear_btn->setGeometry(QRect(382, 30, 101, 27));
@@ -247,7 +255,7 @@ public:
         pCollectDatas_label->setObjectName(QString::fromUtf8("pCollectDatas_label"));
         pCollectDatas_label->setGeometry(QRect(10, 20, 281, 51));
         QFont font4;
-        font4.setPointSize(26);
+        font4.setPointSize(24);
         font4.setBold(true);
         font4.setWeight(75);
         pCollectDatas_label->setFont(font4);
@@ -283,7 +291,7 @@ public:
         MainWindow->setCentralWidget(centralWidget);
         menuBar = new QMenuBar(MainWindow);
         menuBar->setObjectName(QString::fromUtf8("menuBar"));
-        menuBar->setGeometry(QRect(0, 0, 945, 32));
+        menuBar->setGeometry(QRect(0, 0, 945, 23));
         MainWindow->setMenuBar(menuBar);
         mainToolBar = new QToolBar(MainWindow);
         mainToolBar->setObjectName(QString::fromUtf8("mainToolBar"));
@@ -312,6 +320,8 @@ public:
         pBox_Label->setText(QApplication::translate("MainWindow", "TextLabel", 0, QApplication::UnicodeUTF8));
         pBtnGroup->setTitle(QString());
         pGenerateData_btn->setText(QApplication::translate("MainWindow", "generateData", 0, QApplication::UnicodeUTF8));
+        pAddValue_btn->setText(QApplication::translate("MainWindow", "addValue", 0, QApplication::UnicodeUTF8));
+        pAddAlarm_btn->setText(QApplication::translate("MainWindow", "addAlarm", 0, QApplication::UnicodeUTF8));
         pClear_btn->setText(QApplication::translate("MainWindow", "clear", 0, QApplication::UnicodeUTF8));
         pSendIdCommand->setText(QApplication::translate("MainWindow", "send comfire id commond", 0, QApplication::UnicodeUTF8));
         groupBox->setTitle(QString());

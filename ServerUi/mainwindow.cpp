@@ -4,6 +4,7 @@
 #include "state.h"
 #include "../include/global.h"
 #include <QMessageBox>
+#include <QInputDialog>
 #include <QFileDialog>
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
@@ -23,6 +24,10 @@ MainWindow::MainWindow(QWidget *parent) :
     connect(ui->pStopCollectDatas,SIGNAL(clicked()),this,SLOT(stopCollectDatas_click()));
     connect(ui->pSaveCollectDatas,SIGNAL(clicked()),this,SLOT(saveCollectDatas_click()));
     connect(ui->pDelCollectDatas,SIGNAL(clicked()),this,SLOT(delCollectDatas_click()));
+
+    connect(ui->pAddValue_btn,SIGNAL(clicked()),this,SLOT(addValueToCb_click()));
+    connect(ui->pAddAlarm_btn,SIGNAL(clicked()),this,SLOT(addAlarmToCb_click()));
+
     connect(ui->pUpdateFile,SIGNAL(clicked()),this,SLOT(updateFileFromStartToEndPos_click()));
     connect( m_pTestTimer, SIGNAL(timeout()), this, SLOT(sendTimer()) );
     connect(ui->pST_check, SIGNAL(stateChanged(int)), this, SLOT(startTestCheckStateChanged(int)));
@@ -382,17 +387,38 @@ void MainWindow::rcCancel_click(){
     ui->pRcCancel_btn->setEnabled(false);
     ui->pRc_edit->setEnabled(true);
     ui->pRcOk_btn->setFocus();
-
-    ui->pGloupBox->hide();
 }
 
-void MainWindow::saveCollectDatas_click(){
+void MainWindow::saveCollectDatas_click(){//yxy
     if(State::getInstance()->getStateData(COLLECT_START)){
         QMessageBox::information(NULL, "notify", "please stop collecting data,first", QMessageBox::Yes/* | QMessageBox::No*/, QMessageBox::Yes);
         return ;
     }
-
-    QString fileName = QFileDialog::getOpenFileName(this);
+    QString dir = "";
+    switch(m_dataType){
+    case ECG_CLIENT:
+        dir = "./datafile/ECG";
+        break;
+    case SPO2_CLIENT:
+        dir = "./datafile/SPO2";
+        break;
+    case NIBP_CLIENT:
+        dir = "./datafile/NIBP";
+        break;
+    case IBP_CLIENT:
+        dir = "./datafile/IBP";
+        break;
+    case CO2_CLIENT:
+        dir = "./datafile/CO2";
+        break;
+    case NARCO_CLIENT:
+        dir = "./datafile/NARCO";
+        break;
+    default:
+        dir = "./datafile/ECG";
+        break;
+    }
+    QString fileName = QFileDialog::getOpenFileName(this,"collect dada",dir);
     if (fileName.isEmpty())
     {
         return;
@@ -410,6 +436,20 @@ void MainWindow::saveCollectDatas_click(){
     if(ret){
         cout<<"save Collect datas success"<<endl;
         QMessageBox::information(NULL, "notify", "save success", QMessageBox::Yes/* | QMessageBox::No*/, QMessageBox::Yes);
+
+        QString frestr = ui->pFre_edit->text();
+        bool toIntOk = false;
+        int val = frestr.toInt(&toIntOk,10)+1;
+        m_pDataMgr->getMgrbyId(m_dataType)->setFrequency(val);
+        setSave(m_dataType,SAVE_FRE,val);
+
+        QString str = ui->pRc_edit->text();
+        toIntOk = false;
+        val = str.toInt(&toIntOk,10);
+        m_pDataMgr->getMgrbyId(m_dataType)->setReadNum(val);
+        setSave(m_dataType,SAVE_READNUM,val);
+
+
     }else{
         cout<<"save Collect datas failure"<<endl;
         QMessageBox::information(NULL, "notify", "save failure", QMessageBox::Yes/* | QMessageBox::No*/, QMessageBox::Yes);
@@ -482,14 +522,6 @@ void MainWindow::updateFileFromStartToEndPos_click(){
     }
 
     QMessageBox::information(NULL, "notify", mess, QMessageBox::Yes/* | QMessageBox::No*/, QMessageBox::Yes);
-}
-
-void MainWindow::valueChanged(int index){
-    cout<<"valuechanged index="<<index<<"   value="<<ui->pValue_cb->currentText().toStdString().c_str()<<endl;
-}
-
-void MainWindow::alarmChanged(int index){
-
 }
 
 void MainWindow::setValue_slider(int val){
@@ -568,10 +600,14 @@ void MainWindow::sendTimer(){
         checkLinkState();
 }
 void MainWindow::showData(ClientType_ id,const char* buf){
+    if(State::getInstance()->getStateData(COLLECT_DATA)){
+        return;//
+    }
     if(id != m_dataType) return ;
 
     m_pMutex.lock();
     m_queDataLine[id].push(buf);
+    cout<<buf<<endl;
     m_pMutex.unlock();
 }
 
@@ -687,6 +723,7 @@ void MainWindow::handleSlider(){
 
 void MainWindow::handleCB(){
     ui->pAlarm_cb->hide();
+    ui->pAddAlarm_btn->hide();
     ui->pValue_cb->clear();
     switch(m_dataType){
     case ECG_CLIENT:
@@ -695,6 +732,7 @@ void MainWindow::handleCB(){
             ui->pValue_cb->setCurrentIndex(1);
 
             ui->pAlarm_cb->show();
+            ui->pValue_cb->show();
             ui->pAlarm_cb->insertItems(0,g_ecgAlarms);
             ui->pAlarm_cb->setCurrentIndex(0);
 
@@ -727,6 +765,39 @@ void MainWindow::handleCB(){
     default:
         break;
     }
+}
+void MainWindow::valueChanged(int index){
+    cout<<"valuechanged index="<<index<<"   value="<<ui->pValue_cb->currentText().toStdString().c_str()<<endl;
+    m_pDataMgr->getMgrbyId(m_dataType)->setTxtValue(ui->pValue_cb->currentText().toStdString().c_str());
+}
+
+void MainWindow::alarmChanged(int index){
+
+}
+void MainWindow::addValueToCb_click(){
+    bool isOK=false;
+    QString text = QInputDialog::getText(NULL, "Input Dialog","Please input your comment",QLineEdit::Normal,"your comment",&isOK);
+    if(isOK) {
+        QMessageBox::information(NULL, "Information","Your comment is: <b>" + text + "</b>",QMessageBox::Yes | QMessageBox::No,QMessageBox::Yes);
+    }
+
+//    for (QStringList::iterator it = list.begin();it != list.end(); ++it) { /* C++ STL-style iteration */
+//          if(!strcmp((*it)))
+//    }
+
+    QStringList::iterator it = qFind(g_spo2Values.begin(),g_spo2Values.end(),text.toStdString().c_str());
+    if(it == g_spo2Values.end()){
+        cout<<"this val="<<text.toStdString().c_str()<<" has exist"<<endl;
+        return;
+    }
+    g_spo2Values.append(text);
+
+    qSort(g_spo2Values.begin(), g_spo2Values.end());
+    handleCB();
+}
+
+void MainWindow::addAlarmToCb_click(){
+
 }
 
 void MainWindow::setSave(ClientType_ id, SAVE_TYPE saveType,int val) {

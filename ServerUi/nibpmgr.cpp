@@ -42,7 +42,7 @@ void NibpMgr::onTimer(){
 
 void NibpMgr::display(){
 
-    if(m_testMsg.usedtimeSum >= 4*1000/*REFRESH_TIME*/){//auto display to ui
+    if(m_testMsg.usedtimeSum >= REFRESH_TIME){//auto display to ui
          ((MainWindow*)m_ui)->displayStatisicsResult(NIBP_CLIENT,getTestMsg());
          clearTestData();
 

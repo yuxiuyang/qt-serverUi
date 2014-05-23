@@ -1,7 +1,7 @@
 /****************************************************************************
 ** Meta object code from reading C++ file 'mainwindow.h'
 **
-** Created: Thu May 22 20:36:12 2014
+** Created: Fri May 23 17:13:56 2014
 **      by: The Qt Meta Object Compiler version 62 (Qt 4.6.2)
 **
 ** WARNING! All changes made in this file will be lost!
@@ -23,7 +23,7 @@ static const uint qt_meta_data_MainWindow[] = {
        4,       // revision
        0,       // classname
        0,    0, // classinfo
-      29,   14, // methods
+      31,   14, // methods
        0,    0, // properties
        0,    0, // enums/sets
        0,    0, // constructors
@@ -42,24 +42,26 @@ static const uint qt_meta_data_MainWindow[] = {
      171,   11,   11,   11, 0x0a,
      196,   11,   11,   11, 0x0a,
      221,   11,   11,   11, 0x0a,
-     249,  245,   11,   11, 0x0a,
-     278,  272,   11,   11, 0x0a,
-     310,  272,   11,   11, 0x0a,
-     349,  345,   11,   11, 0x0a,
-     383,  376,   11,   11, 0x0a,
-     424,  417,   11,   11, 0x0a,
-     469,   11,   11,   11, 0x0a,
-     505,   11,   11,   11, 0x0a,
-     523,   11,   11,   11, 0x0a,
-     541,   11,   11,   11, 0x0a,
-     562,  272,   11,   11, 0x0a,
-     593,  272,   11,   11, 0x0a,
-     628,   11,   11,   11, 0x0a,
-     642,   11,   11,   11, 0x0a,
-     656,   11,   11,   11, 0x0a,
-     674,   11,   11,   11, 0x0a,
-     687,   11,   11,   11, 0x0a,
-     704,   11,   11,   11, 0x0a,
+     245,   11,   11,   11, 0x0a,
+     266,   11,   11,   11, 0x0a,
+     291,  287,   11,   11, 0x0a,
+     320,  314,   11,   11, 0x0a,
+     352,  314,   11,   11, 0x0a,
+     391,  387,   11,   11, 0x0a,
+     425,  418,   11,   11, 0x0a,
+     466,  459,   11,   11, 0x0a,
+     511,   11,   11,   11, 0x0a,
+     547,   11,   11,   11, 0x0a,
+     565,   11,   11,   11, 0x0a,
+     583,   11,   11,   11, 0x0a,
+     604,  314,   11,   11, 0x0a,
+     635,  314,   11,   11, 0x0a,
+     670,   11,   11,   11, 0x0a,
+     684,   11,   11,   11, 0x0a,
+     698,   11,   11,   11, 0x0a,
+     716,   11,   11,   11, 0x0a,
+     729,   11,   11,   11, 0x0a,
+     746,   11,   11,   11, 0x0a,
 
        0        // eod
 };
@@ -72,7 +74,8 @@ static const char qt_meta_stringdata_MainWindow[] = {
     "startCollectDatas_click()\0"
     "stopCollectDatas_click()\0"
     "saveCollectDatas_click()\0"
-    "delCollectDatas_click()\0msg\0"
+    "delCollectDatas_click()\0addValueToCb_click()\0"
+    "addAlarmToCb_click()\0msg\0"
     "appendMsg(const char*)\0state\0"
     "startTestCheckStateChanged(int)\0"
     "showReadDataCheckStateChanged(int)\0"
@@ -129,27 +132,29 @@ int MainWindow::qt_metacall(QMetaObject::Call _c, int _id, void **_a)
         case 8: stopCollectDatas_click(); break;
         case 9: saveCollectDatas_click(); break;
         case 10: delCollectDatas_click(); break;
-        case 11: appendMsg((*reinterpret_cast< const char*(*)>(_a[1]))); break;
-        case 12: startTestCheckStateChanged((*reinterpret_cast< int(*)>(_a[1]))); break;
-        case 13: showReadDataCheckStateChanged((*reinterpret_cast< int(*)>(_a[1]))); break;
-        case 14: appendStatisticsMsg((*reinterpret_cast< char*(*)>(_a[1]))); break;
-        case 15: showData((*reinterpret_cast< ClientType_(*)>(_a[1])),(*reinterpret_cast< const char*(*)>(_a[2]))); break;
-        case 16: displayStatisicsResult((*reinterpret_cast< ClientType_(*)>(_a[1])),(*reinterpret_cast< TESTMSG*(*)>(_a[2]))); break;
-        case 17: updateFileFromStartToEndPos_click(); break;
-        case 18: valueChanged((*reinterpret_cast< int(*)>(_a[1]))); break;
-        case 19: alarmChanged((*reinterpret_cast< int(*)>(_a[1]))); break;
-        case 20: setValue_slider((*reinterpret_cast< int(*)>(_a[1]))); break;
-        case 21: sendDataCheckStateChanged((*reinterpret_cast< int(*)>(_a[1]))); break;
-        case 22: collectDatasCheckStateChanged((*reinterpret_cast< int(*)>(_a[1]))); break;
-        case 23: radioChange(); break;
-        case 24: freOk_click(); break;
-        case 25: freCancel_click(); break;
-        case 26: rcOk_click(); break;
-        case 27: rcCancel_click(); break;
-        case 28: sendTimer(); break;
+        case 11: addValueToCb_click(); break;
+        case 12: addAlarmToCb_click(); break;
+        case 13: appendMsg((*reinterpret_cast< const char*(*)>(_a[1]))); break;
+        case 14: startTestCheckStateChanged((*reinterpret_cast< int(*)>(_a[1]))); break;
+        case 15: showReadDataCheckStateChanged((*reinterpret_cast< int(*)>(_a[1]))); break;
+        case 16: appendStatisticsMsg((*reinterpret_cast< char*(*)>(_a[1]))); break;
+        case 17: showData((*reinterpret_cast< ClientType_(*)>(_a[1])),(*reinterpret_cast< const char*(*)>(_a[2]))); break;
+        case 18: displayStatisicsResult((*reinterpret_cast< ClientType_(*)>(_a[1])),(*reinterpret_cast< TESTMSG*(*)>(_a[2]))); break;
+        case 19: updateFileFromStartToEndPos_click(); break;
+        case 20: valueChanged((*reinterpret_cast< int(*)>(_a[1]))); break;
+        case 21: alarmChanged((*reinterpret_cast< int(*)>(_a[1]))); break;
+        case 22: setValue_slider((*reinterpret_cast< int(*)>(_a[1]))); break;
+        case 23: sendDataCheckStateChanged((*reinterpret_cast< int(*)>(_a[1]))); break;
+        case 24: collectDatasCheckStateChanged((*reinterpret_cast< int(*)>(_a[1]))); break;
+        case 25: radioChange(); break;
+        case 26: freOk_click(); break;
+        case 27: freCancel_click(); break;
+        case 28: rcOk_click(); break;
+        case 29: rcCancel_click(); break;
+        case 30: sendTimer(); break;
         default: ;
         }
-        _id -= 29;
+        _id -= 31;
     }
     return _id;
 }

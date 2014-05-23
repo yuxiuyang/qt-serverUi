@@ -42,6 +42,8 @@ public:
     int sendData(MsgType_ type,ClientType_ clientId,const BYTE* buf,int len);
     int sendData(MsgType_ type,ClientType_ clientId);
     int sendData(MsgType_ msgType,ClientType_ clientId,BYTE cmd,BYTE param=0x00);
+    virtual void setTxtValue(const char* val){};
+    virtual void setTxtAlarm(const char* strAlarm){};
 
     void setFrequency(int fre);
     void setReadNum(int num);

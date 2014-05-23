@@ -16,7 +16,7 @@ Spo2Mgr::Spo2Mgr(LinkMgr* pLinkMgr):BasicMgr(pLinkMgr,SPO2_CLIENT)
     startSendData(State::getInstance()->getStateData(SPO2_SENDDATA));
 
     gettimeofday(&m_tStartTimer,NULL);
-    assert(openFile("datafile/SPO2/data.txt"));
+    assert(openFile("datafile/SPO2/data_100.txt"));
 }
 Spo2Mgr::~Spo2Mgr()
 {
@@ -92,4 +92,14 @@ bool Spo2Mgr::anal_ConnectPag(const BYTE* buf,const int len){
 }
 char* Spo2Mgr::getCollectDataTmpFile(){
     return "datafile/SPO2/~tmp_spo2.txt";
+}
+
+void Spo2Mgr::setTxtValue(const char* val){
+    char buf[300]={0};
+    sprintf(buf,"./datafile/SPO2/data_%s.txt",val);
+
+    closeFile();
+    if(!openFile(buf)){
+        printf("open file %s failure\n",buf);
+    }
 }

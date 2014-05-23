@@ -39,6 +39,9 @@ public Q_SLOTS:
     void saveCollectDatas_click();
     void delCollectDatas_click();
 
+    void addValueToCb_click();
+    void addAlarmToCb_click();
+
     //append msg
     void appendMsg(const char* msg);
     void startTestCheckStateChanged (int state);

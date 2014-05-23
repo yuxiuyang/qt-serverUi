@@ -135,3 +135,13 @@ bool NibpMgr::anal_ConnectPag(const BYTE* buf,const int len){
 char* NibpMgr::getCollectDataTmpFile(){
     return "datafile/NIBP/~tmp_nibp.txt";
 }
+
+void NibpMgr::setTxtValue(const char* val){
+    char buf[300]={0};
+    sprintf(buf,"./datafile/NIBP/data_%s.txt",val);
+
+    closeFile();
+    if(!openFile(buf)){
+        printf("open file %s failure\n",buf);
+    }
+}

@@ -16,7 +16,7 @@ IbpMgr::IbpMgr(LinkMgr* pLinkMgr):BasicMgr(pLinkMgr,IBP_CLIENT)
     startSendData(State::getInstance()->getStateData(IBP_SENDDATA));
 
     gettimeofday(&m_tStartTimer,NULL);
-    assert(openFile("datafile/IBP/data.txt"));
+    assert(openFile("datafile/IBP/data_120.txt"));
 }
 IbpMgr::~IbpMgr()
 {
@@ -91,4 +91,14 @@ bool IbpMgr::anal_ConnectPag(const BYTE* buf,const int len){
 }
 char* IbpMgr::getCollectDataTmpFile(){
     return "datafile/IBP/~tmp_ibp.txt";
+}
+
+void IbpMgr::setTxtValue(const char* val){
+    char buf[300]={0};
+    sprintf(buf,"./datafile/IBP/data_%s.txt",val);
+
+    closeFile();
+    if(!openFile(buf)){
+        printf("open file %s failure\n",buf);
+    }
 }

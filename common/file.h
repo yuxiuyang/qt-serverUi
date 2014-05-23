@@ -18,6 +18,7 @@ public:
 
 public:
     int write(const BYTE* buf,int len);
+
     int read(char *buffer,int size);
 //    void resolveProtocol(const char* buf,int size,BYTE* recieveBuf,int& recieveBuf_len);
     void setFileName(const char* name);
@@ -42,6 +43,7 @@ public:
      1 首字符等于ellipsis值。
      *
      */
+    int writeLine(const char* buf);
     int readLine(char *strPtr, int strlen, char ellipsis);
 
     void setFileCurPos(long pos){

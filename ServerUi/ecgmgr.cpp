@@ -16,7 +16,7 @@ EcgMgr::EcgMgr(LinkMgr* pLinkMgr):BasicMgr(pLinkMgr,ECG_CLIENT)
     startSendData(State::getInstance()->getStateData(ECG_SENDDATA));
 
     gettimeofday(&m_tStartTimer,NULL);
-    assert(openFile("datafile/ECG/data.txt"));
+    assert(openFile("datafile/ECG/data_80.txt"));
 }
 EcgMgr::~EcgMgr()
 {
@@ -92,4 +92,17 @@ bool EcgMgr::anal_ConnectPag(const BYTE* buf,const int len){
 }
 char* EcgMgr::getCollectDataTmpFile(){
     return "datafile/ECG/~tmp_ecg.txt";
+}
+
+void EcgMgr::setTxtValue(const char* val){
+    char buf[300]={0};
+    sprintf(buf,"./datafile/ECG/data_%s.txt",val);
+
+    closeFile();
+    if(!openFile(buf)){
+        printf("open file %s failure\n",buf);
+    }
+}
+void EcgMgr::setTxtAlarm(const char* val){
+    setTxtValue(val);
 }

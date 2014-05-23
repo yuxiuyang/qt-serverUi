@@ -26,7 +26,10 @@ MainWindow::MainWindow(QWidget *parent) :
     connect(ui->pDelCollectDatas,SIGNAL(clicked()),this,SLOT(delCollectDatas_click()));
 
     connect(ui->pAddValue_btn,SIGNAL(clicked()),this,SLOT(addValueToCb_click()));
+    connect(ui->pDelValue_btn,SIGNAL(clicked()),this,SLOT(delValueToCb_click()));
     connect(ui->pAddAlarm_btn,SIGNAL(clicked()),this,SLOT(addAlarmToCb_click()));
+    connect(ui->pDelAlarm_btn,SIGNAL(clicked()),this,SLOT(delAlarmToCb_click()));
+
 
     connect(ui->pUpdateFile,SIGNAL(clicked()),this,SLOT(updateFileFromStartToEndPos_click()));
     connect( m_pTestTimer, SIGNAL(timeout()), this, SLOT(sendTimer()) );
@@ -58,6 +61,7 @@ MainWindow::MainWindow(QWidget *parent) :
     ui->pStart_btn->setEnabled(false);
     ui->pStop_btn->hide();
     ui->pStart_label->setText("server running");
+    ui->pGenerateData_btn->setEnabled(false);
 
 
     setWindowTitle("Server....");
@@ -724,15 +728,23 @@ void MainWindow::handleSlider(){
 void MainWindow::handleCB(){
     ui->pAlarm_cb->hide();
     ui->pAddAlarm_btn->hide();
+    ui->pDelAlarm_btn->hide();
     ui->pValue_cb->clear();
     switch(m_dataType){
     case ECG_CLIENT:
         {
             ui->pValue_cb->insertItems(0,g_ecgValues);
-            ui->pValue_cb->setCurrentIndex(1);
+            ui->pValue_cb->setCurrentIndex(0);
 
             ui->pAlarm_cb->show();
+            ui->pAddAlarm_btn->show();
+            ui->pDelAlarm_btn->show();
+
             ui->pValue_cb->show();
+            ui->pAddValue_btn->show();
+            ui->pDelValue_btn->show();
+
+            ui->pAlarm_cb->clear();
             ui->pAlarm_cb->insertItems(0,g_ecgAlarms);
             ui->pAlarm_cb->setCurrentIndex(0);
 
@@ -768,36 +780,80 @@ void MainWindow::handleCB(){
 }
 void MainWindow::valueChanged(int index){
     cout<<"valuechanged index="<<index<<"   value="<<ui->pValue_cb->currentText().toStdString().c_str()<<endl;
-    m_pDataMgr->getMgrbyId(m_dataType)->setTxtValue(ui->pValue_cb->currentText().toStdString().c_str());
+    if(ui->pValue_cb->currentIndex()>=0)
+        m_pDataMgr->getMgrbyId(m_dataType)->setTxtValue(ui->pValue_cb->currentText().toStdString().c_str());
 }
 
 void MainWindow::alarmChanged(int index){
-
+    if(ui->pAlarm_cb->currentIndex()>=0)
+        m_pDataMgr->getMgrbyId(m_dataType)->setTxtAlarm(ui->pAlarm_cb->currentText().toStdString().c_str());
 }
 void MainWindow::addValueToCb_click(){
     bool isOK=false;
-    QString text = QInputDialog::getText(NULL, "Input Dialog","Please input your comment",QLineEdit::Normal,"your comment",&isOK);
-    if(isOK) {
-        QMessageBox::information(NULL, "Information","Your comment is: <b>" + text + "</b>",QMessageBox::Yes | QMessageBox::No,QMessageBox::Yes);
+    QString text = QInputDialog::getText(NULL, "Input Dialog","Please input Integer(0-1000)",QLineEdit::Normal,"",&isOK);
+    if(!isOK) {
+        //QMessageBox::information(NULL, "Information","Your comment is: <b>" + text + "</b>",QMessageBox::Yes | QMessageBox::No,QMessageBox::Yes);
+        return;
     }
 
-//    for (QStringList::iterator it = list.begin();it != list.end(); ++it) { /* C++ STL-style iteration */
-//          if(!strcmp((*it)))
-//    }
-
-    QStringList::iterator it = qFind(g_spo2Values.begin(),g_spo2Values.end(),text.toStdString().c_str());
-    if(it == g_spo2Values.end()){
+    QStringList::iterator it = qFind(getValueList(m_dataType).begin(),getValueList(m_dataType).end(),text.toStdString().c_str());
+    if(it != getValueList(m_dataType).end()){
         cout<<"this val="<<text.toStdString().c_str()<<" has exist"<<endl;
         return;
     }
-    g_spo2Values.append(text);
-
-    qSort(g_spo2Values.begin(), g_spo2Values.end());
+    getValueList(m_dataType).append(text);
+    qSort(getValueList(m_dataType).begin(), getValueList(m_dataType).end());
     handleCB();
+
+    int ix = ui->pValue_cb->findText(text);
+    if(ix>0)
+        ui->pValue_cb->setCurrentIndex(ix);
+
+    saveTxtValue(getValueList(m_dataType));
+}
+void MainWindow::delValueToCb_click(){
+    cout<<"ui->pValue_cb->currentIndex()="<<ui->pValue_cb->currentIndex()<<endl;
+
+    int index = ui->pValue_cb->currentIndex();
+    getValueList(m_dataType).removeAt(index);
+    handleCB();
+    if(index>0&&index<getValueList(m_dataType).count())
+        ui->pValue_cb->setCurrentIndex(index);
+
+    saveTxtValue(getValueList(m_dataType));
+}
+void MainWindow::addAlarmToCb_click(){
+    bool isOK=false;
+    QString text = QInputDialog::getText(NULL, "Input Dialog","Please input alarm string",QLineEdit::Normal,"",&isOK);
+    if(!isOK) {
+        //QMessageBox::information(NULL, "Information","Your comment is: <b>" + text + "</b>",QMessageBox::Yes | QMessageBox::No,QMessageBox::Yes);
+        return;
+    }
+
+    QStringList::iterator it = qFind(getAlarmList(m_dataType).begin(),getAlarmList(m_dataType).end(),text.toStdString().c_str());
+    if(it != getAlarmList(m_dataType).end()){
+        cout<<"this val="<<text.toStdString().c_str()<<" has exist"<<endl;
+        return;
+    }
+    getAlarmList(m_dataType).append(text);
+    qSort(getAlarmList(m_dataType).begin(), getAlarmList(m_dataType).end());
+    handleCB();
+
+    int ix = ui->pAlarm_cb->findText(text);
+    if(ix>0)
+        ui->pAlarm_cb->setCurrentIndex(ix);
+
+    saveTxtValue(getAlarmList(m_dataType));
 }
 
-void MainWindow::addAlarmToCb_click(){
+void MainWindow::delAlarmToCb_click(){
+    int index = ui->pAlarm_cb->currentIndex();
+    getAlarmList(m_dataType).removeAt(index);
+    handleCB();
+    if(index>0&&index<getAlarmList(m_dataType).count())
+        ui->pAlarm_cb->setCurrentIndex(index);
 
+    saveTxtValue(getAlarmList(m_dataType));
 }
 
 void MainWindow::setSave(ClientType_ id, SAVE_TYPE saveType,int val) {

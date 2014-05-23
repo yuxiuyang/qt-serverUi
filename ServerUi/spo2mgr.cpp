@@ -103,3 +103,4 @@ void Spo2Mgr::setTxtValue(const char* val){
         printf("open file %s failure\n",buf);
     }
 }
+

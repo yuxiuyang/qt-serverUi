@@ -177,8 +177,18 @@ bool File::saveDataFromStartPosToEndPos(const char* filename){
  1 首字符等于ellipsis值。
  *
  */
+int File::writeLine(const char* buf){
+    write(buf);
+    write("\n");
+}
+
 int File::readLine(char *strPtr, int strlen, char ellipsis) {
         /*   文件指针，存储读取数据的字符串数组，字符串数组长度，当一行数据以ellipsis值开头时废弃该行，注：ellipsis值为“.”时，直接输出所有行   */
+    if(!m_pFile){
+        cout<<"read  please open file first"<<endl;
+        return 0;
+    }
+
         char ch;
         char *tmpPtr;
 
@@ -191,12 +201,13 @@ int File::readLine(char *strPtr, int strlen, char ellipsis) {
 
         while (!feof(m_pFile) && ch != 0xa) { /*   读入一行数据   */
                 ch = fgetc(m_pFile);
-                if (ch != EOF && ch != '\n ') {
+                if (ch != EOF && ch != '\n') {
                         *strPtr = ch;
                         strPtr++;
                 }
         }
-        if (*tmpPtr == ellipsis || *tmpPtr == '\0 ' || *tmpPtr == '\n ')/*   如果行首字符等于ellipsis，返回错误代码   1   */
+        *strPtr = '\0';
+        if (*tmpPtr == ellipsis || *tmpPtr == '\0' || *tmpPtr == '\n')/*   如果行首字符等于ellipsis，返回错误代码   1   */
                 return 1;
         else
                 return 0;

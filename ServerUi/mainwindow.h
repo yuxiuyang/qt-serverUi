@@ -40,7 +40,9 @@ public Q_SLOTS:
     void delCollectDatas_click();
 
     void addValueToCb_click();
+    void delValueToCb_click();
     void addAlarmToCb_click();
+    void delAlarmToCb_click();
 
     //append msg
     void appendMsg(const char* msg);

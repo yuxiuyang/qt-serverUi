@@ -15,7 +15,7 @@ NarcoMgr::NarcoMgr(LinkMgr* pLinkMgr):BasicMgr(pLinkMgr,NARCO_CLIENT)
     setShowDataSign(State::getInstance()->getStateData(NARCO_SHOWDATA));
     startSendData(State::getInstance()->getStateData(NARCO_SENDDATA));
     gettimeofday(&m_tStartTimer,NULL);
-    assert(openFile("datafile/NARCO/data.txt"));
+    assert(openFile("datafile/NARCO/data_20.txt"));
 }
 NarcoMgr::~NarcoMgr()
 {
@@ -89,4 +89,14 @@ bool NarcoMgr::anal_ConnectPag(const BYTE* buf,const int len){
 }
 char* NarcoMgr::getCollectDataTmpFile(){
     return "datafile/NARCO/~tmp_narco.txt";
+}
+
+void NarcoMgr::setTxtValue(const char* val){
+    char buf[300]={0};
+    sprintf(buf,"./datafile/NARCO/data_%s.txt",val);
+
+    closeFile();
+    if(!openFile(buf)){
+        printf("open file %s failure\n",buf);
+    }
 }

@@ -14,6 +14,8 @@ public:
     int data_Arrived(int fd);
 
     char* getCollectDataTmpFile();
+
+    virtual void setTxtValue(const char* val);
 protected:
     bool anal_DataPag(const BYTE* buf,const int len);
     bool anal_ConnectPag(const BYTE* buf,const int len);

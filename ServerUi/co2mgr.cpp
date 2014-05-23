@@ -16,7 +16,7 @@ Co2Mgr::Co2Mgr(LinkMgr* pLinkMgr):BasicMgr(pLinkMgr,CO2_CLIENT)
     startSendData(State::getInstance()->getStateData(CO2_SENDDATA));
 
     gettimeofday(&m_tStartTimer,NULL);
-    assert(openFile("datafile/CO2/data.txt"));
+    assert(openFile("datafile/CO2/data_20.txt"));
 }
 Co2Mgr::~Co2Mgr()
 {
@@ -93,4 +93,14 @@ bool Co2Mgr::anal_ConnectPag(const BYTE* buf,const int len){
 }
 char* Co2Mgr::getCollectDataTmpFile(){
     return "datafile/CO2/~tmp_co2.txt";
+}
+
+void Co2Mgr::setTxtValue(const char* val){
+    char buf[300]={0};
+    sprintf(buf,"./datafile/CO2/data_%s.txt",val);
+
+    closeFile();
+    if(!openFile(buf)){
+        printf("open file %s failure\n",buf);
+    }
 }

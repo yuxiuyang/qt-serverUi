@@ -1,7 +1,7 @@
 /********************************************************************************
 ** Form generated from reading UI file 'mainwindow.ui'
 **
-** Created: Fri May 23 07:57:51 2014
+** Created: Fri May 23 19:37:24 2014
 **      by: Qt User Interface Compiler version 4.6.2
 **
 ** WARNING! All changes made in this file will be lost when recompiling UI file!
@@ -55,6 +55,8 @@ public:
     QPushButton *pGenerateData_btn;
     QPushButton *pAddValue_btn;
     QPushButton *pAddAlarm_btn;
+    QPushButton *pDelValue_btn;
+    QPushButton *pDelAlarm_btn;
     QPushButton *pClear_btn;
     QPushButton *pSendIdCommand;
     QGroupBox *groupBox;
@@ -96,7 +98,7 @@ public:
     {
         if (MainWindow->objectName().isEmpty())
             MainWindow->setObjectName(QString::fromUtf8("MainWindow"));
-        MainWindow->resize(945, 689);
+        MainWindow->resize(1045, 678);
         centralWidget = new QWidget(MainWindow);
         centralWidget->setObjectName(QString::fromUtf8("centralWidget"));
         pExit_btn = new QPushButton(centralWidget);
@@ -125,16 +127,16 @@ public:
         pStop_btn->setGeometry(QRect(340, 0, 99, 32));
         pNibp_rb = new QRadioButton(centralWidget);
         pNibp_rb->setObjectName(QString::fromUtf8("pNibp_rb"));
-        pNibp_rb->setGeometry(QRect(860, 50, 71, 22));
+        pNibp_rb->setGeometry(QRect(930, 50, 71, 22));
         pEcg_rb = new QRadioButton(centralWidget);
         pEcg_rb->setObjectName(QString::fromUtf8("pEcg_rb"));
-        pEcg_rb->setGeometry(QRect(860, 110, 61, 22));
+        pEcg_rb->setGeometry(QRect(930, 110, 61, 22));
         pSpo2_rb = new QRadioButton(centralWidget);
         pSpo2_rb->setObjectName(QString::fromUtf8("pSpo2_rb"));
-        pSpo2_rb->setGeometry(QRect(860, 80, 71, 22));
+        pSpo2_rb->setGeometry(QRect(930, 80, 71, 22));
         pGloupBox = new QGroupBox(centralWidget);
         pGloupBox->setObjectName(QString::fromUtf8("pGloupBox"));
-        pGloupBox->setGeometry(QRect(240, 30, 611, 511));
+        pGloupBox->setGeometry(QRect(240, 30, 681, 511));
         QFont font1;
         font1.setBold(false);
         font1.setWeight(50);
@@ -164,31 +166,37 @@ public:
         pStatistics_txt->setGeometry(QRect(320, 320, 291, 181));
         pBtnGroup = new QGroupBox(pGloupBox);
         pBtnGroup->setObjectName(QString::fromUtf8("pBtnGroup"));
-        pBtnGroup->setGeometry(QRect(380, 90, 221, 141));
+        pBtnGroup->setGeometry(QRect(380, 90, 281, 141));
         pAlarm_cb = new QComboBox(pBtnGroup);
         pAlarm_cb->setObjectName(QString::fromUtf8("pAlarm_cb"));
-        pAlarm_cb->setGeometry(QRect(0, 50, 141, 28));
+        pAlarm_cb->setGeometry(QRect(0, 50, 171, 28));
         pValue_cb = new QComboBox(pBtnGroup);
         pValue_cb->setObjectName(QString::fromUtf8("pValue_cb"));
-        pValue_cb->setGeometry(QRect(0, 10, 141, 28));
+        pValue_cb->setGeometry(QRect(0, 10, 171, 28));
         pGenerateData_btn = new QPushButton(pBtnGroup);
         pGenerateData_btn->setObjectName(QString::fromUtf8("pGenerateData_btn"));
         pGenerateData_btn->setGeometry(QRect(10, 90, 121, 27));
         pAddValue_btn = new QPushButton(pBtnGroup);
         pAddValue_btn->setObjectName(QString::fromUtf8("pAddValue_btn"));
-        pAddValue_btn->setGeometry(QRect(150, 10, 71, 27));
+        pAddValue_btn->setGeometry(QRect(180, 10, 41, 27));
         pAddAlarm_btn = new QPushButton(pBtnGroup);
         pAddAlarm_btn->setObjectName(QString::fromUtf8("pAddAlarm_btn"));
-        pAddAlarm_btn->setGeometry(QRect(150, 50, 71, 27));
+        pAddAlarm_btn->setGeometry(QRect(180, 50, 41, 27));
+        pDelValue_btn = new QPushButton(pBtnGroup);
+        pDelValue_btn->setObjectName(QString::fromUtf8("pDelValue_btn"));
+        pDelValue_btn->setGeometry(QRect(230, 10, 41, 27));
+        pDelAlarm_btn = new QPushButton(pBtnGroup);
+        pDelAlarm_btn->setObjectName(QString::fromUtf8("pDelAlarm_btn"));
+        pDelAlarm_btn->setGeometry(QRect(230, 50, 41, 27));
         pClear_btn = new QPushButton(pGloupBox);
         pClear_btn->setObjectName(QString::fromUtf8("pClear_btn"));
-        pClear_btn->setGeometry(QRect(382, 30, 101, 27));
+        pClear_btn->setGeometry(QRect(380, 30, 281, 27));
         pSendIdCommand = new QPushButton(pGloupBox);
         pSendIdCommand->setObjectName(QString::fromUtf8("pSendIdCommand"));
-        pSendIdCommand->setGeometry(QRect(380, 60, 221, 27));
+        pSendIdCommand->setGeometry(QRect(380, 60, 281, 27));
         groupBox = new QGroupBox(pGloupBox);
         groupBox->setObjectName(QString::fromUtf8("groupBox"));
-        groupBox->setGeometry(QRect(0, 410, 301, 101));
+        groupBox->setGeometry(QRect(0, 410, 311, 101));
         label_2 = new QLabel(groupBox);
         label_2->setObjectName(QString::fromUtf8("label_2"));
         label_2->setGeometry(QRect(10, 10, 81, 20));
@@ -223,7 +231,7 @@ public:
         pRcCancel_btn->setGeometry(QRect(230, 60, 61, 27));
         pChecksGroup = new QGroupBox(pGloupBox);
         pChecksGroup->setObjectName(QString::fromUtf8("pChecksGroup"));
-        pChecksGroup->setGeometry(QRect(0, 300, 301, 111));
+        pChecksGroup->setGeometry(QRect(0, 300, 311, 111));
         pST_check = new QCheckBox(pChecksGroup);
         pST_check->setObjectName(QString::fromUtf8("pST_check"));
         pST_check->setGeometry(QRect(10, 20, 121, 22));
@@ -272,16 +280,16 @@ public:
         pReadEndPos_slider->setOrientation(Qt::Horizontal);
         pUpdateFile = new QPushButton(pGloupBox);
         pUpdateFile->setObjectName(QString::fromUtf8("pUpdateFile"));
-        pUpdateFile->setGeometry(QRect(370, 240, 221, 27));
+        pUpdateFile->setGeometry(QRect(370, 240, 291, 27));
         pIbp_rb = new QRadioButton(centralWidget);
         pIbp_rb->setObjectName(QString::fromUtf8("pIbp_rb"));
-        pIbp_rb->setGeometry(QRect(860, 140, 61, 22));
+        pIbp_rb->setGeometry(QRect(930, 140, 61, 22));
         pCo2_rb = new QRadioButton(centralWidget);
         pCo2_rb->setObjectName(QString::fromUtf8("pCo2_rb"));
-        pCo2_rb->setGeometry(QRect(860, 170, 61, 22));
+        pCo2_rb->setGeometry(QRect(930, 170, 61, 22));
         pNarco_rb = new QRadioButton(centralWidget);
         pNarco_rb->setObjectName(QString::fromUtf8("pNarco_rb"));
-        pNarco_rb->setGeometry(QRect(860, 200, 81, 22));
+        pNarco_rb->setGeometry(QRect(930, 200, 81, 22));
         pCollectDatas_check = new QCheckBox(centralWidget);
         pCollectDatas_check->setObjectName(QString::fromUtf8("pCollectDatas_check"));
         pCollectDatas_check->setGeometry(QRect(610, 10, 201, 22));
@@ -291,7 +299,7 @@ public:
         MainWindow->setCentralWidget(centralWidget);
         menuBar = new QMenuBar(MainWindow);
         menuBar->setObjectName(QString::fromUtf8("menuBar"));
-        menuBar->setGeometry(QRect(0, 0, 945, 23));
+        menuBar->setGeometry(QRect(0, 0, 1045, 32));
         MainWindow->setMenuBar(menuBar);
         mainToolBar = new QToolBar(MainWindow);
         mainToolBar->setObjectName(QString::fromUtf8("mainToolBar"));
@@ -320,8 +328,10 @@ public:
         pBox_Label->setText(QApplication::translate("MainWindow", "TextLabel", 0, QApplication::UnicodeUTF8));
         pBtnGroup->setTitle(QString());
         pGenerateData_btn->setText(QApplication::translate("MainWindow", "generateData", 0, QApplication::UnicodeUTF8));
-        pAddValue_btn->setText(QApplication::translate("MainWindow", "addValue", 0, QApplication::UnicodeUTF8));
-        pAddAlarm_btn->setText(QApplication::translate("MainWindow", "addAlarm", 0, QApplication::UnicodeUTF8));
+        pAddValue_btn->setText(QApplication::translate("MainWindow", "add", 0, QApplication::UnicodeUTF8));
+        pAddAlarm_btn->setText(QApplication::translate("MainWindow", "add", 0, QApplication::UnicodeUTF8));
+        pDelValue_btn->setText(QApplication::translate("MainWindow", "del", 0, QApplication::UnicodeUTF8));
+        pDelAlarm_btn->setText(QApplication::translate("MainWindow", "del", 0, QApplication::UnicodeUTF8));
         pClear_btn->setText(QApplication::translate("MainWindow", "clear", 0, QApplication::UnicodeUTF8));
         pSendIdCommand->setText(QApplication::translate("MainWindow", "send comfire id commond", 0, QApplication::UnicodeUTF8));
         groupBox->setTitle(QString());

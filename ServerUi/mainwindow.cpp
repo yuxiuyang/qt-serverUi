@@ -74,7 +74,7 @@ MainWindow::MainWindow(QWidget *parent) :
     ui->pCheckCollectDatasGroup->hide();
 
 
-    ui->pReadPos_label->setText("read data from start pos: 0  to end pos: 100");
+    ui->pReadPos_label->setText("read data from start pos: 0  to end pos: 0");
 
 
     m_pTestTimer->start(1000);
@@ -169,7 +169,36 @@ void MainWindow::changeEvent(QEvent *e)
     }
 }
 
+void MainWindow::activeRadio(ClientType_ id){
+    if(id == NIBP_CLIENT)
+        ui->pNibp_rb->setChecked(true);
+    else if(id == ECG_CLIENT)
+        ui->pEcg_rb->setChecked(true);
+    else if(id == SPO2_CLIENT)
+        ui->pSpo2_rb->setChecked(true);
+    else if(id == IBP_CLIENT)
+        ui->pIbp_rb->setChecked(true);
+    else if(id == CO2_CLIENT)
+        ui->pCo2_rb->setChecked(true);
+    else if(id == NARCO_CLIENT)
+        ui->pNarco_rb->setChecked(true);
+    return ;
+}
+
 void MainWindow::radioChange(){
+    if(State::getInstance()->getStateData(COLLECT_DATA)){
+        if(State::getInstance()->getStateData(COLLECT_START)){
+            QMessageBox::information(NULL, "notify", "please stop collecting data,first", QMessageBox::Yes/* | QMessageBox::No*/, QMessageBox::Yes);
+            activeRadio(m_dataType);
+            return ;
+        }else if(!State::getInstance()->getStateData(COLLECT_SAVE) || !State::getInstance()->getStateData(COLLECT_DELETE))
+        {
+            QMessageBox::information(NULL, "notify", "please save or delete the collecting data,first", QMessageBox::Yes/* | QMessageBox::No*/, QMessageBox::Yes);
+            activeRadio(m_dataType);
+            return;
+        }
+    }
+
     if(ui->pNibp_rb==sender()){
         m_dataType = NIBP_CLIENT;
     }else if(ui->pSpo2_rb==sender()){
@@ -394,10 +423,7 @@ void MainWindow::rcCancel_click(){
 }
 
 void MainWindow::saveCollectDatas_click(){//yxy
-    if(State::getInstance()->getStateData(COLLECT_START)){
-        QMessageBox::information(NULL, "notify", "please stop collecting data,first", QMessageBox::Yes/* | QMessageBox::No*/, QMessageBox::Yes);
-        return ;
-    }
+    State::getInstance()->setStateData(COLLECT_SAVE,1);
     QString dir = "";
     switch(m_dataType){
     case ECG_CLIENT:
@@ -461,7 +487,7 @@ void MainWindow::saveCollectDatas_click(){//yxy
 }
 
 void MainWindow::delCollectDatas_click(){
-
+    State::getInstance()->setStateData(COLLECT_DELETE,1);
     char cmdLine[100]={0};
     sprintf(cmdLine,"rm -f %s",m_pDataMgr->getMgrbyId(m_dataType)->getCollectDataTmpFile());
     system(cmdLine);
@@ -475,6 +501,7 @@ void MainWindow::delCollectDatas_click(){
 void MainWindow::startCollectDatas_click(){
     cout<<"start Collect datas success"<<endl;
     State::getInstance()->setStateData(COLLECT_START,1);
+    State::getInstance()->setStateData(COLLECT_SAVE,0);
     printf("startCollectDatas_click  getStateData(COLLECT_START)=%d\n",State::getInstance()->getStateData(COLLECT_START));
 
     ui->pStartCollectDatas->setEnabled(false);
@@ -486,6 +513,7 @@ void MainWindow::startCollectDatas_click(){
 void MainWindow::stopCollectDatas_click(){
     cout<<"stop Collect datas success"<<endl;
     State::getInstance()->setStateData(COLLECT_START,0);
+    State::getInstance()->setStateData(COLLECT_DELETE,0);
 
     ui->pStartCollectDatas->setEnabled(false);
     ui->pStopCollectDatas->setEnabled(false);
@@ -698,6 +726,11 @@ void MainWindow::handleSlider(){
 
     long mid = max/2-2;
 
+    if(max<=0){
+        max = 0;
+        mid = 0;
+
+    }
     cout<<"start slider   range  0 ~ "<<mid<<"  val="<<getSaveValue(m_dataType,SAVE_FILE_START_POS)<<endl;
     cout<<"end slider     range  "<<mid+1<<"~ "<<max<<"  val="<<getSaveValue(m_dataType,SAVE_FILE_END_POS)<<endl;
 
@@ -711,10 +744,10 @@ void MainWindow::handleSlider(){
 
 
     if(getSaveValue(m_dataType,SAVE_FILE_END_POS)==0 || getSaveValue(m_dataType,SAVE_FILE_END_POS)>max){
-        ui->pReadEndPos_slider->setRange(mid+1,max);
+        ui->pReadEndPos_slider->setRange(mid,max);
         ui->pReadEndPos_slider->setValue(max);
     }else{
-        ui->pReadEndPos_slider->setRange(mid+1,max);
+        ui->pReadEndPos_slider->setRange(mid,max);
         ui->pReadEndPos_slider->setValue(getSaveValue(m_dataType,SAVE_FILE_END_POS));
     }
 
@@ -812,14 +845,21 @@ void MainWindow::addValueToCb_click(){
     saveTxtValue(getValueList(m_dataType));
 }
 void MainWindow::delValueToCb_click(){
+    int isOk =QMessageBox::warning(NULL, "warning", "delete this data?", QMessageBox::Yes | QMessageBox::No, QMessageBox::Yes);
+    if(isOk == QMessageBox::No){
+        return;
+    }
+
     cout<<"ui->pValue_cb->currentIndex()="<<ui->pValue_cb->currentIndex()<<endl;
 
     int index = ui->pValue_cb->currentIndex();
+    cout<<"11 getValueList(m_dataType)"<<&(getValueList(m_dataType))<<endl;
     getValueList(m_dataType).removeAt(index);
     handleCB();
     if(index>0&&index<getValueList(m_dataType).count())
         ui->pValue_cb->setCurrentIndex(index);
 
+    cout<<"22 getValueList(m_dataType)"<<&(getValueList(m_dataType))<<endl;
     saveTxtValue(getValueList(m_dataType));
 }
 void MainWindow::addAlarmToCb_click(){

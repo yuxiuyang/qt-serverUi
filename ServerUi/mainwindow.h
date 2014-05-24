@@ -63,6 +63,7 @@ public Q_SLOTS:
     void collectDatasCheckStateChanged(int state);
 
     void radioChange();
+    void activeRadio(ClientType_ id);
 
     void freOk_click();
     void freCancel_click();

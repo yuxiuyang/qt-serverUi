@@ -20,10 +20,10 @@ void State::setSave(){
         return;
     }
     cout<<"start save\n";
-    for(int i=0;i<SHUTDOWN_SAVE;i++){
-        //printf("m_value[%d]=%d\n",i,m_value[i]);
-        cout<<"m_value["<<i<<"]="<<m_value[i]<<endl;
-    }
+//    for(int i=0;i<SHUTDOWN_SAVE;i++){
+//        //printf("m_value[%d]=%d\n",i,m_value[i]);
+//        //cout<<"m_value["<<i<<"]="<<m_value[i]<<endl;
+//    }
     cout<<"end save...\n";
     int size = fwrite(m_value,SHUTDOWN_SAVE*4,1,file);
     if(size == 0){

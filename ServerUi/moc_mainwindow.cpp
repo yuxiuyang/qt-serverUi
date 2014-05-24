@@ -1,7 +1,7 @@
 /****************************************************************************
 ** Meta object code from reading C++ file 'mainwindow.h'
 **
-** Created: Fri May 23 22:58:02 2014
+** Created: Sun May 25 06:36:00 2014
 **      by: The Qt Meta Object Compiler version 62 (Qt 4.6.2)
 **
 ** WARNING! All changes made in this file will be lost!
@@ -23,7 +23,7 @@ static const uint qt_meta_data_MainWindow[] = {
        4,       // revision
        0,       // classname
        0,    0, // classinfo
-      33,   14, // methods
+      34,   14, // methods
        0,    0, // properties
        0,    0, // enums/sets
        0,    0, // constructors
@@ -59,11 +59,12 @@ static const uint qt_meta_data_MainWindow[] = {
      646,  356,   11,   11, 0x0a,
      677,  356,   11,   11, 0x0a,
      712,   11,   11,   11, 0x0a,
-     726,   11,   11,   11, 0x0a,
-     740,   11,   11,   11, 0x0a,
-     758,   11,   11,   11, 0x0a,
-     771,   11,   11,   11, 0x0a,
-     788,   11,   11,   11, 0x0a,
+     729,  726,   11,   11, 0x0a,
+     754,   11,   11,   11, 0x0a,
+     768,   11,   11,   11, 0x0a,
+     786,   11,   11,   11, 0x0a,
+     799,   11,   11,   11, 0x0a,
+     816,   11,   11,   11, 0x0a,
 
        0        // eod
 };
@@ -90,9 +91,9 @@ static const char qt_meta_stringdata_MainWindow[] = {
     "setValue_slider(int)\0"
     "sendDataCheckStateChanged(int)\0"
     "collectDatasCheckStateChanged(int)\0"
-    "radioChange()\0freOk_click()\0"
-    "freCancel_click()\0rcOk_click()\0"
-    "rcCancel_click()\0sendTimer()\0"
+    "radioChange()\0id\0activeRadio(ClientType_)\0"
+    "freOk_click()\0freCancel_click()\0"
+    "rcOk_click()\0rcCancel_click()\0sendTimer()\0"
 };
 
 const QMetaObject MainWindow::staticMetaObject = {
@@ -152,14 +153,15 @@ int MainWindow::qt_metacall(QMetaObject::Call _c, int _id, void **_a)
         case 25: sendDataCheckStateChanged((*reinterpret_cast< int(*)>(_a[1]))); break;
         case 26: collectDatasCheckStateChanged((*reinterpret_cast< int(*)>(_a[1]))); break;
         case 27: radioChange(); break;
-        case 28: freOk_click(); break;
-        case 29: freCancel_click(); break;
-        case 30: rcOk_click(); break;
-        case 31: rcCancel_click(); break;
-        case 32: sendTimer(); break;
+        case 28: activeRadio((*reinterpret_cast< ClientType_(*)>(_a[1]))); break;
+        case 29: freOk_click(); break;
+        case 30: freCancel_click(); break;
+        case 31: rcOk_click(); break;
+        case 32: rcCancel_click(); break;
+        case 33: sendTimer(); break;
         default: ;
         }
-        _id -= 33;
+        _id -= 34;
     }
     return _id;
 }

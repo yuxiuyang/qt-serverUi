@@ -110,22 +110,22 @@ QStringList& getAlarmList(ClientType_ id){
     return g_ecgAlarms;
 }
 
-void saveTxtValue(QStringList strList){
+void saveTxtValue(QStringList& strList){
     char* filename = "";
 
-    if(g_ecgValues == strList)
+    if(&g_ecgValues == &strList)
         filename = "../ServerUi/datafile/ECG/value_data.txt";
-    else if(g_ecgAlarms == strList)
+    else if(&g_ecgAlarms == &strList)
         filename = "../ServerUi/datafile/ECG/alarm_data.txt";
-    else if(g_spo2Values == strList)
+    else if(&g_spo2Values == &strList)
         filename = "../ServerUi/datafile/SPO2/value_data.txt";
-    else if(g_nibpValues == strList)
+    else if(&g_nibpValues == &strList)
         filename = "../ServerUi/datafile/NIBP/value_data.txt";
-    else if(g_ibpValues == strList)
+    else if(&g_ibpValues == &strList)
         filename = "../ServerUi/datafile/IBP/value_data.txt";
-    else if(g_co2Values == strList)
+    else if(&g_co2Values == &strList)
         filename = "../ServerUi/datafile/CO2/value_data.txt";
-    else if(g_narcoValues == strList)
+    else if(&g_narcoValues == &strList)
         filename = "../ServerUi/datafile/NARCO/value_data.txt";
 
 
@@ -133,10 +133,11 @@ void saveTxtValue(QStringList strList){
     file.setFileName(filename);
     if(!file.open("w")) return;
 
-    cout<<"strList.size="<<strList.size()<<endl;
+    cout<<"strList.size="<<strList.size()<< "filename="<<filename<<endl;
     QString str;
     for(QStringList::iterator iter=strList.begin();iter != strList.end();++iter){
         str = *iter;
+        cout<<"write  str="<<str.toStdString().c_str();
         file.writeLine(str.toStdString().c_str());
     }
     file.flush();

@@ -16,7 +16,7 @@ IbpMgr::IbpMgr(LinkMgr* pLinkMgr):BasicMgr(pLinkMgr,IBP_CLIENT)
     startSendData(State::getInstance()->getStateData(IBP_SENDDATA));
 
     gettimeofday(&m_tStartTimer,NULL);
-    assert(openFile("datafile/IBP/data_120.txt"));
+    //assert(openFile("datafile/IBP/data_120.txt"));
 }
 IbpMgr::~IbpMgr()
 {

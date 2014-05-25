@@ -22,6 +22,10 @@ public:
     int read(char *buffer,int size);
 //    void resolveProtocol(const char* buf,int size,BYTE* recieveBuf,int& recieveBuf_len);
     void setFileName(const char* name);
+    char* getFileName(){
+        return m_strFileName;
+    }
+
     bool isOpen(){
         return m_pFile==NULL?false:true;
     }

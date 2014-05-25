@@ -15,7 +15,7 @@ NarcoMgr::NarcoMgr(LinkMgr* pLinkMgr):BasicMgr(pLinkMgr,NARCO_CLIENT)
     setShowDataSign(State::getInstance()->getStateData(NARCO_SHOWDATA));
     startSendData(State::getInstance()->getStateData(NARCO_SENDDATA));
     gettimeofday(&m_tStartTimer,NULL);
-    assert(openFile("datafile/NARCO/data_20.txt"));
+    //assert(openFile("datafile/NARCO/data_20.txt"));
 }
 NarcoMgr::~NarcoMgr()
 {

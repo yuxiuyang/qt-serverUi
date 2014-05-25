@@ -16,7 +16,7 @@ EcgMgr::EcgMgr(LinkMgr* pLinkMgr):BasicMgr(pLinkMgr,ECG_CLIENT)
     startSendData(State::getInstance()->getStateData(ECG_SENDDATA));
 
     gettimeofday(&m_tStartTimer,NULL);
-    assert(openFile("datafile/ECG/data_80.txt"));
+    //assert(openFile("datafile/ECG/data_80.txt"));
 }
 EcgMgr::~EcgMgr()
 {

@@ -778,6 +778,9 @@ void MainWindow::handleCB(){
             ui->pDelValue_btn->show();
 
             ui->pAlarm_cb->clear();
+            if(g_ecgAlarms.size()==0){
+                g_ecgAlarms.append("NONE");
+            }
             ui->pAlarm_cb->insertItems(0,g_ecgAlarms);
             ui->pAlarm_cb->setCurrentIndex(0);
 
@@ -815,11 +818,27 @@ void MainWindow::valueChanged(int index){
     cout<<"valuechanged index="<<index<<"   value="<<ui->pValue_cb->currentText().toStdString().c_str()<<endl;
     if(ui->pValue_cb->currentIndex()>=0)
         m_pDataMgr->getMgrbyId(m_dataType)->setTxtValue(ui->pValue_cb->currentText().toStdString().c_str());
+    else m_pDataMgr->getMgrbyId(m_dataType)->closeFile();
 }
 
 void MainWindow::alarmChanged(int index){
-    if(ui->pAlarm_cb->currentIndex()>=0)
-        m_pDataMgr->getMgrbyId(m_dataType)->setTxtAlarm(ui->pAlarm_cb->currentText().toStdString().c_str());
+    if(ui->pAlarm_cb->currentIndex()==0){//no alarm
+        ui->pValue_cb->setEnabled(true);
+        ui->pAddValue_btn->setEnabled(true);
+        ui->pDelValue_btn->setEnabled(true);
+        int ix = ui->pValue_cb->currentIndex();
+        if(ix>=0)
+            valueChanged(ix);
+    }else{
+        ui->pValue_cb->setEnabled(false);//has alarm
+        ui->pAddValue_btn->setEnabled(false);
+        ui->pDelValue_btn->setEnabled(false);
+
+        if(ui->pAlarm_cb->currentIndex()>0)
+            m_pDataMgr->getMgrbyId(m_dataType)->setTxtAlarm(ui->pAlarm_cb->currentText().toStdString().c_str());
+        else m_pDataMgr->getMgrbyId(m_dataType)->closeFile();
+    }
+
 }
 void MainWindow::addValueToCb_click(){
     bool isOK=false;
@@ -888,6 +907,10 @@ void MainWindow::addAlarmToCb_click(){
 
 void MainWindow::delAlarmToCb_click(){
     int index = ui->pAlarm_cb->currentIndex();
+    if(index == 0){
+        QMessageBox::information(NULL, "Information","don't this val",QMessageBox::Yes | QMessageBox::No,QMessageBox::Yes);
+        return;
+    }
     getAlarmList(m_dataType).removeAt(index);
     handleCB();
     if(index>0&&index<getAlarmList(m_dataType).count())

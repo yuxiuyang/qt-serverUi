@@ -17,7 +17,7 @@ NibpMgr::NibpMgr(LinkMgr* pLinkMgr):BasicMgr(pLinkMgr,NIBP_CLIENT)
     
     gettimeofday(&m_tStartTimer,NULL);
     m_start = false;
-    assert(openFile("datafile/NIBP/nibp_adult.txt"));
+    //assert(openFile("datafile/NIBP/nibp_adult.txt"));
 }
 NibpMgr::~NibpMgr()
 {

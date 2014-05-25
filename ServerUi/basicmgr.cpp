@@ -186,7 +186,7 @@ bool BasicMgr::closeFile(){
         return false;
     }
     assert(m_file->close());
-    printf("close file success\n");
+    cout<<"close file success file="<<m_file->getFileName()<<endl;
     m_readWriteMutex.unlock();
     return true;
 }

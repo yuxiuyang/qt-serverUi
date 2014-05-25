@@ -120,7 +120,7 @@ int File::flush(){//the cache is written to file
     return rel;
 }
 long File::getFileSize(){
-    cout<<"fopen m_strFileName= "<<m_strFileName<<"success"<<endl;
+    //cout<<"fopen m_strFileName= "<<m_strFileName<<"success"<<endl;
     FILE* file = fopen(m_strFileName, "r");
     long length=0;
     if(file){
@@ -131,9 +131,10 @@ long File::getFileSize(){
 
         fclose(file);
     }else{
-        cout<<"m_strFileName="<<m_strFileName<<"getfilesize failure"<<endl;
+        cout<<"get filesize  m_strFileName="<<m_strFileName<<"    failure size=0"<<endl;
+        return 0;
     }
-    cout<<"getfilesize="<<length<<endl;
+    cout<<"getfilesize success  size="<<length<<endl;
 
     return length;
 }

@@ -16,7 +16,7 @@ Spo2Mgr::Spo2Mgr(LinkMgr* pLinkMgr):BasicMgr(pLinkMgr,SPO2_CLIENT)
     startSendData(State::getInstance()->getStateData(SPO2_SENDDATA));
 
     gettimeofday(&m_tStartTimer,NULL);
-    assert(openFile("datafile/SPO2/data_100.txt"));
+    //assert(openFile("datafile/SPO2/data_100.txt"));
 }
 Spo2Mgr::~Spo2Mgr()
 {

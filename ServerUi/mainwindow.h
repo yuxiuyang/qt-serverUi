@@ -83,7 +83,7 @@ public:
     int  getSaveValue(ClientType_ id,SAVE_TYPE saveType);
 
     void handleCB();
-    void handleSlider();
+    void handleSlider(bool isInit=false);
 
     void initClient();
 protected:

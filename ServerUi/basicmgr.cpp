@@ -95,8 +95,6 @@ int BasicMgr::test(int num){
         m_testMsg.usedtimeSum += timeuse;
         m_testMsg.times += 1;
         m_testMsg.readSum += num;
-        char buf[100]={0};
-        cout<<buf<<endl;
 
         m_tStartTimer = curTime;
         return timeuse;

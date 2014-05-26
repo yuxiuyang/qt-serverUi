@@ -159,4 +159,5 @@ void loadTxtValue(QStringList& strList,const char* filename){
     file.close();
 }
 
+
 #endif // GLOBAL_H

@@ -10,6 +10,34 @@
 using namespace std;
 #define MAX_RECIEVE_BUF 1024
 
+
+static const char* getClientMsg(ClientType_ id){
+    switch(id){
+    case ECG_CLIENT:
+        return "ECG_CLIENT";
+        break;
+    case SPO2_CLIENT:
+        return "SPO2_CLIENT";
+        break;
+    case NIBP_CLIENT:
+        return "NIBP_CLIENT";
+        break;
+    case IBP_CLIENT:
+        return "IBP_CLIENT";
+        break;
+    case CO2_CLIENT:
+        return "CO2_CLIENT";
+        break;
+    case NARCO_CLIENT:
+        return "NARCO_CLIENT";
+        break;
+    default:
+
+        break;
+    }
+    return "NONE_CLIENT";
+}
+
 struct LinkSocketId{
     int fd;
     ClientType_ clientId;

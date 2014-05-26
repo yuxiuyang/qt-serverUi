@@ -2,6 +2,7 @@
 #include <errno.h>
 #include "datamgr.h"
 #include "mainwindow.h"
+
 LinkMgr::LinkMgr(){
     m_window = NULL;
     m_pDataMgr = NULL;
@@ -208,8 +209,8 @@ int LinkMgr::data_Arrived(int Fd){
              socketId->clientId = analLinkData(tmpbuf,len);
 
              {
-                 char tmp[100]={0};
-                 sprintf(tmp,"0x%02x comfire id",socketId->clientId);
+                 char Msg[100]={0};
+                 sprintf(Msg,"comfire %d=%s",socketId->clientId,getClientMsg(socketId->clientId));
                  if(socketId->clientId<0){
                      sendRequestIdMsg(Fd);
                  }//request id msg
@@ -217,7 +218,7 @@ int LinkMgr::data_Arrived(int Fd){
                      if(State::getInstance()->getStateData(COLLECT_DATA)){//if in collecting data
                          DataDev::getInstance()->sendData(socketId->fd,Cmd_Msg,socketId->clientId,MODE_COLLECTDATAS);
                      }
-                     ((MainWindow*)m_window)->appendMsg(tmp);
+                     ((MainWindow*)m_window)->appendMsg(Msg);
                  }
              }
          }else{

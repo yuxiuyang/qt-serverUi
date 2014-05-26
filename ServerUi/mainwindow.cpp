@@ -77,7 +77,7 @@ MainWindow::MainWindow(QWidget *parent) :
     ui->pReadPos_label->setText("read data from start pos: 0  to end pos: 0");
 
 
-    m_pTestTimer->start(1000);
+    m_pTestTimer->start(2000);
 
     g_InitGlobalText();
 
@@ -191,7 +191,7 @@ void MainWindow::radioChange(){
             QMessageBox::information(NULL, "notify", "please stop collecting data,first", QMessageBox::Yes/* | QMessageBox::No*/, QMessageBox::Yes);
             activeRadio(m_dataType);
             return ;
-        }else if(!State::getInstance()->getStateData(COLLECT_SAVE) || !State::getInstance()->getStateData(COLLECT_DELETE))
+        }else if(State::getInstance()->getStateData(COLLECT_SAVE) || State::getInstance()->getStateData(COLLECT_DELETE))
         {
             QMessageBox::information(NULL, "notify", "please save or delete the collecting data,first", QMessageBox::Yes/* | QMessageBox::No*/, QMessageBox::Yes);
             activeRadio(m_dataType);
@@ -355,8 +355,8 @@ void MainWindow::clearDisplayMsg_click(){
 }
 void MainWindow::generateData_click(){
     m_pDataMgr->generateTestFile(m_dataType);
-    setSave(m_dataType,SAVE_FILE_START_POS,0);//init the datas
-    setSave(m_dataType,SAVE_FILE_END_POS,0);//init the datas
+//    setSave(m_dataType,SAVE_FILE_START_POS,0);//init the datas
+//    setSave(m_dataType,SAVE_FILE_END_POS,0);//init the datas
     handleSlider();
     QMessageBox::information(NULL, "notify", "generate file success", QMessageBox::Yes/* | QMessageBox::No*/, QMessageBox::Yes);
 }
@@ -423,7 +423,6 @@ void MainWindow::rcCancel_click(){
 }
 
 void MainWindow::saveCollectDatas_click(){//yxy
-    State::getInstance()->setStateData(COLLECT_SAVE,1);
     QString dir = "";
     switch(m_dataType){
     case ECG_CLIENT:
@@ -484,10 +483,11 @@ void MainWindow::saveCollectDatas_click(){//yxy
         cout<<"save Collect datas failure"<<endl;
         QMessageBox::information(NULL, "notify", "save failure", QMessageBox::Yes/* | QMessageBox::No*/, QMessageBox::Yes);
     }
+    State::getInstance()->setStateData(COLLECT_SAVE,0);
+    State::getInstance()->setStateData(COLLECT_DELETE,0);
 }
 
 void MainWindow::delCollectDatas_click(){
-    State::getInstance()->setStateData(COLLECT_DELETE,1);
     char cmdLine[100]={0};
     sprintf(cmdLine,"rm -f %s",m_pDataMgr->getMgrbyId(m_dataType)->getCollectDataTmpFile());
     system(cmdLine);
@@ -496,12 +496,15 @@ void MainWindow::delCollectDatas_click(){
     ui->pSaveCollectDatas->setEnabled(false);
     ui->pDelCollectDatas->setEnabled(false);
     QMessageBox::information(NULL, "notify", "delete success", QMessageBox::Yes/* | QMessageBox::No*/, QMessageBox::Yes);
+    State::getInstance()->setStateData(COLLECT_DELETE,0);
+    State::getInstance()->setStateData(COLLECT_SAVE,0);
 }
 
 void MainWindow::startCollectDatas_click(){
     cout<<"start Collect datas success"<<endl;
     State::getInstance()->setStateData(COLLECT_START,1);
-    State::getInstance()->setStateData(COLLECT_SAVE,0);
+    State::getInstance()->setStateData(COLLECT_SAVE,1);
+    State::getInstance()->setStateData(COLLECT_DELETE,1);
     printf("startCollectDatas_click  getStateData(COLLECT_START)=%d\n",State::getInstance()->getStateData(COLLECT_START));
 
     ui->pStartCollectDatas->setEnabled(false);
@@ -513,7 +516,6 @@ void MainWindow::startCollectDatas_click(){
 void MainWindow::stopCollectDatas_click(){
     cout<<"stop Collect datas success"<<endl;
     State::getInstance()->setStateData(COLLECT_START,0);
-    State::getInstance()->setStateData(COLLECT_DELETE,0);
 
     ui->pStartCollectDatas->setEnabled(false);
     ui->pStopCollectDatas->setEnabled(false);
@@ -543,8 +545,8 @@ void MainWindow::updateFileFromStartToEndPos_click(){
 
     char mess[100]={0};
     if(rel){
-        setSave(m_dataType,SAVE_FILE_START_POS,0);//init the datas
-        setSave(m_dataType,SAVE_FILE_END_POS,0);//init the datas
+//        setSave(m_dataType,SAVE_FILE_START_POS,0);//init the datas
+//        setSave(m_dataType,SAVE_FILE_END_POS,0);//init the datas
         handleSlider();
         cout<<"updateFileFromStartToEndPos success"<<endl;
         strcpy(mess,"updateFileFromStartToEndPos success");
@@ -565,10 +567,10 @@ void MainWindow::setValue_slider(int val){
 
     if(sender() == ui->pReadStartPos_slider){
         m_pDataMgr->getMgrbyId(m_dataType)->setReadFileStartPos(ui->pReadStartPos_slider->value());
-        setSave(m_dataType,SAVE_FILE_START_POS,ui->pReadStartPos_slider->value());//save the datas
+//        setSave(m_dataType,SAVE_FILE_START_POS,ui->pReadStartPos_slider->value());//save the datas
     }else{
         m_pDataMgr->getMgrbyId(m_dataType)->setReadFileEndPos(ui->pReadEndPos_slider->value());
-        setSave(m_dataType,SAVE_FILE_END_POS,ui->pReadEndPos_slider->value());
+//        setSave(m_dataType,SAVE_FILE_END_POS,ui->pReadEndPos_slider->value());
     }
 }
 
@@ -602,15 +604,15 @@ void MainWindow::sendDataCheckStateChanged(int state){
 
 void MainWindow::sendTimer(){
     //cout<<"helllooo"<<endl;
+    QString strTmp="";
     while(!m_queDataLine[m_dataType].empty()){
-         QTextCursor cursor =  ui->pMsg_Txt->textCursor();
-         cursor.movePosition(QTextCursor::End);
-         ui->pMsg_Txt->setTextCursor(cursor);
-         ui->pMsg_Txt->insertPlainText(m_queDataLine[m_dataType].front().c_str());
+         strTmp += m_queDataLine[m_dataType].front().c_str();
+         //ui->pMsg_Txt->insertPlainText(m_queDataLine[m_dataType].front().c_str());
          m_pMutex.lock();
          m_queDataLine[m_dataType].pop();
          m_pMutex.unlock();
     }
+    ui->pMsg_Txt->insertPlainText(strTmp.toStdString().c_str());
 
     while(!m_queConnectMsgLine.empty()){
          ui->pConnectMsg_txt->append(m_queConnectMsgLine.front().c_str());
@@ -618,6 +620,10 @@ void MainWindow::sendTimer(){
          m_queConnectMsgLine.pop();
          m_pMutex.unlock();
     }
+    QTextCursor cursor =  ui->pMsg_Txt->textCursor();
+    cursor.movePosition(QTextCursor::End);
+    ui->pMsg_Txt->setTextCursor(cursor);
+
     while(!m_queStasticMsgLine[m_dataType].empty()){
 //         QTextCursor cursor =  ui->pStatistics_txt->textCursor();
 //         cursor.movePosition(QTextCursor::End);
@@ -633,13 +639,13 @@ void MainWindow::sendTimer(){
 }
 void MainWindow::showData(ClientType_ id,const char* buf){
     if(State::getInstance()->getStateData(COLLECT_DATA)){
-        return;//
+        //return;//
     }
     if(id != m_dataType) return ;
 
     m_pMutex.lock();
     m_queDataLine[id].push(buf);
-    cout<<buf<<endl;
+    //cout<<buf<<endl;
     m_pMutex.unlock();
 }
 
@@ -721,7 +727,7 @@ void MainWindow::checkLinkState(){
     }
 
 }
-void MainWindow::handleSlider(){
+void MainWindow::handleSlider(bool isInit){
     long max = m_pDataMgr->getMgrbyId(m_dataType)->getFileSize();
 
     long mid = max/2-2;
@@ -734,25 +740,32 @@ void MainWindow::handleSlider(){
     cout<<"start slider   range  0 ~ "<<mid<<"  val="<<getSaveValue(m_dataType,SAVE_FILE_START_POS)<<endl;
     cout<<"end slider     range  "<<mid+1<<"~ "<<max<<"  val="<<getSaveValue(m_dataType,SAVE_FILE_END_POS)<<endl;
 
-    if(getSaveValue(m_dataType,SAVE_FILE_START_POS)==0 || getSaveValue(m_dataType,SAVE_FILE_START_POS)>mid){
-        ui->pReadStartPos_slider->setRange(0,mid);
-        ui->pReadStartPos_slider->setValue(0);
-    }else{
-        ui->pReadStartPos_slider->setRange(0,mid);
-        ui->pReadStartPos_slider->setValue(getSaveValue(m_dataType,SAVE_FILE_START_POS));
-    }
+//    if(isInit){
+//        setSave(m_dataType,SAVE_FILE_START_POS,0);//
+//        setSave(m_dataType,SAVE_FILE_END_POS,max);
+//    }
+//    if(getSaveValue(m_dataType,SAVE_FILE_START_POS)==0 || getSaveValue(m_dataType,SAVE_FILE_START_POS)>mid){
+//        ui->pReadStartPos_slider->setRange(0,mid);
+//        ui->pReadStartPos_slider->setValue(0);
+//    }else{
+//        ui->pReadStartPos_slider->setRange(0,mid);
+//        ui->pReadStartPos_slider->setValue(getSaveValue(m_dataType,SAVE_FILE_START_POS));
+//    }
+//
+//
+//    if(getSaveValue(m_dataType,SAVE_FILE_END_POS)==0 || getSaveValue(m_dataType,SAVE_FILE_END_POS)>max){
+//        ui->pReadEndPos_slider->setRange(mid,max);
+//        ui->pReadEndPos_slider->setValue(max);
+//    }else{
+//        ui->pReadEndPos_slider->setRange(mid,max);
+//        ui->pReadEndPos_slider->setValue(getSaveValue(m_dataType,SAVE_FILE_END_POS));
+//    }
 
 
-    if(getSaveValue(m_dataType,SAVE_FILE_END_POS)==0 || getSaveValue(m_dataType,SAVE_FILE_END_POS)>max){
-        ui->pReadEndPos_slider->setRange(mid,max);
-        ui->pReadEndPos_slider->setValue(max);
-    }else{
-        ui->pReadEndPos_slider->setRange(mid,max);
-        ui->pReadEndPos_slider->setValue(getSaveValue(m_dataType,SAVE_FILE_END_POS));
-    }
-
-
-
+    ui->pReadStartPos_slider->setRange(0,mid);
+    ui->pReadStartPos_slider->setValue(0);
+    ui->pReadEndPos_slider->setRange(mid,max);
+    ui->pReadEndPos_slider->setValue(max);
 
     m_pDataMgr->getMgrbyId(m_dataType)->setReadFileStartPos(ui->pReadStartPos_slider->value());
     m_pDataMgr->getMgrbyId(m_dataType)->setReadFileEndPos(ui->pReadEndPos_slider->value());
@@ -819,6 +832,7 @@ void MainWindow::valueChanged(int index){
     if(ui->pValue_cb->currentIndex()>=0)
         m_pDataMgr->getMgrbyId(m_dataType)->setTxtValue(ui->pValue_cb->currentText().toStdString().c_str());
     else m_pDataMgr->getMgrbyId(m_dataType)->closeFile();
+    handleSlider(true);
 }
 
 void MainWindow::alarmChanged(int index){
@@ -839,6 +853,7 @@ void MainWindow::alarmChanged(int index){
         else m_pDataMgr->getMgrbyId(m_dataType)->closeFile();
     }
 
+    handleSlider(true);
 }
 void MainWindow::addValueToCb_click(){
     bool isOK=false;
@@ -1010,12 +1025,12 @@ void MainWindow::setSave(ClientType_ id, SAVE_TYPE saveType,int val) {
             case SAVE_READNUM:
                 State::getInstance()->setStateData(NARCO_READRUM, val);
                 break;
-            case SAVE_FILE_START_POS:
-                State::getInstance()->setStateData(NARCO_FILE_START_POS, val);
-                break;
-            case SAVE_FILE_END_POS:
-                State::getInstance()->setStateData(NARCO_FILE_END_POS, val);
-                break;
+//            case SAVE_FILE_START_POS:
+//                State::getInstance()->setStateData(NARCO_FILE_START_POS, val);
+//                break;
+//            case SAVE_FILE_END_POS:
+//                State::getInstance()->setStateData(NARCO_FILE_END_POS, val);
+//                break;
             case SAVE_TEST:
                 State::getInstance()->setStateData(NARCO_TEST, val);
                 break;
@@ -1180,12 +1195,12 @@ int MainWindow::getSaveValue(ClientType_ id, SAVE_TYPE saveType) {
             case SAVE_READNUM:
                 return State::getInstance()->getStateData(NARCO_READRUM);
                 break;
-            case SAVE_FILE_START_POS:
-                return State::getInstance()->getStateData(NARCO_FILE_START_POS);
-                break;
-            case SAVE_FILE_END_POS:
-                return State::getInstance()->getStateData(NARCO_FILE_END_POS);
-                break;
+//            case SAVE_FILE_START_POS:
+//                return State::getInstance()->getStateData(NARCO_FILE_START_POS);
+//                break;
+//            case SAVE_FILE_END_POS:
+//                return State::getInstance()->getStateData(NARCO_FILE_END_POS);
+//                break;
             case SAVE_TEST:
                 return State::getInstance()->getStateData(NARCO_TEST);
                 break;

@@ -25,7 +25,7 @@ void State::setSave(){
 //        //cout<<"m_value["<<i<<"]="<<m_value[i]<<endl;
 //    }
     cout<<"end save...\n";
-    int size = fwrite(m_value,SHUTDOWN_SAVE*4,1,file);
+    int size = fwrite(m_value,SHUTDOWN_SAVE*sizeof(m_value[0]),1,file);
     if(size == 0){
         printf("write configure failue,size=%d\n",size);
     }else{
@@ -77,7 +77,7 @@ void State::loadConf(){
             return ;
         }
 //        printf("end ...\n");
-        int size = fread(m_value,SHUTDOWN_SAVE*4,1,file);
+        int size = fread(m_value,SHUTDOWN_SAVE*sizeof(m_value[0]),1,file);
         if(size==0){
             printf("read configure failue size=%d\n",size);
         }else{

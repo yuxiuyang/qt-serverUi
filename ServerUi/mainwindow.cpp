@@ -199,6 +199,8 @@ void MainWindow::radioChange(){
         }
     }
 
+    setSave(m_dataType,SAVE_DATA_VALUE,ui->pValue_cb->currentIndex());
+    setSave(m_dataType,SAVE_ALARM_VALUE,ui->pAlarm_cb->currentIndex());
     if(ui->pNibp_rb==sender()){
         m_dataType = NIBP_CLIENT;
     }else if(ui->pSpo2_rb==sender()){
@@ -780,7 +782,10 @@ void MainWindow::handleCB(){
     case ECG_CLIENT:
         {
             ui->pValue_cb->insertItems(0,g_ecgValues);
-            ui->pValue_cb->setCurrentIndex(0);
+            if(State::getInstance()->getStateData(ECG_DATA_VALUE)>g_ecgValues.size()){
+                State::getInstance()->setStateData(ECG_DATA_VALUE,0);
+            }
+            ui->pValue_cb->setCurrentIndex(State::getInstance()->getStateData(ECG_DATA_VALUE));
 
             ui->pAlarm_cb->show();
             ui->pAddAlarm_btn->show();
@@ -795,33 +800,51 @@ void MainWindow::handleCB(){
                 g_ecgAlarms.append("NONE");
             }
             ui->pAlarm_cb->insertItems(0,g_ecgAlarms);
-            ui->pAlarm_cb->setCurrentIndex(0);
+            if(State::getInstance()->getStateData(ECG_ALARM_VALUE)>g_ecgAlarms.size()){
+                State::getInstance()->setStateData(ECG_ALARM_VALUE,0);
+            }
+            ui->pAlarm_cb->setCurrentIndex(State::getInstance()->getStateData(ECG_ALARM_VALUE));
 
         }
         break;
     case SPO2_CLIENT:
         {
             ui->pValue_cb->insertItems(0,g_spo2Values);
-            ui->pValue_cb->setCurrentIndex(0);
+            if(State::getInstance()->getStateData(SPO2_DATA_VALUE)>g_spo2Values.size()){
+                State::getInstance()->setStateData(SPO2_DATA_VALUE,0);
+            }
+            ui->pValue_cb->setCurrentIndex(State::getInstance()->getStateData(SPO2_DATA_VALUE));
         }
         break;
     case NIBP_CLIENT:
         {
             ui->pValue_cb->insertItems(0,g_nibpValues);
-            ui->pValue_cb->setCurrentIndex(0);
+            if(State::getInstance()->getStateData(NIBP_DATA_VALUE)>g_nibpValues.size()){
+                State::getInstance()->setStateData(NIBP_DATA_VALUE,0);
+            }
+            ui->pValue_cb->setCurrentIndex(State::getInstance()->getStateData(NIBP_DATA_VALUE));
         }
         break;
     case IBP_CLIENT:
         ui->pValue_cb->insertItems(0,g_ibpValues);
-        ui->pValue_cb->setCurrentIndex(0);
+        if(State::getInstance()->getStateData(IBP_DATA_VALUE)>g_ibpValues.size()){
+            State::getInstance()->setStateData(IBP_DATA_VALUE,0);
+        }
+        ui->pValue_cb->setCurrentIndex(State::getInstance()->getStateData(IBP_DATA_VALUE));
         break;
     case CO2_CLIENT:
         ui->pValue_cb->insertItems(0,g_co2Values);
-        ui->pValue_cb->setCurrentIndex(0);
+        if(State::getInstance()->getStateData(CO2_DATA_VALUE)>g_co2Values.size()){
+            State::getInstance()->setStateData(CO2_DATA_VALUE,0);
+        }
+        ui->pValue_cb->setCurrentIndex(State::getInstance()->getStateData(CO2_DATA_VALUE));
         break;
     case NARCO_CLIENT:
         ui->pValue_cb->insertItems(0,g_narcoValues);
-        ui->pValue_cb->setCurrentIndex(0);
+        if(State::getInstance()->getStateData(NARCO_DATA_VALUE)>g_narcoValues.size()){
+            State::getInstance()->setStateData(NARCO_DATA_VALUE,0);
+        }
+        ui->pValue_cb->setCurrentIndex(State::getInstance()->getStateData(NARCO_DATA_VALUE));
         break;
     default:
         break;
@@ -829,9 +852,12 @@ void MainWindow::handleCB(){
 }
 void MainWindow::valueChanged(int index){
     cout<<"valuechanged index="<<index<<"   value="<<ui->pValue_cb->currentText().toStdString().c_str()<<endl;
-    if(ui->pValue_cb->currentIndex()>=0)
+    if(ui->pValue_cb->currentIndex()>=0){
         m_pDataMgr->getMgrbyId(m_dataType)->setTxtValue(ui->pValue_cb->currentText().toStdString().c_str());
-    else m_pDataMgr->getMgrbyId(m_dataType)->closeFile();
+    }
+    else{
+        //m_pDataMgr->getMgrbyId(m_dataType)->closeFile();
+    }
     handleSlider(true);
 }
 
@@ -850,9 +876,9 @@ void MainWindow::alarmChanged(int index){
 
         if(ui->pAlarm_cb->currentIndex()>0)
             m_pDataMgr->getMgrbyId(m_dataType)->setTxtAlarm(ui->pAlarm_cb->currentText().toStdString().c_str());
-        else m_pDataMgr->getMgrbyId(m_dataType)->closeFile();
+        //else m_pDataMgr->getMgrbyId(m_dataType)->closeFile();
     }
-
+    //setSave(m_dataType,SAVE_ALARM_VALUE,ui->pAlarm_cb->currentIndex());
     handleSlider(true);
 }
 void MainWindow::addValueToCb_click(){
@@ -959,6 +985,12 @@ void MainWindow::setSave(ClientType_ id, SAVE_TYPE saveType,int val) {
             case SAVE_SENDDATA:
                 State::getInstance()->setStateData(ECG_SENDDATA, val);
                 break;
+            case SAVE_DATA_VALUE:
+                State::getInstance()->setStateData(ECG_DATA_VALUE, val);
+                break;
+            case SAVE_ALARM_VALUE:
+                State::getInstance()->setStateData(ECG_ALARM_VALUE, val);
+                break;
             default:
                 break;
             }
@@ -985,6 +1017,12 @@ void MainWindow::setSave(ClientType_ id, SAVE_TYPE saveType,int val) {
                 break;
             case SAVE_SENDDATA:
                 State::getInstance()->setStateData(SPO2_SENDDATA, val);
+                break;
+            case SAVE_DATA_VALUE:
+                State::getInstance()->setStateData(SPO2_DATA_VALUE, val);
+                break;
+            case SAVE_ALARM_VALUE:
+                State::getInstance()->setStateData(SPO2_ALARM_VALUE, val);
                 break;
             default:
                 break;
@@ -1013,6 +1051,12 @@ void MainWindow::setSave(ClientType_ id, SAVE_TYPE saveType,int val) {
             case SAVE_SENDDATA:
                 State::getInstance()->setStateData(CO2_SENDDATA, val);
                 break;
+            case SAVE_DATA_VALUE:
+                State::getInstance()->setStateData(CO2_DATA_VALUE, val);
+                break;
+            case SAVE_ALARM_VALUE:
+                State::getInstance()->setStateData(CO2_ALARM_VALUE, val);
+                break;
             default:
                 break;
             }
@@ -1039,6 +1083,12 @@ void MainWindow::setSave(ClientType_ id, SAVE_TYPE saveType,int val) {
                 break;
             case SAVE_SENDDATA:
                 State::getInstance()->setStateData(NARCO_SENDDATA, val);
+                break;
+            case SAVE_DATA_VALUE:
+                State::getInstance()->setStateData(NARCO_DATA_VALUE, val);
+                break;
+            case SAVE_ALARM_VALUE:
+                State::getInstance()->setStateData(NARCO_ALARM_VALUE, val);
                 break;
             default:
                 break;
@@ -1067,6 +1117,12 @@ void MainWindow::setSave(ClientType_ id, SAVE_TYPE saveType,int val) {
             case SAVE_SENDDATA:
                 State::getInstance()->setStateData(NIBP_SENDDATA, val);
                 break;
+            case SAVE_DATA_VALUE:
+                State::getInstance()->setStateData(NIBP_DATA_VALUE, val);
+                break;
+            case SAVE_ALARM_VALUE:
+                State::getInstance()->setStateData(NIBP_ALARM_VALUE, val);
+                break;
             default:
                 break;
             }
@@ -1093,6 +1149,12 @@ void MainWindow::setSave(ClientType_ id, SAVE_TYPE saveType,int val) {
                 break;
             case SAVE_SENDDATA:
                 State::getInstance()->setStateData(IBP_SENDDATA, val);
+                break;
+            case SAVE_DATA_VALUE:
+                State::getInstance()->setStateData(IBP_DATA_VALUE, val);
+                break;
+            case SAVE_ALARM_VALUE:
+                State::getInstance()->setStateData(IBP_ALARM_VALUE, val);
                 break;
             default:
                 break;
@@ -1129,6 +1191,12 @@ int MainWindow::getSaveValue(ClientType_ id, SAVE_TYPE saveType) {
             case SAVE_SENDDATA:
                 return State::getInstance()->getStateData(ECG_SENDDATA);
                 break;
+            case SAVE_DATA_VALUE:
+                return State::getInstance()->getStateData(ECG_DATA_VALUE);
+                break;
+            case SAVE_ALARM_VALUE:
+                return State::getInstance()->getStateData(ECG_ALARM_VALUE);
+                break;
             default:
                 break;
             }
@@ -1155,6 +1223,12 @@ int MainWindow::getSaveValue(ClientType_ id, SAVE_TYPE saveType) {
                 break;
             case SAVE_SENDDATA:
                 return State::getInstance()->getStateData(SPO2_SENDDATA);
+                break;
+            case SAVE_DATA_VALUE:
+                return State::getInstance()->getStateData(SPO2_DATA_VALUE);
+                break;
+            case SAVE_ALARM_VALUE:
+                return State::getInstance()->getStateData(SPO2_ALARM_VALUE);
                 break;
             default:
                 break;
@@ -1183,6 +1257,12 @@ int MainWindow::getSaveValue(ClientType_ id, SAVE_TYPE saveType) {
             case SAVE_SENDDATA:
                 return State::getInstance()->getStateData(CO2_SENDDATA);
                 break;
+            case SAVE_DATA_VALUE:
+                return State::getInstance()->getStateData(CO2_DATA_VALUE);
+                break;
+            case SAVE_ALARM_VALUE:
+                return State::getInstance()->getStateData(CO2_ALARM_VALUE);
+                break;
             default:
                 break;
             }
@@ -1209,6 +1289,12 @@ int MainWindow::getSaveValue(ClientType_ id, SAVE_TYPE saveType) {
                 break;
             case SAVE_SENDDATA:
                 return State::getInstance()->getStateData(NARCO_SENDDATA);
+                break;
+            case SAVE_DATA_VALUE:
+                return State::getInstance()->getStateData(NARCO_DATA_VALUE);
+                break;
+            case SAVE_ALARM_VALUE:
+                return State::getInstance()->getStateData(NARCO_ALARM_VALUE);
                 break;
             default:
                 break;
@@ -1237,6 +1323,12 @@ int MainWindow::getSaveValue(ClientType_ id, SAVE_TYPE saveType) {
             case SAVE_SENDDATA:
                 return State::getInstance()->getStateData(NIBP_SENDDATA);
                 break;
+            case SAVE_DATA_VALUE:
+                return State::getInstance()->getStateData(NIBP_DATA_VALUE);
+                break;
+            case SAVE_ALARM_VALUE:
+                return State::getInstance()->getStateData(NIBP_ALARM_VALUE);
+                break;
             default:
                 break;
             }
@@ -1263,6 +1355,12 @@ int MainWindow::getSaveValue(ClientType_ id, SAVE_TYPE saveType) {
                 break;
             case SAVE_SENDDATA:
                 return State::getInstance()->getStateData(IBP_SENDDATA);
+                break;
+            case SAVE_DATA_VALUE:
+                return State::getInstance()->getStateData(IBP_DATA_VALUE);
+                break;
+            case SAVE_ALARM_VALUE:
+                return State::getInstance()->getStateData(IBP_ALARM_VALUE);
                 break;
             default:
                 break;

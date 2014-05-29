@@ -19,6 +19,8 @@ enum SAVE_TYPE{
         SAVE_TEST,
         SAVE_SHOWDATA,
         SAVE_SENDDATA,
+        SAVE_DATA_VALUE,
+        SAVE_ALARM_VALUE,
 };
 class MainWindow : public QMainWindow {
     Q_OBJECT

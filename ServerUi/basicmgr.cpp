@@ -117,10 +117,10 @@ void BasicMgr::generateTestFile(){//
 }
 
 int BasicMgr::read(){
-    m_readWriteMutex.lock();
+    //m_readWriteMutex.lock();
     if(!isOpenFile()){
         //cout<<"read failure  please call openFile to create a file"<<endl;
-        m_readWriteMutex.unlock();
+        //m_readWriteMutex.unlock();
         return 0;
     }
     memset(m_readBuf,0,sizeof(m_readBuf));
@@ -128,7 +128,7 @@ int BasicMgr::read(){
     int len = m_file->read(m_readBuf,m_iReadNum);//read 3*300 datas per time.
     if(len<=0){
         cout<<"yxy  len="<<len<<" read error"<<endl;
-        m_readWriteMutex.unlock();
+        //m_readWriteMutex.unlock();
         return 0;
     }
     int recieveBuf_len=0;
@@ -140,7 +140,7 @@ int BasicMgr::read(){
     }else{
         cout<<"resolveProtocol error happen"<<endl;
     }
-    m_readWriteMutex.unlock();
+    //m_readWriteMutex.unlock();
     return recieveBuf_len;
     //cout<<"read   m_readBuf="<<m_readBuf<<endl;
 }

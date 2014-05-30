@@ -16,8 +16,11 @@ DataDev* DataDev::m_instance = new DataDev();
 DataDev::DataDev(QObject *parent) :
         QThread(parent)
 {
-    m_pDataJob = GetJobNest();
-    assert(m_pDataJob);
+    //m_pDataJob = GetJobNest();
+    //assert(m_pDataJob);
+    for(int i=0;i<CLIENT_NUM;i++){
+        m_pJob[i] = NULL;
+    }
 
 
     m_pthreadState = THREAD_NOTSTART;
@@ -269,14 +272,18 @@ bool DataDev::checkRecvFd(int Fd){
 
 
 
-void DataDev::sendData_thread(int fd,const BYTE* buf,int len){
+void DataDev::sendData_thread(int fd,ClientType_ clientId,const BYTE* buf,int len){
     if(fd<=0)return;
     //cout<<"sendData fd="<<fd<<endl;
     if(!isValidateFd(fd)) return;
     m_sendMutex.lock();
 
     //驱动任务巢
-    CJobPkg* pkg=m_pDataJob->GetJobPkg(0);
+    if(!m_pJob[clientId]){
+        m_pJob[clientId] = GetJobNest();
+        assert(m_pJob);
+    }
+    CJobPkg* pkg=m_pJob[clientId]->GetJobPkg(0);
     assert(pkg);
 
 
@@ -290,9 +297,9 @@ void DataDev::sendData_thread(int fd,const BYTE* buf,int len){
 
     pkg->SetExecFunction(sendData_);
     pkg->SetExecParam(pci);
-    pkg->SetID(1);//different thread have different source. as to this ID ,can delete the soucre.
+    pkg->SetID(clientId);//different thread have different source. as to this ID ,can delete the soucre.
 
-    m_pDataJob->SubmitJobPkg(pkg);
+    m_pJob[clientId]->SubmitJobPkg(pkg);
 
     m_sendMutex.unlock();
 }
@@ -363,7 +370,7 @@ int DataDev::sendData(int fd,MsgType_ type,ClientType_ clientId,const BYTE* buf,
 
 
             if(type == Data_Msg){
-                sendData_thread(fd,tmpBuf,6+len);
+                sendData_thread(fd,clientId,tmpBuf,6+len);
                 return (6+len);
              }
 

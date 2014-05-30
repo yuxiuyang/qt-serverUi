@@ -83,7 +83,7 @@ class DataDev : public QThread
 
 protected:
         int sendData(int fd,const BYTE* data, int len);
-        void sendData_thread(int fd,const BYTE* buf,int len);
+        void sendData_thread(int fd,ClientType_ clientId,const BYTE* buf,int len);
         static void sendData_(void* pv);
         void recvData();
         virtual void run();
@@ -96,7 +96,15 @@ private:
 
         QMutex m_sendMutex;//
         QMutex m_socketFdMutex;
-        CJobNest *m_pDataJob;//send data task thread.
+        //CJobNest *m_pDataJob;//send data task thread.
+//        CJobNest *m_pEcgDataJob;
+//        CJobNest *m_pSpo2DataJob;
+//        CJobNest *m_pIbpDataJob;
+//        CJobNest *m_pNibpDataJob;
+//        CJobNest *m_pCo2DataJob;
+//        CJobNest *m_pNarcoDataJob;
+        CJobNest* m_pJob[CLIENT_NUM];
+
 
         THREAD_STATE m_pthreadState;
 

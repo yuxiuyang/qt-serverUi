@@ -155,6 +155,18 @@ void MainWindow::initClient(){
     }
 
     ui->pMsg_Txt->clear();
+
+    //yxytest
+    cout<<"m_dataType="<<m_dataType<<"   getSaveValue(m_dataType,SAVE_ALARM_VALUE)="<<getSaveValue(m_dataType,SAVE_ALARM_VALUE)<<endl;
+    if(getSaveValue(m_dataType,SAVE_ALARM_VALUE)==0){//no alarm
+        ui->pValue_cb->setEnabled(true);
+        ui->pAddValue_btn->setEnabled(true);
+        ui->pDelValue_btn->setEnabled(true);
+    }else{
+        ui->pValue_cb->setEnabled(false);//has alarm
+        ui->pAddValue_btn->setEnabled(false);
+        ui->pDelValue_btn->setEnabled(false);
+    }
 }
 
 void MainWindow::changeEvent(QEvent *e)
@@ -198,9 +210,13 @@ void MainWindow::radioChange(){
             return;
         }
     }
-
+//cout<<"m_dataType="<<m_dataType<<"   save value="<<ui->pValue_cb->currentIndex()<<"alarm = "<<ui->pAlarm_cb->currentIndex()<<endl;
     setSave(m_dataType,SAVE_DATA_VALUE,ui->pValue_cb->currentIndex());
-    setSave(m_dataType,SAVE_ALARM_VALUE,ui->pAlarm_cb->currentIndex());
+    if(!ui->pAlarm_cb->isHidden())
+        setSave(m_dataType,SAVE_ALARM_VALUE,ui->pAlarm_cb->currentIndex());
+    else setSave(m_dataType,SAVE_ALARM_VALUE,0);
+
+
     if(ui->pNibp_rb==sender()){
         m_dataType = NIBP_CLIENT;
     }else if(ui->pSpo2_rb==sender()){
@@ -606,15 +622,15 @@ void MainWindow::sendDataCheckStateChanged(int state){
 
 void MainWindow::sendTimer(){
     //cout<<"helllooo"<<endl;
-    QString strTmp="";
-    while(!m_queDataLine[m_dataType].empty()){
-         strTmp += m_queDataLine[m_dataType].front().c_str();
-         //ui->pMsg_Txt->insertPlainText(m_queDataLine[m_dataType].front().c_str());
-         m_pMutex.lock();
-         m_queDataLine[m_dataType].pop();
-         m_pMutex.unlock();
-    }
-    ui->pMsg_Txt->insertPlainText(strTmp.toStdString().c_str());
+//    QString strTmp="";
+//    while(!m_queDataLine[m_dataType].empty()){
+//         strTmp += m_queDataLine[m_dataType].front().c_str();
+//         //ui->pMsg_Txt->insertPlainText(m_queDataLine[m_dataType].front().c_str());
+//         m_pMutex.lock();
+//         m_queDataLine[m_dataType].pop();
+//         m_pMutex.unlock();
+//    }
+//    ui->pMsg_Txt->insertPlainText(strTmp.toStdString().c_str());
 
     while(!m_queConnectMsgLine.empty()){
          ui->pConnectMsg_txt->append(m_queConnectMsgLine.front().c_str());
@@ -937,6 +953,14 @@ void MainWindow::addAlarmToCb_click(){
     }
     getAlarmList(m_dataType).append(text);
     qSort(getAlarmList(m_dataType).begin(), getAlarmList(m_dataType).end());
+
+
+    QStringList::iterator iter = qFind(getAlarmList(m_dataType).begin(),getAlarmList(m_dataType).end(),"NONE");
+    while(iter!=getAlarmList(m_dataType).end()){
+        getAlarmList(m_dataType).erase(iter);
+        iter = qFind(getAlarmList(m_dataType).begin(),getAlarmList(m_dataType).end(),"NONE");
+    }
+    getAlarmList(m_dataType).insert(0,"NONE");
     handleCB();
 
     int ix = ui->pAlarm_cb->findText(text);

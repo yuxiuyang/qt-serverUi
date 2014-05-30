@@ -19,17 +19,17 @@ void State::setSave(){
         cout<<"open the file configure failue,m_fileName="<<m_fileName<<endl;
         return;
     }
-    cout<<"start save\n";
+    //cout<<"start save\n";
 //    for(int i=0;i<SHUTDOWN_SAVE;i++){
 //        //printf("m_value[%d]=%d\n",i,m_value[i]);
 //        //cout<<"m_value["<<i<<"]="<<m_value[i]<<endl;
 //    }
-    cout<<"end save...\n";
+    //cout<<"end save...\n";
     int size = fwrite(m_value,SHUTDOWN_SAVE*sizeof(m_value[0]),1,file);
     if(size == 0){
         printf("write configure failue,size=%d\n",size);
     }else{
-        printf("write configure success\n");
+        //printf("write configure success\n");
     }
     fclose(file);
 }

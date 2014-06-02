@@ -20,10 +20,6 @@ MainWindow::MainWindow(QWidget *parent) :
     connect(ui->pSendIdCommand,SIGNAL(clicked()), this, SLOT(sendRequestData_click()));
     connect(ui->pGenerateData_btn,SIGNAL(clicked()),this,SLOT(generateData_click()));
     connect(ui->pExit_btn,SIGNAL(clicked()),this,SLOT(exit_click()));
-    connect(ui->pStartCollectDatas,SIGNAL(clicked()),this,SLOT(startCollectDatas_click()));
-    connect(ui->pStopCollectDatas,SIGNAL(clicked()),this,SLOT(stopCollectDatas_click()));
-    connect(ui->pSaveCollectDatas,SIGNAL(clicked()),this,SLOT(saveCollectDatas_click()));
-    connect(ui->pDelCollectDatas,SIGNAL(clicked()),this,SLOT(delCollectDatas_click()));
 
     connect(ui->pAddValue_btn,SIGNAL(clicked()),this,SLOT(addValueToCb_click()));
     connect(ui->pDelValue_btn,SIGNAL(clicked()),this,SLOT(delValueToCb_click()));
@@ -36,7 +32,7 @@ MainWindow::MainWindow(QWidget *parent) :
     connect(ui->pST_check, SIGNAL(stateChanged(int)), this, SLOT(startTestCheckStateChanged(int)));
     connect(ui->pShowReadData_check,SIGNAL(stateChanged(int)),this,SLOT(showReadDataCheckStateChanged(int)));
     connect(ui->pSendData_check,SIGNAL(stateChanged(int)),this,SLOT(sendDataCheckStateChanged(int)));
-    connect(ui->pCollectDatas_check,SIGNAL(stateChanged(int)),this,SLOT(collectDatasCheckStateChanged(int)));
+    connect(ui->pCollectDataCheckBox,SIGNAL(stateChanged(int)),this,SLOT(collectDatasCheckStateChanged(int)));
 
     connect(ui->pReadStartPos_slider,SIGNAL(valueChanged(int)),this,SLOT(setValue_slider(int)));
     connect(ui->pReadEndPos_slider,SIGNAL(valueChanged(int)),this,SLOT(setValue_slider(int)));

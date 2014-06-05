@@ -32,7 +32,7 @@ MainWindow::MainWindow(QWidget *parent) :
     connect(ui->pST_check, SIGNAL(stateChanged(int)), this, SLOT(startTestCheckStateChanged(int)));
     connect(ui->pShowReadData_check,SIGNAL(stateChanged(int)),this,SLOT(showReadDataCheckStateChanged(int)));
     connect(ui->pSendData_check,SIGNAL(stateChanged(int)),this,SLOT(sendDataCheckStateChanged(int)));
-    connect(ui->pCollectDataCheckBox,SIGNAL(stateChanged(int)),this,SLOT(collectDatasCheckStateChanged(int)));
+    connect(ui->pCollectDatas_check,SIGNAL(stateChanged(int)),this,SLOT(collectDatasCheckStateChanged(int)));
 
     connect(ui->pReadStartPos_slider,SIGNAL(valueChanged(int)),this,SLOT(setValue_slider(int)));
     connect(ui->pReadEndPos_slider,SIGNAL(valueChanged(int)),this,SLOT(setValue_slider(int)));

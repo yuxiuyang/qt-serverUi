@@ -9,7 +9,7 @@ LinkMgr::LinkMgr(){
     m_initServerOk = m_serverNetwork.init();
 
     //start listen server
-    assert(m_initServerOk);
+    //assert(m_initServerOk);
     addFd(getServerFd());
 }
 LinkMgr::~LinkMgr(){
@@ -31,6 +31,7 @@ int LinkMgr::waitAcceptConnect(){
         if(EAGAIN == errno){
 
         }
+        sleep(3);
         return -10;
     }
     recvLinkMsg(Connect_Success,clientFd);

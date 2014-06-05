@@ -21,6 +21,7 @@ protected:
     bool anal_DataPag(const BYTE* buf,const int len);
     bool anal_ConnectPag(const BYTE* buf,const int len);
     void analyseCmd(BYTE cmd,BYTE param);
+
 };
 
 #endif // NIBPMGR_H

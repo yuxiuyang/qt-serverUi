@@ -42,20 +42,22 @@ void GroupBasicWindow::initLayout(){
 
     m_layout12->addWidget(m_addValueBtn);
     m_layout12->addWidget(m_delValueBtn);
-    //m_layout2->addWidget(m_valueCb);
     m_layout2->addLayout(m_layout12);
 
     m_layout13 = new QHBoxLayout;
     m_addAlarmBtn = new QPushButton("add");
     m_delAlarmBtn = new QPushButton("del");
 
+    if(NIBP_CLIENT==m_dataType){
+        m_nibpModeCb = new QComboBox();
+        m_layout2->addWidget(m_nibpModeCb);
+    }
     //if(m_dataType == ECG_CLIENT){
     m_layout13->addWidget(m_alarmCb);
     m_layout13->addWidget(m_addAlarmBtn);
     m_layout13->addWidget(m_delAlarmBtn);
     m_layout2->addLayout(m_layout13);
     //}
-
 
     m_layout2->addWidget(m_generateTestDataBtn);
 
@@ -155,6 +157,7 @@ void GroupBasicWindow::initLayout(){
 }
 
 void GroupBasicWindow::updateWindow(MODE_TYPE mode){
+    m_pTextBrowser->clear();
     switch(mode){
     case COLLECTING_DATA_MODE:
         m_pDataMgr->getMgrbyId(ECG_CLIENT)->closeFile();
@@ -165,6 +168,10 @@ void GroupBasicWindow::updateWindow(MODE_TYPE mode){
         m_saveCollectData->show();
         m_delCollectData->show();
 
+        if(NIBP_CLIENT==m_dataType){
+            m_layout2->removeWidget(m_nibpModeCb);
+            m_nibpModeCb->hide();
+        }
         //if(m_dataType == ECG_CLIENT){// alarm combobox
             m_alarmCb->hide();
             m_addAlarmBtn->hide();
@@ -228,6 +235,10 @@ void GroupBasicWindow::updateWindow(MODE_TYPE mode){
         m_layout2->removeItem(m_layoutData);
 
         m_layout2->addLayout(m_layout12);
+        if(NIBP_CLIENT==m_dataType){
+            m_layout2->addWidget(m_nibpModeCb);
+            m_nibpModeCb->show();
+        }
         m_layout2->addLayout(m_layout13);
 
         m_layout2->addWidget(m_generateTestDataBtn);
@@ -406,7 +417,7 @@ void GroupBasicWindow::handleCB(){
 //    m_alarmCb->hide();
 //    m_addValueBtn->hide();
 //    m_delValueBtn->hide();
-//    m_valueCb->clear();
+    m_valueCb->clear();
     switch(m_dataType){
     case ECG_CLIENT:
         {
@@ -657,6 +668,7 @@ void GroupBasicWindow::showReadDataCheckStateChanged(int state){
     m_pDataMgr->getMgrbyId(m_dataType)->setShowDataSign(m_showDataCheckBox->isChecked());
 }
 void GroupBasicWindow::sendDataCheckStateChanged(int state){
+    m_pDataMgr->getMgrbyId(m_dataType)->resetDataFile();
     State::getInstance()->setStateData(m_dataType,SAVE_SENDDATA,m_sendDataCheckBox->isChecked());
     m_pDataMgr->getMgrbyId(m_dataType)->startSendData(m_sendDataCheckBox->isChecked());
 
@@ -682,6 +694,10 @@ void GroupBasicWindow::freOk_click(){
     m_timeoutEdit->insert(QString::number(m_pDataMgr->getMgrbyId(m_dataType)->getTimeout()));
 
     State::getInstance()->setStateData(m_dataType,SAVE_FRE,val);
+
+    //if(m_dataType == ECG_CLIENT){
+        Global::getInstance()->saveFreAndCount(m_dataType,m_pDataMgr->getMgrbyId(m_dataType)->getFrequency(),m_pDataMgr->getMgrbyId(m_dataType)->getReadNum());
+    //}
 }
 
 void GroupBasicWindow::freCancel_click(){
@@ -710,6 +726,10 @@ void GroupBasicWindow::rcOk_click(){
     m_pDataMgr->getMgrbyId(m_dataType)->setReadNum(val);
     cout<<"rcOk_click src="<<str.toStdString().c_str()<<"val="<<val<<endl;
     State::getInstance()->setStateData(m_dataType,SAVE_READNUM,val);
+
+    //if(m_dataType == ECG_CLIENT){
+        Global::getInstance()->saveFreAndCount(m_dataType,m_pDataMgr->getMgrbyId(m_dataType)->getFrequency(),m_pDataMgr->getMgrbyId(m_dataType)->getReadNum());
+    //}
 }
 
 void GroupBasicWindow::rcCancel_click(){
@@ -735,8 +755,8 @@ void GroupBasicWindow::handleSlider(bool isInit){
         mid = 0;
 
     }
-    //cout<<"start slider   range  0 ~ "<<mid<<"  val="<<State::getInstance()->getStateData(m_dataType,SAVE_FILE_START_POS)<<endl;
-    //cout<<"end slider     range  "<<mid+1<<"~ "<<max<<"  val="<<State::getInstance()->getStateData(m_dataType,SAVE_FILE_END_POS)<<endl;
+    cout<<"start slider   range  0 ~ "<<mid<<endl;
+    cout<<"end slider     range  "<<mid+1<<"~ "<<max<<endl;
 
     m_readStartPos_slider->setRange(0,mid);
     m_readStartPos_slider->setValue(0);
@@ -747,6 +767,9 @@ void GroupBasicWindow::handleSlider(bool isInit){
     m_pDataMgr->getMgrbyId(m_dataType)->setReadFileEndPos(m_readEndPos_slider->value());
 }
 void GroupBasicWindow::startCollectDatas_click(){
+    char cmdbuf[200]={0};
+    sprintf(cmdbuf,"rm -f %s",m_pDataMgr->getMgrbyId(m_dataType)->getCollectDataTmpFile());
+    system(cmdbuf);
     cout<<"start Collect datas success"<<endl;
     State::getInstance()->setStateData(COLLECT_START,1);
     State::getInstance()->setStateData(COLLECT_SAVE,1);
@@ -773,23 +796,29 @@ void GroupBasicWindow::stopCollectDatas_click(){
 }
 void GroupBasicWindow::saveCollectDatas_click(){//yxy
     QString dir = "";
+    char Buf[1024]={0};
     switch(m_dataType){
     case ECG_CLIENT:
-        dir = "./datafile/ECG";
+        sprintf(Buf,"./datafile/ECG/%s",Global::getInstance()->getGlobalPath(ECG_CLIENT).c_str());
+        dir = Buf;
         break;
     case SPO2_CLIENT:
-        dir = "./datafile/SPO2";
+        sprintf(Buf,"./datafile/SPO2/%s",Global::getInstance()->getGlobalPath(SPO2_CLIENT).c_str());
+        dir = Buf;
         break;
     case NIBP_CLIENT:
+        sprintf(Buf,"./datafile/NIBP/%s",m_pDataMgr->getMgrbyId(NIBP_CLIENT)->getPatientType());
         dir = "./datafile/NIBP";
         break;
     case IBP_CLIENT:
         dir = "./datafile/IBP";
         break;
     case CO2_CLIENT:
-        dir = "./datafile/CO2";
+        sprintf(Buf,"./datafile/CO2/%s",Global::getInstance()->getGlobalPath(CO2_CLIENT).c_str());
+        dir = Buf;
         break;
     case NARCO_CLIENT:
+        sprintf(Buf,"./datafile/NARCO/%s",Global::getInstance()->getGlobalPath(NARCO_CLIENT).c_str());
         dir = "./datafile/NARCO";
         break;
     default:
@@ -827,6 +856,9 @@ void GroupBasicWindow::saveCollectDatas_click(){//yxy
         State::getInstance()->setStateData(m_dataType,SAVE_READNUM,val);
 
         cout<<"save Collect datas success"<<endl;
+        //if(m_dataType == ECG_CLIENT){
+            Global::getInstance()->saveFreAndCount(m_dataType,m_pDataMgr->getMgrbyId(m_dataType)->getFrequency(),m_pDataMgr->getMgrbyId(m_dataType)->getReadNum());
+        //}
         QMessageBox::information(NULL, "notify", "save success", QMessageBox::Yes/* | QMessageBox::No*/, QMessageBox::Yes);
 
 
@@ -850,6 +882,28 @@ void GroupBasicWindow::delCollectDatas_click(){
     QMessageBox::information(NULL, "notify", "delete success", QMessageBox::Yes/* | QMessageBox::No*/, QMessageBox::Yes);
     State::getInstance()->setStateData(COLLECT_DELETE,0);
     State::getInstance()->setStateData(COLLECT_SAVE,0);
+}
+
+void GroupBasicWindow::nibpModeChange(int index){
+    m_pDataMgr->getMgrbyId(NIBP_CLIENT)->setPatientType(m_nibpModeCb->currentText().toStdString().c_str());
+    m_pDataMgr->getMgrbyId(NIBP_CLIENT)->setTxtValue(m_valueCb->currentText().toStdString().c_str());
+    handleSlider(true);
+}
+
+const char* GroupBasicWindow::getCurValue(){
+    if(m_valueCb->isEnabled()){
+        return m_valueCb->currentText().toStdString().c_str();
+    }else
+        return m_alarmCb->currentText().toStdString().c_str();
+}
+void GroupBasicWindow::setFreAndReadCount(int fre,int count){
+    m_pDataMgr->getMgrbyId(m_dataType)->setFrequency(fre);
+    m_pDataMgr->getMgrbyId(m_dataType)->setReadNum(count);
+
+    m_freEdit->setText(QString::number(m_pDataMgr->getMgrbyId(m_dataType)->getFrequency()));
+    m_timeoutEdit->setText(QString::number(m_pDataMgr->getMgrbyId(m_dataType)->getTimeout()));
+    m_readcountEdit->setText(QString::number(m_pDataMgr->getMgrbyId(m_dataType)->getReadNum()));
+
 }
 
 GroupEcgWindow::GroupEcgWindow(QWidget *parent,DataMgr* pMgr): GroupBasicWindow(parent,ECG_CLIENT,pMgr)
@@ -893,7 +947,6 @@ void GroupEcgWindow::initLayout(){
 void GroupEcgWindow::updateWindow(MODE_TYPE mode){
     GroupBasicWindow::updateWindow(mode);
 }
-
 
 //////////////////////////////////////////////////////////////////////////
 
@@ -982,7 +1035,13 @@ GroupNibpWindow::GroupNibpWindow(QWidget *parent,DataMgr* pMgr): GroupBasicWindo
     connect(m_saveCollectData,SIGNAL(clicked()),this,SLOT(saveCollectDatas_click()));
     connect(m_delCollectData,SIGNAL(clicked()),this,SLOT(delCollectDatas_click()));
 
+    connect(m_nibpModeCb, SIGNAL(currentIndexChanged(int)), this, SLOT(nibpModeChange(int)));
+
     init();
+
+    m_nibpModeCb->addItem("Adult");
+    m_nibpModeCb->addItem("Enfant");
+    m_nibpModeCb->addItem("Baby");
 
 }
 void GroupNibpWindow::initLayout(){
@@ -1001,6 +1060,7 @@ void GroupNibpWindow::updateWindow(MODE_TYPE mode){
     m_addAlarmBtn->setEnabled(false);
     m_delAlarmBtn->setEnabled(false);
 }
+
 
 
 ////////////////////////////////////////////////////////////////////////////////

@@ -12,6 +12,7 @@ enum SAVE_TYPE{
         SAVE_SENDDATA,
         SAVE_DATA_VALUE,
         SAVE_ALARM_VALUE,
+        SAVE_CUR_GLOBALPATH,
 };
 class State
 {

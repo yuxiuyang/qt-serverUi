@@ -50,6 +50,8 @@ public Q_SLOTS:
     void saveCollectDatas_click();
     void delCollectDatas_click();
 
+    void nibpModeChange(int);
+
     void freOk_click();
     void freCancel_click();
     void rcOk_click();
@@ -68,6 +70,9 @@ public:
     void handleSlider(bool isInit=false);
 
     void showData(const char* buf);
+
+    const char* getCurValue();
+    void setFreAndReadCount(int fre,int count);
 protected:
     QTextBrowser* m_pTextBrowser;
 
@@ -103,11 +108,13 @@ protected:
     QPushButton* m_saveCollectData;
     QPushButton* m_delCollectData;
     QHBoxLayout* m_layoutData;
+    QComboBox*   m_nibpModeCb;
 
     QHBoxLayout *m_mainLayout1;
     QVBoxLayout *m_layout2;
     QHBoxLayout *m_layout12;
     QHBoxLayout *m_layout13;
+
     //QTimer *m_pTimer;
     QMutex  m_pMutex;
     queue<string> m_queDataLine;

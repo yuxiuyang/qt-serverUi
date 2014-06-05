@@ -2,7 +2,7 @@
 #include "mainwindow.h"
 #include "../common/datadev.h"
 #include "../include/define.h"
-#define REFRESH_TIME 30*1000 //ms
+#define REFRESH_TIME 10*1000 //ms
 EcgMgr::EcgMgr(LinkMgr* pLinkMgr):BasicMgr(pLinkMgr,ECG_CLIENT)
 {
     memset(&m_tStartTimer,0,sizeof(m_tStartTimer));
@@ -16,7 +16,6 @@ EcgMgr::EcgMgr(LinkMgr* pLinkMgr):BasicMgr(pLinkMgr,ECG_CLIENT)
     startSendData(State::getInstance()->getStateData(ECG_SENDDATA));
 
     gettimeofday(&m_tStartTimer,NULL);
-    //assert(openFile("datafile/ECG/data_80.txt"));
 }
 EcgMgr::~EcgMgr()
 {
@@ -48,7 +47,7 @@ bool EcgMgr::anal_DataPag(const BYTE* buf,const int len){
     if(State::getInstance()->getStateData(COLLECT_DATA)){
         if(State::getInstance()->getStateData(COLLECT_START)){//start collect data
             if(!m_collectDataFile.isOpen()){
-                m_collectDataFile.setFileName("datafile/ECG/~tmp_ecg.txt");
+                m_collectDataFile.setFileName("./datafile/ECG/~tmp_ecg.txt");
                 if(!m_collectDataFile.open("w")){
                     cout<<"EcgMgr  open collect data file failure"<<endl;
                     return false;
@@ -91,13 +90,19 @@ bool EcgMgr::anal_ConnectPag(const BYTE* buf,const int len){
         return true;
 }
 char* EcgMgr::getCollectDataTmpFile(){
-    return "datafile/ECG/~tmp_ecg.txt";
+    return "./datafile/ECG/~tmp_ecg.txt";
 }
 
 void EcgMgr::setTxtValue(const char* val){
-    char buf[300]={0};
-    sprintf(buf,"./datafile/ECG/data_%s.txt",val);
 
+    char buf[300]={0};
+    sprintf(buf,"./datafile/ECG/%s",Global::getInstance()->getGlobalPath(ECG_CLIENT).c_str());
+
+    Global::create_Folder(buf);
+
+    memset(buf,0,sizeof(buf));
+
+    sprintf(buf,"./datafile/ECG/%s/data_%s.txt",Global::getInstance()->getGlobalPath(ECG_CLIENT).c_str(),val);
     closeFile();
     if(!openFile(buf)){
         printf("open file %s failure\n",buf);

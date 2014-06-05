@@ -2,7 +2,7 @@
 #include "groupwindow.h"
 #include "../common/datadev.h"
 #include "../include/define.h"
-#define REFRESH_TIME 30*1000 //ms
+#define REFRESH_TIME 10*1000 //ms
 Spo2Mgr::Spo2Mgr(LinkMgr* pLinkMgr):BasicMgr(pLinkMgr,SPO2_CLIENT)
 {
     memset(&m_tStartTimer,0,sizeof(m_tStartTimer));
@@ -95,9 +95,21 @@ char* Spo2Mgr::getCollectDataTmpFile(){
 }
 
 void Spo2Mgr::setTxtValue(const char* val){
+//    char buf[300]={0};
+//    sprintf(buf,"./datafile/SPO2/data_%s.txt",val);
+//
+//    closeFile();
+//    if(!openFile(buf)){
+//        printf("open file %s failure\n",buf);
+//    }
     char buf[300]={0};
-    sprintf(buf,"./datafile/SPO2/data_%s.txt",val);
+    sprintf(buf,"./datafile/SPO2/%s",Global::getInstance()->getGlobalPath(SPO2_CLIENT).c_str());
 
+    Global::create_Folder(buf);
+
+    memset(buf,0,sizeof(buf));
+
+    sprintf(buf,"./datafile/SPO2/%s/data_%s.txt",Global::getInstance()->getGlobalPath(SPO2_CLIENT).c_str(),val);
     closeFile();
     if(!openFile(buf)){
         printf("open file %s failure\n",buf);

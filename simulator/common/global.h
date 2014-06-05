@@ -2,6 +2,11 @@
 #define GLOBAL_H
 #include "QStringList"
 #include "file.h"
+struct FRE_READCOUNT{
+    int fre;
+    int readcount;
+};
+
 class Global{
 public:
     Global();
@@ -24,6 +29,27 @@ public:
     void saveTxtValue(QStringList& strList);
     void loadTxtValue(QStringList& strList,const char* filename);
 
+
+
+
+
+    QStringList g_globalPath[CLIENT_NUM];
+    string g_curGlobalPathName[CLIENT_NUM];
+
+    string getGlobalPath(ClientType_ id){
+        return g_curGlobalPathName[id];
+    }
+    void setGlobalPath(ClientType_ id,char* path){
+        g_curGlobalPathName[id] = path;
+    }
+
+    QStringList& getGlobalPathList(ClientType_ id);
+
+
+    void saveFreAndCount(ClientType_ id,int fre,int count);
+    void getFreAndCount(ClientType_ id,FRE_READCOUNT& data);
+
+    static void create_Folder(const char* strPathName);
 };
 
 #endif // GLOBAL_H

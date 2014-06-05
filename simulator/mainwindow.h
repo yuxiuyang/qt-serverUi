@@ -22,12 +22,17 @@ public Q_SLOTS:
     void collectDatasCheckStateChanged(int state);
     void tabChange(int index);
 
+    void addGlobalPathToCb_click();
+    void delGlobalPathToCb_click();
+    void globalPathChanged(int index);
+
 public:
     void appendConnectMsg(const char* msg);
 protected:
     void changeEvent(QEvent *e);
 
 
+    GroupBasicWindow* getCurGroupWinodw(ClientType_ id);
 
 
 private:
@@ -46,6 +51,7 @@ private:
     GroupIbpWindow* m_groupIbp;
     GroupCo2Window* m_groupCo2;
     GroupNarcoWindow* m_groupNarco;
+    ClientType_ m_dataType;
 };
 
 #endif // MAINWINDOW_H

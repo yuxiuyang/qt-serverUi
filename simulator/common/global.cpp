@@ -1,4 +1,6 @@
 #include "global.h"
+#include <sys/stat.h>
+#include <sys/types.h>
 Global* Global::m_instance = new Global();
 
 Global::Global(){
@@ -14,7 +16,18 @@ void Global::g_InitGlobalText(){
     loadTxtValue(g_co2Values,"./datafile/CO2/value_data.txt");
     loadTxtValue(g_narcoValues,"./datafile/NARCO/value_data.txt");
 
+
+
+    loadTxtValue(g_globalPath[ECG_CLIENT],"./datafile/ECG/global_path.txt");
+    loadTxtValue(g_globalPath[SPO2_CLIENT],"./datafile/SPO2/global_path.txt");
+    loadTxtValue(g_globalPath[CO2_CLIENT],"./datafile/CO2/global_path.txt");
+    loadTxtValue(g_globalPath[NARCO_CLIENT],"./datafile/NARCO/global_path.txt");
+
 }
+QStringList& Global::getGlobalPathList(ClientType_ id){
+    return g_globalPath[id];
+}
+
 QStringList& Global::getValueList(ClientType_ id){
     switch(id){
     case ECG_CLIENT:
@@ -59,7 +72,7 @@ QStringList& Global::getAlarmList(ClientType_ id){
 }
 
 void Global::saveTxtValue(QStringList& strList){
-    char* filename = "";
+    char* filename = NULL;
 
     if(&g_ecgValues == &strList)
         filename = "./datafile/ECG/value_data.txt";
@@ -75,7 +88,19 @@ void Global::saveTxtValue(QStringList& strList){
         filename = "./datafile/CO2/value_data.txt";
     else if(&g_narcoValues == &strList)
         filename = "./datafile/NARCO/value_data.txt";
+    else if(&g_globalPath[ECG_CLIENT] == &strList)
+        filename = "./datafile/ECG/global_path.txt";
+    else if(&g_globalPath[SPO2_CLIENT] == &strList)
+        filename = "./datafile/SPO2/global_path.txt";
+    else if(&g_globalPath[CO2_CLIENT] == &strList)
+        filename = "./datafile/CO2/global_path.txt";
+    else if(&g_globalPath[NARCO_CLIENT] == &strList)
+        filename = "./datafile/NARCO/global_path.txt";
 
+    if(!filename){
+        cout<<"maybe a error strlist"<<endl;
+        return;
+    }
 
     File file;
     file.setFileName(filename);
@@ -99,10 +124,84 @@ void Global::loadTxtValue(QStringList& strList,const char* filename){
     char buf[1024];
     int ret=-1;
     while( (ret = file.readLine(buf,sizeof(buf),'.')) != -1){
-        cout<<"yxy buf="<<buf<<endl;
+        //cout<<"yxy buf="<<buf<<endl;
         if(!ret)//read a line success
             strList.append(buf);
         memset(buf,0,sizeof(buf));
     }
     file.close();
+}
+
+void Global::saveFreAndCount(ClientType_ id,int fre,int count){
+    FRE_READCOUNT data;
+    data.fre = fre;
+    data.readcount = count;
+
+    char buf[1024]={0};
+    switch(id){
+    case ECG_CLIENT:
+        sprintf(buf,"./datafile/ECG/%s/fre_count.txt",g_curGlobalPathName[ECG_CLIENT].c_str());
+        break;
+    case SPO2_CLIENT:
+        sprintf(buf,"./datafile/SPO2/%s/fre_count.txt",g_curGlobalPathName[SPO2_CLIENT].c_str());
+        break;
+    case CO2_CLIENT:
+        sprintf(buf,"./datafile/CO2/%s/fre_count.txt",g_curGlobalPathName[CO2_CLIENT].c_str());
+        break;
+    case NARCO_CLIENT:
+        sprintf(buf,"./datafile/NARCO/%s/fre_count.txt",g_curGlobalPathName[NARCO_CLIENT].c_str());
+        break;
+    default:
+        break;
+    }
+
+
+    FILE* file = fopen(buf, "w");
+    if(!file){
+        cout<<"open file="<<buf<<"  failue"<<endl;
+    }
+    fwrite(&data, 1,sizeof(data), file);
+    fclose(file);
+
+}
+
+void Global::getFreAndCount(ClientType_ id,FRE_READCOUNT& data){
+    data.fre = 0;
+    data.readcount = 0;
+    char buf[1024]={0};
+    switch(id){
+    case ECG_CLIENT:
+        sprintf(buf,"./datafile/ECG/%s/fre_count.txt",g_curGlobalPathName[ECG_CLIENT].c_str());
+        break;
+    case SPO2_CLIENT:
+        sprintf(buf,"./datafile/SPO2/%s/fre_count.txt",g_curGlobalPathName[SPO2_CLIENT].c_str());
+        break;
+    case CO2_CLIENT:
+        sprintf(buf,"./datafile/CO2/%s/fre_count.txt",g_curGlobalPathName[CO2_CLIENT].c_str());
+        break;
+    case NARCO_CLIENT:
+        sprintf(buf,"./datafile/NARCO/%s/fre_count.txt",g_curGlobalPathName[NARCO_CLIENT].c_str());
+        break;
+    default:
+        break;
+    }
+    FILE* file = fopen(buf, "r");
+    if(!file){
+        cout<<"open file="<<buf<<"  failue"<<endl;
+        return;
+    }
+    fread(&data,1,sizeof(data),file);
+    fclose(file);
+
+}
+void Global::create_Folder(const char* strPathName) {
+        if (access(strPathName, 0) == 0) //存在
+                return;
+
+        //不存在，创建
+        if (mkdir(strPathName, 0) == 0) {
+                printf("Create directory Success\n");
+        } else {
+                printf("Problem creating directory\n");
+        }
 }

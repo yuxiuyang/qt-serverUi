@@ -2,6 +2,8 @@
 #include "ui_mainwindow.h"
 
 #include <QMessageBox>
+
+
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
     ui(new Ui::MainWindow)
@@ -33,6 +35,8 @@ MainWindow::MainWindow(QWidget *parent) :
     m_tabWidget->addTab(m_groupNarco, tr("NARCO"));
     m_tabWidget->move(ui->pConnectMsgBrowser->x()+ui->pConnectMsgBrowser->width()+10,ui->pConnectMsgBrowser->y()+20);
     m_tabWidget->resize(710,580);
+    //m_tabWidget->setCurrentIndex(1);
+
 
 
     m_pDataMgr->getMgrbyId(ECG_CLIENT)->setWindow(m_groupEcg);
@@ -52,46 +56,122 @@ MainWindow::MainWindow(QWidget *parent) :
     connect(m_tabWidget,SIGNAL(currentChanged(int)),this,SLOT(tabChange(int)));
 
 
+    connect(ui->pAddGlobalPathBtn,SIGNAL(clicked()),this,SLOT(addGlobalPathToCb_click()));
+    connect(ui->pDelGlobalPathBtn,SIGNAL(clicked()),this,SLOT(delGlobalPathToCb_click()));
+    connect(ui->pGlobalPathCb, SIGNAL(currentIndexChanged(int)), this, SLOT(globalPathChanged(int)));
+
+
     ui->pStartServerBtn->setEnabled(false);
     ui->pStopServerBtn->hide();
     ui->pServerStateLaber->setText("server running");
     m_pTimer->start(2000);
+
+    m_dataType = ECG_CLIENT;
+    tabChange(0);
 }
 
 MainWindow::~MainWindow()
 {
     delete ui;
 }
+GroupBasicWindow* MainWindow::getCurGroupWinodw(ClientType_ id){
+    switch(id){
+    case ECG_CLIENT:
+        return m_groupEcg;
+        break;
+    case SPO2_CLIENT:
+        return m_groupSpo2;
+        break;
+    case NIBP_CLIENT:
+        return m_groupNibp;
+        break;
+    case IBP_CLIENT:
+        return m_groupIbp;
+        break;
+    case CO2_CLIENT:
+        return m_groupCo2;
+        break;
+    case NARCO_CLIENT:
+        return m_groupNarco;
+        break;
+    default:
+        break;
+    }
+    return NULL;
+}
+
 void MainWindow::tabChange(int index){
     //int ix = m_tabWidget->currentIndex();
-    cout<<"index = "<<index<<" cur ix="<<endl;
+    cout<<"index = "<<index<<endl;
 
-    GroupBasicWindow* group=NULL;
+    ui->pGlobalPathCb->hide();
+    ui->pAddGlobalPathBtn->hide();
+    ui->pDelGlobalPathBtn->hide();
+    ui->pGlobalLabel->hide();
+
+    ui->pGlobalPathCb->clear();
     switch(index){
     case 0:
-        group = m_groupEcg;
+        m_dataType = ECG_CLIENT;
+        ui->pGlobalPathCb->insertItems(0,Global::getInstance()->getGlobalPathList(ECG_CLIENT));
+        ui->pGlobalPathCb->setCurrentIndex(State::getInstance()->getStateData(ECG_CUR_GLOBALPATH));
+        ui->pGlobalPathCb->show();
+        ui->pAddGlobalPathBtn->show();
+        ui->pDelGlobalPathBtn->show();
+        ui->pGlobalLabel->show();
         break;
     case 1:
-        group = m_groupSpo2;
+        m_dataType = SPO2_CLIENT;
+        ui->pGlobalPathCb->insertItems(0,Global::getInstance()->getGlobalPathList(SPO2_CLIENT));
+        if(Global::getInstance()->getGlobalPathList(SPO2_CLIENT).count()<=1){
+            ui->pGlobalPathCb->setCurrentIndex(0);
+        }
+        else ui->pGlobalPathCb->setCurrentIndex(State::getInstance()->getStateData(SPO2_CUR_GLOBALPATH));
+        ui->pGlobalPathCb->show();
+        ui->pAddGlobalPathBtn->show();
+        ui->pDelGlobalPathBtn->show();
+        ui->pGlobalLabel->show();
+
         break;
     case 2:
-        group = m_groupNibp;
+        m_dataType = NIBP_CLIENT;
+
         break;
     case 3:
-        group = m_groupIbp;
+        m_dataType = IBP_CLIENT;
+
         break;
     case 4:
-        group = m_groupCo2;
+        m_dataType = CO2_CLIENT;
+
+        ui->pGlobalPathCb->insertItems(0,Global::getInstance()->getGlobalPathList(CO2_CLIENT));
+        if(Global::getInstance()->getGlobalPathList(SPO2_CLIENT).count()<=1){
+            ui->pGlobalPathCb->setCurrentIndex(0);
+        }
+        ui->pGlobalPathCb->setCurrentIndex(State::getInstance()->getStateData(CO2_CUR_GLOBALPATH));
+        ui->pGlobalPathCb->show();
+        ui->pAddGlobalPathBtn->show();
+        ui->pDelGlobalPathBtn->show();
+        ui->pGlobalLabel->show();
+
         break;
     case 5:
-        group = m_groupNarco;
+        m_dataType = NARCO_CLIENT;
+        ui->pGlobalPathCb->insertItems(0,Global::getInstance()->getGlobalPathList(NARCO_CLIENT));
+        ui->pGlobalPathCb->setCurrentIndex(State::getInstance()->getStateData(NARCO_CUR_GLOBALPATH));
+        ui->pGlobalPathCb->show();
+        ui->pAddGlobalPathBtn->show();
+        ui->pDelGlobalPathBtn->show();
+        ui->pGlobalLabel->show();
         break;
     default:
         break;
     }
 
+    GroupBasicWindow* group=getCurGroupWinodw(m_dataType);
     if(group == NULL)return ;
 
+    group->handleSlider(true);
 //    if(State::getInstance()->getStateData(COLLECT_DATA)){
 //        group->updateWindow(COLLECTING_DATA_MODE);
 //    }else{
@@ -109,6 +189,10 @@ void MainWindow::sendTimer(){
 
     m_groupEcg->sendTimer();
     m_groupSpo2->sendTimer();
+    m_groupNibp->sendTimer();
+    m_groupIbp->sendTimer();
+    m_groupCo2->sendTimer();
+    m_groupNarco->sendTimer();
 }
 void MainWindow::appendConnectMsg(const char* msg){
     m_pMutex.lock();
@@ -172,7 +256,7 @@ void MainWindow::collectDatasCheckStateChanged(int state){
         m_groupCo2->updateWindow(COLLECTING_DATA_MODE);
         m_groupNarco->updateWindow(COLLECTING_DATA_MODE);
 
-        m_pDataMgr->getMgrbyId(ECG_CLIENT)->sendData(Cmd_Msg,ECG_CLIENT,MODE_COLLECTDATAS);
+        m_pDataMgr->sendCmd(MODE_COLLECTDATAS,0);
     }else{
         ui->pCollectDataCheckBox->setText("Collect datas");
 
@@ -183,6 +267,70 @@ void MainWindow::collectDatasCheckStateChanged(int state){
         m_groupCo2->updateWindow(SIMULATOR_MODE);
         m_groupNarco->updateWindow(SIMULATOR_MODE);
 
-        m_pDataMgr->getMgrbyId(ECG_CLIENT)->sendData(Cmd_Msg,ECG_CLIENT,MODE_NORMAL);
+        m_pDataMgr->sendCmd(MODE_NORMAL,0);
     }
+}
+
+void MainWindow::addGlobalPathToCb_click(){
+    bool isOK=false;
+    QString text = QInputDialog::getText(NULL, "Input Dialog","Please input Integer(0-1000)",QLineEdit::Normal,"",&isOK);
+    if(!isOK) {
+        //QMessageBox::information(NULL, "Information","Your comment is: <b>" + text + "</b>",QMessageBox::Yes | QMessageBox::No,QMessageBox::Yes);
+        return;
+    }
+    QStringList::iterator it = qFind(Global::getInstance()->getGlobalPathList(m_dataType).begin(),Global::getInstance()->getGlobalPathList(m_dataType).end(),text.toStdString().c_str());
+    if(it != Global::getInstance()->getGlobalPathList(m_dataType).end()){
+        cout<<"this val="<<text.toStdString().c_str()<<" has exist"<<endl;
+        return;
+    }
+    Global::getInstance()->getGlobalPathList(m_dataType).append(text);
+    //qSort(Global::getInstance()->getValueList(m_dataType).begin(), Global::getInstance()->getValueList(m_dataType).end());
+    ui->pGlobalPathCb->clear();
+    ui->pGlobalPathCb->insertItems(0,Global::getInstance()->getGlobalPathList(m_dataType));
+
+    int ix = ui->pGlobalPathCb->findText(text);
+    if(ix>0)
+        ui->pGlobalPathCb->setCurrentIndex(ix);
+    getCurGroupWinodw(m_dataType)->handleSlider(true);
+
+    Global::getInstance()->saveTxtValue(Global::getInstance()->getGlobalPathList(m_dataType));
+}
+
+void MainWindow::delGlobalPathToCb_click(){
+
+    if(ui->pGlobalPathCb->count()<=1){
+        //return;
+    }
+    int index = ui->pGlobalPathCb->currentIndex();
+    Global::getInstance()->getGlobalPathList(m_dataType).removeAt(index);
+
+    ui->pGlobalPathCb->clear();
+    ui->pGlobalPathCb->insertItems(0,Global::getInstance()->getGlobalPathList(m_dataType));
+
+    if(index>0&&index<Global::getInstance()->getGlobalPathList(m_dataType).count())
+        ui->pGlobalPathCb->setCurrentIndex(index);
+    getCurGroupWinodw(m_dataType)->handleSlider(true);
+
+    Global::getInstance()->saveTxtValue(Global::getInstance()->getGlobalPathList(m_dataType));
+}
+
+void MainWindow::globalPathChanged(int index){
+    if(index<0)return;
+
+    char buf[1024]={0};
+    sprintf(buf,"%s",ui->pGlobalPathCb->currentText().toStdString().c_str());
+    cout<<"buf="<<buf<<endl;
+    Global::getInstance()->setGlobalPath(m_dataType,buf);
+
+    GroupBasicWindow* group = getCurGroupWinodw(m_dataType);
+    m_pDataMgr->getMgrbyId(m_dataType)->setTxtValue(group->getCurValue());
+
+    group->handleSlider(true);
+    FRE_READCOUNT data;
+    Global::getInstance()->getFreAndCount(m_dataType,data);
+    group->setFreAndReadCount(data.fre,data.readcount);
+
+    if(ui->pGlobalPathCb->currentIndex()>0)
+        State::getInstance()->setStateData(m_dataType,SAVE_CUR_GLOBALPATH,ui->pGlobalPathCb->currentIndex());
+
 }

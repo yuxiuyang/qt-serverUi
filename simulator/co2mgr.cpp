@@ -96,9 +96,21 @@ char* Co2Mgr::getCollectDataTmpFile(){
 }
 
 void Co2Mgr::setTxtValue(const char* val){
+//    char buf[300]={0};
+//    sprintf(buf,"./datafile/CO2/data_%s.txt",val);
+//
+//    closeFile();
+//    if(!openFile(buf)){
+//        printf("open file %s failure\n",buf);
+//    }
     char buf[300]={0};
-    sprintf(buf,"./datafile/CO2/data_%s.txt",val);
+    sprintf(buf,"./datafile/CO2/%s",Global::getInstance()->getGlobalPath(CO2_CLIENT).c_str());
 
+    Global::create_Folder(buf);
+
+    memset(buf,0,sizeof(buf));
+
+    sprintf(buf,"./datafile/CO2/%s/data_%s.txt",Global::getInstance()->getGlobalPath(CO2_CLIENT).c_str(),val);
     closeFile();
     if(!openFile(buf)){
         printf("open file %s failure\n",buf);

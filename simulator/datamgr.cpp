@@ -89,6 +89,13 @@ void DataMgr::handle(ClientType_ id,const BYTE* buf,int len){
     mgr->addBuf(buf,len);
     mgr->open_block();
 }
+int DataMgr::sendCmd(BYTE cmd,BYTE param){
+    int sock = m_pLinkMgr->findClientSocket(CMD_CLIENT);//yxytest
+    if(sock<=0){
+        cout<<"cmd client  not exsit"<<endl;
+    }
+    return DataDev::getInstance()->sendData(sock,Cmd_Msg,CMD_CLIENT,cmd,param);
+}
 
 BasicMgr* DataMgr::getMgrbyId(ClientType_ id){
     switch(id){
@@ -123,13 +130,6 @@ void DataMgr::setWindow(void* ww){
     m_pWindow = ww;
 
     m_pLinkMgr->setWindow(ww);
-
-//    m_pNibpMgr->setWindow(ww);
-//    m_pSpo2Mgr->setWindow(ww);
-//    m_pEcgMgr->setWindow(ww);
-//    m_pIbpMgr->setWindow(ww);
-//    m_pCo2Mgr->setWindow(ww);
-//    m_pNarcoMgr->setWindow(ww);
 }
 void DataMgr::generateTestFile(ClientType_ type){
     switch(type){

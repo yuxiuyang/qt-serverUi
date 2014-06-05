@@ -1,8 +1,8 @@
 /****************************************************************************
 ** Meta object code from reading C++ file 'groupwindow.h'
 **
-** Created: Mon Jun 2 15:58:05 2014
-**      by: The Qt Meta Object Compiler version 59 (Qt 4.3.2)
+** Created: Thu Jun 5 14:32:54 2014
+**      by: The Qt Meta Object Compiler version 62 (Qt 4.6.2)
 **
 ** WARNING! All changes made in this file will be lost!
 *****************************************************************************/
@@ -10,21 +10,25 @@
 #include "groupwindow.h"
 #if !defined(Q_MOC_OUTPUT_REVISION)
 #error "The header file 'groupwindow.h' doesn't include <QObject>."
-#elif Q_MOC_OUTPUT_REVISION != 59
-#error "This file was generated using the moc from 4.3.2. It"
+#elif Q_MOC_OUTPUT_REVISION != 62
+#error "This file was generated using the moc from 4.6.2. It"
 #error "cannot be used with the include files from this version of Qt."
 #error "(The moc has changed too much.)"
 #endif
 
+QT_BEGIN_MOC_NAMESPACE
 static const uint qt_meta_data_GroupBasicWindow[] = {
 
  // content:
-       1,       // revision
+       4,       // revision
        0,       // classname
        0,    0, // classinfo
-      22,   10, // methods
+      23,   14, // methods
        0,    0, // properties
        0,    0, // enums/sets
+       0,    0, // constructors
+       0,       // flags
+       0,       // signalCount
 
  // slots: signature, parameters, type, tag, flags
       18,   17,   17,   17, 0x0a,
@@ -46,9 +50,10 @@ static const uint qt_meta_data_GroupBasicWindow[] = {
      424,   17,   17,   17, 0x0a,
      449,   17,   17,   17, 0x0a,
      473,   17,   17,   17, 0x0a,
-     487,   17,   17,   17, 0x0a,
-     505,   17,   17,   17, 0x0a,
-     518,   17,   17,   17, 0x0a,
+     493,   17,   17,   17, 0x0a,
+     507,   17,   17,   17, 0x0a,
+     525,   17,   17,   17, 0x0a,
+     538,   17,   17,   17, 0x0a,
 
        0        // eod
 };
@@ -68,9 +73,9 @@ static const char qt_meta_stringdata_GroupBasicWindow[] = {
     "startCollectDatas_click()\0"
     "stopCollectDatas_click()\0"
     "saveCollectDatas_click()\0"
-    "delCollectDatas_click()\0freOk_click()\0"
-    "freCancel_click()\0rcOk_click()\0"
-    "rcCancel_click()\0"
+    "delCollectDatas_click()\0nibpModeChange(int)\0"
+    "freOk_click()\0freCancel_click()\0"
+    "rcOk_click()\0rcCancel_click()\0"
 };
 
 const QMetaObject GroupBasicWindow::staticMetaObject = {
@@ -78,16 +83,20 @@ const QMetaObject GroupBasicWindow::staticMetaObject = {
       qt_meta_data_GroupBasicWindow, 0 }
 };
 
+#ifdef Q_NO_DATA_RELOCATION
+const QMetaObject &GroupBasicWindow::getStaticMetaObject() { return staticMetaObject; }
+#endif //Q_NO_DATA_RELOCATION
+
 const QMetaObject *GroupBasicWindow::metaObject() const
 {
-    return &staticMetaObject;
+    return QObject::d_ptr->metaObject ? QObject::d_ptr->metaObject : &staticMetaObject;
 }
 
 void *GroupBasicWindow::qt_metacast(const char *_clname)
 {
     if (!_clname) return 0;
     if (!strcmp(_clname, qt_meta_stringdata_GroupBasicWindow))
-	return static_cast<void*>(const_cast< GroupBasicWindow*>(this));
+        return static_cast<void*>(const_cast< GroupBasicWindow*>(this));
     return QWidget::qt_metacast(_clname);
 }
 
@@ -116,12 +125,15 @@ int GroupBasicWindow::qt_metacall(QMetaObject::Call _c, int _id, void **_a)
         case 15: stopCollectDatas_click(); break;
         case 16: saveCollectDatas_click(); break;
         case 17: delCollectDatas_click(); break;
-        case 18: freOk_click(); break;
-        case 19: freCancel_click(); break;
-        case 20: rcOk_click(); break;
-        case 21: rcCancel_click(); break;
+        case 18: nibpModeChange((*reinterpret_cast< int(*)>(_a[1]))); break;
+        case 19: freOk_click(); break;
+        case 20: freCancel_click(); break;
+        case 21: rcOk_click(); break;
+        case 22: rcCancel_click(); break;
+        default: ;
         }
-        _id -= 22;
+        _id -= 23;
     }
     return _id;
 }
+QT_END_MOC_NAMESPACE

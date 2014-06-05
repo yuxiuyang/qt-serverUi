@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>802</width>
-    <height>568</height>
+    <width>967</width>
+    <height>483</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -56,7 +56,7 @@
    <widget class="QCheckBox" name="pCollectDataCheckBox">
     <property name="geometry">
      <rect>
-      <x>520</x>
+      <x>430</x>
       <y>10</y>
       <width>131</width>
       <height>27</height>
@@ -89,14 +89,63 @@
      <string>clear</string>
     </property>
    </widget>
+   <widget class="QComboBox" name="pGlobalPathCb">
+    <property name="geometry">
+     <rect>
+      <x>660</x>
+      <y>40</y>
+      <width>171</width>
+      <height>31</height>
+     </rect>
+    </property>
+   </widget>
+   <widget class="QPushButton" name="pAddGlobalPathBtn">
+    <property name="geometry">
+     <rect>
+      <x>840</x>
+      <y>40</y>
+      <width>41</width>
+      <height>27</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>add</string>
+    </property>
+   </widget>
+   <widget class="QPushButton" name="pDelGlobalPathBtn">
+    <property name="geometry">
+     <rect>
+      <x>890</x>
+      <y>40</y>
+      <width>41</width>
+      <height>27</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>del</string>
+    </property>
+   </widget>
+   <widget class="QLabel" name="pGlobalLabel">
+    <property name="geometry">
+     <rect>
+      <x>580</x>
+      <y>40</y>
+      <width>71</width>
+      <height>31</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>data path</string>
+    </property>
+   </widget>
   </widget>
   <widget class="QMenuBar" name="menuBar">
    <property name="geometry">
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>802</width>
-     <height>32</height>
+     <width>967</width>
+     <height>23</height>
     </rect>
    </property>
   </widget>

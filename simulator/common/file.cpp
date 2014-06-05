@@ -95,6 +95,7 @@ int File::read(char *buffer,int size){
            cout<<"repeat read file"<<endl;
         }else{
            cout<<"had arrived the file end"<<endl;
+           return -10;
         }
     }
 
@@ -123,7 +124,7 @@ int File::flush(){//the cache is written to file
     return rel;
 }
 long File::getFileSize(){
-    //cout<<"fopen m_strFileName= "<<m_strFileName<<"success"<<endl;
+    //cout<<"getFileSize  m_strFileName= "<<m_strFileName<<"success"<<endl;
     FILE* file = fopen(m_strFileName, "r");
     long length=0;
     if(file){
@@ -137,7 +138,7 @@ long File::getFileSize(){
         cout<<"get filesize  m_strFileName="<<m_strFileName<<"    failure size=0"<<endl;
         return 0;
     }
-    cout<<"getfilesize success  size="<<length<<endl;
+    cout<<"getfilesize success  size="<<length<<"   m_strFileName="<<m_strFileName<<endl;
 
     return length;
 }
@@ -222,6 +223,13 @@ int File::write(const BYTE* buf,int len){
     for(int i=0;i<len;i++){
         write("%02x ",buf[i]);
     }
+//    static int i=0;
+//    i += len;
+//    if(i>=30)
+//    {
+//        write("\n");
+//        i = 0;
+//    }
     //flush();
 }
 

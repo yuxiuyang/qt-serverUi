@@ -30,6 +30,8 @@ public:
     Co2Mgr*  m_pCo2Mgr;
     NarcoMgr* m_pNarcoMgr;
     LinkMgr* m_pLinkMgr;
+
+    int sendCmd(BYTE cmd,BYTE param);
 protected:
 
 

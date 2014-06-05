@@ -142,6 +142,9 @@ void State::setStateData(ClientType_ id, SAVE_TYPE saveType,int val) {
             case SAVE_ALARM_VALUE:
                 State::getInstance()->setStateData(ECG_ALARM_VALUE, val);
                 break;
+            case SAVE_CUR_GLOBALPATH:
+                State::getInstance()->setStateData(ECG_CUR_GLOBALPATH, val);
+                break;
             default:
                 break;
             }
@@ -175,6 +178,9 @@ void State::setStateData(ClientType_ id, SAVE_TYPE saveType,int val) {
             case SAVE_ALARM_VALUE:
                 State::getInstance()->setStateData(SPO2_ALARM_VALUE, val);
                 break;
+            case SAVE_CUR_GLOBALPATH:
+                State::getInstance()->setStateData(SPO2_CUR_GLOBALPATH, val);
+                break;
             default:
                 break;
             }
@@ -206,7 +212,10 @@ void State::setStateData(ClientType_ id, SAVE_TYPE saveType,int val) {
                 State::getInstance()->setStateData(CO2_DATA_VALUE, val);
                 break;
             case SAVE_ALARM_VALUE:
-                State::getInstance()->setStateData(CO2_ALARM_VALUE, val);
+                State::getInstance()->setStateData(CO2_ALARM_VALUE, val);\
+            case SAVE_CUR_GLOBALPATH:
+                State::getInstance()->setStateData(CO2_CUR_GLOBALPATH, val);
+                break;
                 break;
             default:
                 break;
@@ -241,6 +250,9 @@ void State::setStateData(ClientType_ id, SAVE_TYPE saveType,int val) {
             case SAVE_ALARM_VALUE:
                 State::getInstance()->setStateData(NARCO_ALARM_VALUE, val);
                 break;
+            case SAVE_CUR_GLOBALPATH:
+                State::getInstance()->setStateData(NARCO_CUR_GLOBALPATH, val);
+                break;
             default:
                 break;
             }
@@ -274,6 +286,9 @@ void State::setStateData(ClientType_ id, SAVE_TYPE saveType,int val) {
             case SAVE_ALARM_VALUE:
                 State::getInstance()->setStateData(NIBP_ALARM_VALUE, val);
                 break;
+            case SAVE_CUR_GLOBALPATH:
+                State::getInstance()->setStateData(NIBP_CUR_GLOBALPATH, val);
+                break;
             default:
                 break;
             }
@@ -306,6 +321,9 @@ void State::setStateData(ClientType_ id, SAVE_TYPE saveType,int val) {
                 break;
             case SAVE_ALARM_VALUE:
                 State::getInstance()->setStateData(IBP_ALARM_VALUE, val);
+                break;
+            case SAVE_CUR_GLOBALPATH:
+                State::getInstance()->setStateData(IBP_CUR_GLOBALPATH, val);
                 break;
             default:
                 break;
@@ -348,6 +366,9 @@ int State::getStateData(ClientType_ id, SAVE_TYPE saveType) {
             case SAVE_ALARM_VALUE:
                 return State::getInstance()->getStateData(ECG_ALARM_VALUE);
                 break;
+            case SAVE_CUR_GLOBALPATH:
+                State::getInstance()->getStateData(ECG_CUR_GLOBALPATH);
+                break;
             default:
                 break;
             }
@@ -380,6 +401,9 @@ int State::getStateData(ClientType_ id, SAVE_TYPE saveType) {
                 break;
             case SAVE_ALARM_VALUE:
                 return State::getInstance()->getStateData(SPO2_ALARM_VALUE);
+                break;
+            case SAVE_CUR_GLOBALPATH:
+                State::getInstance()->getStateData(SPO2_CUR_GLOBALPATH);
                 break;
             default:
                 break;
@@ -414,6 +438,9 @@ int State::getStateData(ClientType_ id, SAVE_TYPE saveType) {
             case SAVE_ALARM_VALUE:
                 return State::getInstance()->getStateData(CO2_ALARM_VALUE);
                 break;
+            case SAVE_CUR_GLOBALPATH:
+                State::getInstance()->getStateData(CO2_CUR_GLOBALPATH);
+                break;
             default:
                 break;
             }
@@ -446,6 +473,9 @@ int State::getStateData(ClientType_ id, SAVE_TYPE saveType) {
                 break;
             case SAVE_ALARM_VALUE:
                 return State::getInstance()->getStateData(NARCO_ALARM_VALUE);
+                break;
+            case SAVE_CUR_GLOBALPATH:
+                State::getInstance()->getStateData(NARCO_CUR_GLOBALPATH);
                 break;
             default:
                 break;
@@ -480,6 +510,9 @@ int State::getStateData(ClientType_ id, SAVE_TYPE saveType) {
             case SAVE_ALARM_VALUE:
                 return State::getInstance()->getStateData(NIBP_ALARM_VALUE);
                 break;
+            case SAVE_CUR_GLOBALPATH:
+                State::getInstance()->getStateData(NIBP_CUR_GLOBALPATH);
+                break;
             default:
                 break;
             }
@@ -512,6 +545,9 @@ int State::getStateData(ClientType_ id, SAVE_TYPE saveType) {
                 break;
             case SAVE_ALARM_VALUE:
                 return State::getInstance()->getStateData(IBP_ALARM_VALUE);
+                break;
+            case SAVE_CUR_GLOBALPATH:
+                State::getInstance()->getStateData(IBP_CUR_GLOBALPATH);
                 break;
             default:
                 break;

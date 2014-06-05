@@ -2,7 +2,7 @@
 #include "groupwindow.h"
 #include "../common/datadev.h"
 #include "../include/define.h"
-#define REFRESH_TIME 30*1000 //ms
+#define REFRESH_TIME 10*1000 //ms
 NibpMgr::NibpMgr(LinkMgr* pLinkMgr):BasicMgr(pLinkMgr,NIBP_CLIENT)
 {
     memset(&m_tStartTimer,0,sizeof(m_tStartTimer));
@@ -17,7 +17,7 @@ NibpMgr::NibpMgr(LinkMgr* pLinkMgr):BasicMgr(pLinkMgr,NIBP_CLIENT)
     
     gettimeofday(&m_tStartTimer,NULL);
     m_start = false;
-    //assert(openFile("datafile/NIBP/nibp_adult.txt"));
+    m_patientType = "Adult";
 }
 NibpMgr::~NibpMgr()
 {
@@ -118,10 +118,12 @@ void NibpMgr::analyseCmd(BYTE cmd,BYTE param){
         break;
     case NIBP_START:
         m_start = true;
+        m_file->setReadFileProperty(false);
         printf("nibp_start......\n");
         break;
     case NIBP_STOP:
         m_start = false;
+        m_file->setReadFileProperty(true);
         printf("nibp_stop......\n");
         break;
     default:
@@ -138,10 +140,11 @@ char* NibpMgr::getCollectDataTmpFile(){
 
 void NibpMgr::setTxtValue(const char* val){
     char buf[300]={0};
-    sprintf(buf,"./datafile/NIBP/data_%s.txt",val);
+    sprintf(buf,"./datafile/NIBP/%s/data_%s.txt",m_patientType.c_str(),val);
 
     closeFile();
     if(!openFile(buf)){
         printf("open file %s failure\n",buf);
     }
+    m_file->setReadFileProperty(false);
 }

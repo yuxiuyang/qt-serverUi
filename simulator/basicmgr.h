@@ -33,6 +33,9 @@ class BasicMgr
 {
 public:
     BasicMgr(LinkMgr* pMgr,ClientType_ clientId);
+    void resetDataFile(){
+        m_file->reset();
+    }
 
     virtual void onTimer()=0;
     virtual void display()=0;//display
@@ -140,6 +143,9 @@ public:
         return m_strFileName;
     }
 
+    virtual void setPatientType(const char* buf){};
+    virtual const char* getPatientType(){return NULL;};
+
 protected:
 
     virtual int read();//return the read count
@@ -153,7 +159,7 @@ protected:
     char m_strFileName[256];
 
     File m_collectDataFile;
-private:
+
     File* m_file;
     int m_iFrequency;//how many times call the fun-onTimer in 1 sec.
     int m_iReadNum;//how many datas will read just onece calling fun-onTimer.
@@ -166,6 +172,8 @@ private:
     ClientType_ m_clientId;
     bool m_isStartSendData;
     QMutex m_readWriteMutex;
+
+    bool m_start;
 };
 
 #endif // BASICMGR_H

@@ -22,13 +22,17 @@ BasicMgr::BasicMgr(LinkMgr* pLinkMgr,ClientType_ clientId):m_dataQueue(MAX_BUF)
 }
 
 void BasicMgr::setFrequency(int fre){
-    assert(fre!=0);
+    //assert(fre!=0);
     assert(fre<=500);//the basic timer'interval is 2mms. must not more then 500
     m_iFrequency = fre;
     //1s = 1000ms
-    m_iTimeout = 1000/m_iFrequency;
-    if(m_iTimeout%2)//if not 2's Integer multiples
-        m_iTimeout+=1;//m_iTimeout have to >=2 ms
+    if(fre == 0){
+        m_iTimeout =0;
+    }else{
+        m_iTimeout = 1000/m_iFrequency;
+        if(m_iTimeout%2)//if not 2's Integer multiples
+            m_iTimeout+=1;//m_iTimeout have to >=2 ms
+    }
 }
 void BasicMgr::setReadNum(int num){
     m_iReadNum = num*3;
@@ -106,6 +110,12 @@ int BasicMgr::read(){
     int len = m_file->read(m_readBuf,m_iReadNum);//read 3*300 datas per time.
     if(len<=0){
         cout<<"yxy  len="<<len<<" read error"<<endl;
+        if(len == -10){
+            if(m_clientId == NIBP_CLIENT){
+                m_start = false;
+                m_file->setReadFileProperty(true);
+            }
+        }
         //m_readWriteMutex.unlock();
         return 0;
     }
@@ -133,6 +143,7 @@ bool BasicMgr::openFile(const char* filename){
         m_file = new File();
     assert(m_file);
     m_file->setFileName(filename);
+
     m_file->setReadFileProperty(true);
 
     printf("open file=%s success\n",filename);

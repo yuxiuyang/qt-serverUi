@@ -1,7 +1,7 @@
 /****************************************************************************
 ** Meta object code from reading C++ file 'groupwindow.h'
 **
-** Created: Thu Jun 5 14:32:54 2014
+** Created: Fri Jun 6 14:09:02 2014
 **      by: The Qt Meta Object Compiler version 62 (Qt 4.6.2)
 **
 ** WARNING! All changes made in this file will be lost!
@@ -23,7 +23,7 @@ static const uint qt_meta_data_GroupBasicWindow[] = {
        4,       // revision
        0,       // classname
        0,    0, // classinfo
-      23,   14, // methods
+      24,   14, // methods
        0,    0, // properties
        0,    0, // enums/sets
        0,    0, // constructors
@@ -45,15 +45,16 @@ static const uint qt_meta_data_GroupBasicWindow[] = {
      275,  269,   17,   17, 0x0a,
      307,  269,   17,   17, 0x0a,
      342,  269,   17,   17, 0x0a,
-     373,   17,   17,   17, 0x0a,
-     399,   17,   17,   17, 0x0a,
-     424,   17,   17,   17, 0x0a,
-     449,   17,   17,   17, 0x0a,
-     473,   17,   17,   17, 0x0a,
-     493,   17,   17,   17, 0x0a,
-     507,   17,   17,   17, 0x0a,
-     525,   17,   17,   17, 0x0a,
-     538,   17,   17,   17, 0x0a,
+     375,  373,   17,   17, 0x0a,
+     406,   17,   17,   17, 0x0a,
+     432,   17,   17,   17, 0x0a,
+     457,   17,   17,   17, 0x0a,
+     482,   17,   17,   17, 0x0a,
+     506,   17,   17,   17, 0x0a,
+     526,   17,   17,   17, 0x0a,
+     540,   17,   17,   17, 0x0a,
+     558,   17,   17,   17, 0x0a,
+     571,   17,   17,   17, 0x0a,
 
        0        // eod
 };
@@ -69,7 +70,8 @@ static const char qt_meta_stringdata_GroupBasicWindow[] = {
     "setValue_slider(int)\0state\0"
     "startTestCheckStateChanged(int)\0"
     "showReadDataCheckStateChanged(int)\0"
-    "sendDataCheckStateChanged(int)\0"
+    "sendDataCheckStateChanged(int)\0b\0"
+    "sendDataCheck_SetChecked(bool)\0"
     "startCollectDatas_click()\0"
     "stopCollectDatas_click()\0"
     "saveCollectDatas_click()\0"
@@ -121,18 +123,19 @@ int GroupBasicWindow::qt_metacall(QMetaObject::Call _c, int _id, void **_a)
         case 11: startTestCheckStateChanged((*reinterpret_cast< int(*)>(_a[1]))); break;
         case 12: showReadDataCheckStateChanged((*reinterpret_cast< int(*)>(_a[1]))); break;
         case 13: sendDataCheckStateChanged((*reinterpret_cast< int(*)>(_a[1]))); break;
-        case 14: startCollectDatas_click(); break;
-        case 15: stopCollectDatas_click(); break;
-        case 16: saveCollectDatas_click(); break;
-        case 17: delCollectDatas_click(); break;
-        case 18: nibpModeChange((*reinterpret_cast< int(*)>(_a[1]))); break;
-        case 19: freOk_click(); break;
-        case 20: freCancel_click(); break;
-        case 21: rcOk_click(); break;
-        case 22: rcCancel_click(); break;
+        case 14: sendDataCheck_SetChecked((*reinterpret_cast< bool(*)>(_a[1]))); break;
+        case 15: startCollectDatas_click(); break;
+        case 16: stopCollectDatas_click(); break;
+        case 17: saveCollectDatas_click(); break;
+        case 18: delCollectDatas_click(); break;
+        case 19: nibpModeChange((*reinterpret_cast< int(*)>(_a[1]))); break;
+        case 20: freOk_click(); break;
+        case 21: freCancel_click(); break;
+        case 22: rcOk_click(); break;
+        case 23: rcCancel_click(); break;
         default: ;
         }
-        _id -= 23;
+        _id -= 24;
     }
     return _id;
 }

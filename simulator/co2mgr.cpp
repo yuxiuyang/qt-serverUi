@@ -16,7 +16,6 @@ Co2Mgr::Co2Mgr(LinkMgr* pLinkMgr):BasicMgr(pLinkMgr,CO2_CLIENT)
     startSendData(State::getInstance()->getStateData(CO2_SENDDATA));
 
     gettimeofday(&m_tStartTimer,NULL);
-    //assert(openFile("datafile/CO2/data_20.txt"));
 }
 Co2Mgr::~Co2Mgr()
 {

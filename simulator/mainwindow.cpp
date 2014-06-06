@@ -114,6 +114,9 @@ void MainWindow::tabChange(int index){
     case 0:
         m_dataType = ECG_CLIENT;
         ui->pGlobalPathCb->insertItems(0,Global::getInstance()->getGlobalPathList(ECG_CLIENT));
+        if(Global::getInstance()->getGlobalPathList(ECG_CLIENT).count()<=1){
+            ui->pGlobalPathCb->setCurrentIndex(0);
+        }
         ui->pGlobalPathCb->setCurrentIndex(State::getInstance()->getStateData(ECG_CUR_GLOBALPATH));
         ui->pGlobalPathCb->show();
         ui->pAddGlobalPathBtn->show();
@@ -144,6 +147,8 @@ void MainWindow::tabChange(int index){
     case 4:
         m_dataType = CO2_CLIENT;
 
+        getCurGroupWinodw(CO2_CLIENT)->sendDataCheck_SetChecked(State::getInstance()->getStateData(CO2_CLIENT,SAVE_SENDDATA));
+
         ui->pGlobalPathCb->insertItems(0,Global::getInstance()->getGlobalPathList(CO2_CLIENT));
         if(Global::getInstance()->getGlobalPathList(SPO2_CLIENT).count()<=1){
             ui->pGlobalPathCb->setCurrentIndex(0);
@@ -157,7 +162,12 @@ void MainWindow::tabChange(int index){
         break;
     case 5:
         m_dataType = NARCO_CLIENT;
+        getCurGroupWinodw(NARCO_CLIENT)->sendDataCheck_SetChecked(State::getInstance()->getStateData(NARCO_CLIENT,SAVE_SENDDATA));
+        if(Global::getInstance()->getGlobalPathList(NARCO_CLIENT).count()<=1){
+            ui->pGlobalPathCb->setCurrentIndex(0);
+        }
         ui->pGlobalPathCb->insertItems(0,Global::getInstance()->getGlobalPathList(NARCO_CLIENT));
+
         ui->pGlobalPathCb->setCurrentIndex(State::getInstance()->getStateData(NARCO_CUR_GLOBALPATH));
         ui->pGlobalPathCb->show();
         ui->pAddGlobalPathBtn->show();
@@ -172,11 +182,6 @@ void MainWindow::tabChange(int index){
     if(group == NULL)return ;
 
     group->handleSlider(true);
-//    if(State::getInstance()->getStateData(COLLECT_DATA)){
-//        group->updateWindow(COLLECTING_DATA_MODE);
-//    }else{
-//        group->updateWindow(SIMULATOR_MODE);
-//    }
 }
 
 void MainWindow::sendTimer(){
@@ -284,7 +289,7 @@ void MainWindow::addGlobalPathToCb_click(){
         return;
     }
     Global::getInstance()->getGlobalPathList(m_dataType).append(text);
-    //qSort(Global::getInstance()->getValueList(m_dataType).begin(), Global::getInstance()->getValueList(m_dataType).end());
+    qSort(Global::getInstance()->getValueList(m_dataType).begin(), Global::getInstance()->getValueList(m_dataType).end());
     ui->pGlobalPathCb->clear();
     ui->pGlobalPathCb->insertItems(0,Global::getInstance()->getGlobalPathList(m_dataType));
 

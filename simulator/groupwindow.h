@@ -44,6 +44,9 @@ public Q_SLOTS:
     void startTestCheckStateChanged (int state);
     void showReadDataCheckStateChanged(int state);
     void sendDataCheckStateChanged(int state);
+    void sendDataCheck_SetChecked(bool b){
+        m_sendDataCheckBox->setChecked(b);
+    }
 
     void startCollectDatas_click();
     void stopCollectDatas_click();

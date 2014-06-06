@@ -1,7 +1,7 @@
 /****************************************************************************
 ** Meta object code from reading C++ file 'datamgr.h'
 **
-** Created: Thu Jun 5 14:32:54 2014
+** Created: Fri Jun 6 14:07:32 2014
 **      by: The Qt Meta Object Compiler version 62 (Qt 4.6.2)
 **
 ** WARNING! All changes made in this file will be lost!

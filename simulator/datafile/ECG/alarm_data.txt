@@ -1,2 +1,10 @@
 NONE
-60
+Asystole
+Bigeminy
+Tachycardia
+Trigeminy
+V.E.B
+V.E.B Pair
+V.T
+VT>2
+Vfib

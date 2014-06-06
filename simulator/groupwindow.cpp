@@ -642,7 +642,7 @@ void GroupBasicWindow::setValue_slider(int val){
     char buf[200]={0};
     sprintf(buf,"read data from start pos: %lu  to end pos: %lu",m_readStartPos_slider->value(),m_readEndPos_slider->value());
 
-    cout<<"setValue_slider buf="<<buf<<endl;
+    //cout<<"setValue_slider buf="<<buf<<endl;
     m_posStartToEndLabel->setText(buf);
 
     if(sender() == m_readStartPos_slider){
@@ -668,6 +668,27 @@ void GroupBasicWindow::showReadDataCheckStateChanged(int state){
     m_pDataMgr->getMgrbyId(m_dataType)->setShowDataSign(m_showDataCheckBox->isChecked());
 }
 void GroupBasicWindow::sendDataCheckStateChanged(int state){
+
+    cout<<"sendDataCheckStateChanged   m_dataType="<<m_dataType<<"  state="<<state<<endl;
+    if(m_sendDataCheckBox->isChecked()){
+        if(NARCO_CLIENT == m_dataType){
+            m_pDataMgr->getMgrbyId(CO2_CLIENT)->resetDataFile();
+            State::getInstance()->setStateData(CO2_CLIENT,SAVE_SENDDATA,0);
+            m_pDataMgr->getMgrbyId(CO2_CLIENT)->startSendData(false);
+            m_pDataMgr->getMgrbyId(CO2_CLIENT)->clearTestData();
+        }
+        if(CO2_CLIENT == m_dataType){
+            if(m_pDataMgr->getMgrbyId(NARCO_CLIENT)->getSendDataState()){
+                m_pDataMgr->getMgrbyId(NARCO_CLIENT)->resetDataFile();
+                State::getInstance()->setStateData(NARCO_CLIENT,SAVE_SENDDATA,0);
+                m_pDataMgr->getMgrbyId(NARCO_CLIENT)->startSendData(false);
+                m_pDataMgr->getMgrbyId(NARCO_CLIENT)->clearTestData();
+            }
+
+        }
+    }
+
+
     m_pDataMgr->getMgrbyId(m_dataType)->resetDataFile();
     State::getInstance()->setStateData(m_dataType,SAVE_SENDDATA,m_sendDataCheckBox->isChecked());
     m_pDataMgr->getMgrbyId(m_dataType)->startSendData(m_sendDataCheckBox->isChecked());
@@ -819,7 +840,7 @@ void GroupBasicWindow::saveCollectDatas_click(){//yxy
         break;
     case NARCO_CLIENT:
         sprintf(Buf,"./datafile/NARCO/%s",Global::getInstance()->getGlobalPath(NARCO_CLIENT).c_str());
-        dir = "./datafile/NARCO";
+        dir = Buf;
         break;
     default:
         dir = "./datafile/ECG";

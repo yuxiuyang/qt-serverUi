@@ -34,7 +34,8 @@ class BasicMgr
 public:
     BasicMgr(LinkMgr* pMgr,ClientType_ clientId);
     void resetDataFile(){
-        m_file->reset();
+        if(m_file)
+            m_file->reset();
     }
 
     virtual void onTimer()=0;

@@ -9,7 +9,7 @@ LinkMgr::LinkMgr(){
     m_initServerOk = m_serverNetwork.init();
 
     //start listen server
-    //assert(m_initServerOk);
+    assert(m_initServerOk);
     addFd(getServerFd());
 }
 LinkMgr::~LinkMgr(){

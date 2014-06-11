@@ -107,23 +107,39 @@ int BasicMgr::read(){
     }
     memset(m_readBuf,0,sizeof(m_readBuf));
     assert(m_iReadNum<MAX_BUF);
-    int len = m_file->read(m_readBuf,m_iReadNum);//read 3*300 datas per time.
-    if(len<=0){
-        cout<<"yxy  len="<<len<<" read error"<<endl;
-        if(len == -10){
-            if(m_clientId == NIBP_CLIENT){
-                m_start = false;
-                m_file->setReadFileProperty(true);
-            }
-        }
-        //m_readWriteMutex.unlock();
-        return 0;
+
+    int len = 0;
+    if(m_clientId == NIBP_CLIENT){
+        len = m_file->readLine(m_readBuf,m_iReadNum,'.');//read 3*300 datas per time.
+    }else{
+        len = m_file->read(m_readBuf,m_iReadNum);//read 3*300 datas per time.
     }
+
+        if(len<=0){
+            cout<<"yxy  len="<<len<<" read error"<<endl;
+            if(len == -1){//file end
+                if(m_clientId == NIBP_CLIENT){
+                    m_start = false;
+                }
+            }
+            return 0;
+        }
+
+
+
     int recieveBuf_len=0;
     m_file->resolveProtocol(m_readBuf,len,m_recieveBuf,recieveBuf_len);
     if(recieveBuf_len){
         //m_dataQueue.push(m_recieveBuf,recieveBuf_len);
         //printf("m_iReadNum=%d,len=%d,recieveBuf_len=%d,thread=%lu\n",m_iReadNum,len,recieveBuf_len,pthread_self());
+        char tmp[10];
+        string str="";
+        for(int i=0;i<recieveBuf_len;i++)
+        {
+            sprintf(tmp,"%02x ",m_recieveBuf[i]);
+            str += tmp;
+        }
+        cout<<str.c_str()<<endl;
         sendData(Data_Msg,m_clientId,m_recieveBuf,recieveBuf_len);
     }else{
         cout<<"resolveProtocol error happen"<<endl;
@@ -177,39 +193,6 @@ bool BasicMgr::closeFile(){
     m_readWriteMutex.unlock();
     return true;
 }
-//void BasicMgr::resolveProtocol(const char* buf,int size,BYTE* recieveBuf,int& recieveBuf_len){//
-//    //cout<<"buf=%s"<<buf<<endl;
-//    char tmp[3]={0};
-//    int index=0;
-//    recieveBuf_len = 0;
-//        for(int i=0;i<size;){
-//            while(buf[i]==' '&&i<size) i++;//Filter space
-//            if(i==size) return;
-//
-//            bool sign = true;
-//            while(buf[i]!=' '&&i<size){
-//                    if(index<2){//get the data.
-//                            tmp[index++] = buf[i];
-//                            //printf("tmp[%d]=%d\n",index-1,tmp[index-1]);
-//                    }else{
-//                            cout<<"may be error"<<endl;
-//                            sign = false;
-//                            i++;
-//                            break;
-//                    }
-//                    i++;
-//            }
-//
-//            if(sign&&index == 2){//hex to dec.
-//                    recieveBuf[recieveBuf_len++] = twoBYTEConverToHex(charConvertToHex(tmp[0]),charConvertToHex(tmp[1]));
-//                    //printf("%02x ",rel);
-//            }else if(sign&&index!=2){
-//                    cout<<endl<<"may be error  tmp[0]="<<tmp[0]<<endl;
-//            }
-//            memset(tmp,0,sizeof(tmp));
-//            index = 0;
-//        }
-//}
 
 void BasicMgr::clearTestData(){
     m_testMsg.usedtimeSum = 0;

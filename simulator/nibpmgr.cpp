@@ -31,7 +31,6 @@ void NibpMgr::onTimer(){
     if(!m_start) return;
     if(m_pLinkMgr->findClientSocket(NIBP_CLIENT)==-1) return;
     int readnum = read();
-
     int count = test(readnum);
 //    if(count!=0){ // have not start test
 //        printf("NibpMgr::onTimer   interval=%dms  readnum=%d  times=%d",time,readnum,m_testMsg.times);
@@ -118,13 +117,21 @@ void NibpMgr::analyseCmd(BYTE cmd,BYTE param){
         break;
     case NIBP_START:
         m_start = true;
-        m_file->setReadFileProperty(false);
+        resetDataFile();
         printf("nibp_start......\n");
         break;
     case NIBP_STOP:
         m_start = false;
-        m_file->setReadFileProperty(true);
+        resetDataFile();
         printf("nibp_stop......\n");
+        break;
+    case NIBP_REQUEST_DATA:
+        cout<<"NIBP_REQUEST_DATA  m_start=true"<<endl;
+        //m_start = true;
+        break;
+    case NIBP_REQUEST_RESULT:
+        cout<<"NIBP_REQUEST_RESULT  m_start=true"<<endl;
+        //m_start = true;
         break;
     default:
         break;

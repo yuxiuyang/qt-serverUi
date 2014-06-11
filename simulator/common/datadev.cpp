@@ -317,7 +317,6 @@ void DataDev::sendData_(void* pv){
     INFO_DATA* dataMsg = (INFO_DATA*)pv;
     assert(dataMsg);
 
-
     int total = 0;
     int len = dataMsg->len;
     while(1){

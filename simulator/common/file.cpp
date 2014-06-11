@@ -111,9 +111,16 @@ int File::read(char *buffer,int size){
         numread = fread(buffer,1,m_readCurPos+size-m_endPos,m_pFile);
     }
 
+    if(numread>=2){
+        if(buffer[numread-1]!=' ' && buffer[numread-2] == ' '){
+            numread -= 1;
+        }
+    }
+
+    //cout<<"len="<<strlen(buffer)<<"  numread="<<numread<<"  size="<<size<<endl;
+    //cout<<"buffer="<<buffer<<endl;
+
     m_readCurPos += numread;
-
-
     return numread;
 }
 int File::flush(){//the cache is written to file
@@ -197,6 +204,7 @@ int File::readLine(char *strPtr, int strlen, char ellipsis) {
         char ch;
         char *tmpPtr;
 
+        int len=0;
         memset(strPtr, 0x0, strlen);
         ch = 0x0;
         tmpPtr = strPtr;
@@ -209,13 +217,14 @@ int File::readLine(char *strPtr, int strlen, char ellipsis) {
                 if (ch != EOF && ch != '\n') {
                         *strPtr = ch;
                         strPtr++;
+                        len++;
                 }
         }
         *strPtr = '\0';
-        if (*tmpPtr == ellipsis || *tmpPtr == '\0' || *tmpPtr == '\n')/*   如果行首字符等于ellipsis，返回错误代码   1   */
-                return 1;
+        if (*tmpPtr == ellipsis || *tmpPtr == '\0' || *tmpPtr == '\n')/*   如果行首字符等于ellipsis，返回错误代码   -2   */
+                return -2;
         else
-                return 0;
+                return len;
 
 }
 
@@ -244,14 +253,19 @@ void File::resolveProtocol(const char* buf,int size,BYTE* recieveBuf,int& reciev
 
             bool sign = true;
             while(buf[i]!=' '&&i<size){
+                if(buf[i]=='\n'){
+                    i++;
+                    continue;
+                }
                     if(index<2){//get the data.
                             tmp[index++] = buf[i];
                             //printf("tmp[%d]=%d\n",index-1,tmp[index-1]);
                     }else{
                             cout<<"may be error"<<endl;
+                            cout<<"buf="<<buf<<endl;
                             sign = false;
-                            i++;
-                            break;
+                            //i++;
+
                     }
                     i++;
             }

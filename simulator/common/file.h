@@ -37,6 +37,11 @@ public:
     void clear();//clear all data in the file
     void reset(){
         m_readCurPos = 0;
+        if(m_pFile){
+            if(m_readCurPos<m_startPos)
+                assert(!fseek(m_pFile,m_startPos,SEEK_SET));//move cur point
+            else assert(!fseek(m_pFile,m_readCurPos,SEEK_SET));//move cur point
+        }
     }
     bool saveDataFromStartPosToEndPos(const char* filename);
 

@@ -125,7 +125,7 @@ void Global::loadTxtValue(QStringList& strList,const char* filename){
     int ret=-1;
     while( (ret = file.readLine(buf,sizeof(buf),'.')) != -1){
         //cout<<"yxy buf="<<buf<<endl;
-        if(!ret)//read a line success
+        if(ret>0)//read a line success
             strList.append(buf);
         memset(buf,0,sizeof(buf));
     }
@@ -159,6 +159,7 @@ void Global::saveFreAndCount(ClientType_ id,int fre,int count){
     FILE* file = fopen(buf, "w");
     if(!file){
         cout<<"open file="<<buf<<"  failue"<<endl;
+        return;
     }
     fwrite(&data, 1,sizeof(data), file);
     fclose(file);

@@ -156,6 +156,8 @@ enum PatientType{
 enum NIBP_STATE{
     NIBP_START=0x87,
     NIBP_STOP,
+    NIBP_REQUEST_DATA,
+    NIBP_REQUEST_RESULT,
 };
 
 enum MODE_TYPE{
